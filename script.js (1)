@@ -1,0 +1,35 @@
+async function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(16);
+    doc.text("PP2 Off Loading Sheet", 10, 10);
+
+    let y = 20;
+    doc.setFontSize(12);
+    doc.text("Part", 10, y);
+    doc.text("Color", 60, y);
+    doc.text("Total", 110, y);
+    doc.text("Rework", 140, y);
+    doc.text("Polished", 180, y);
+    doc.text("Scrap", 220, y);
+    doc.text("Remarks", 260, y);
+    doc.text("Date", 300, y); // Add Date column header
+    y += 10;
+
+    const rows = document.querySelectorAll("tbody tr");
+    rows.forEach((row) => {
+        const cells = row.querySelectorAll("td");
+        doc.text(cells[0].querySelector("select").value, 10, y);
+        doc.text(cells[1].querySelector("select").value, 60, y);
+        doc.text(cells[2].textContent, 110, y);
+        doc.text(cells[3].querySelector("input").value, 140, y);
+        doc.text(cells[4].querySelector("input").value, 180, y);
+        doc.text(cells[5].querySelector("input").value, 220, y);
+        doc.text(cells[6].querySelector("input").value, 260, y);
+        doc.text(cells[7].textContent, 300, y); // Add Date value
+        y += 10;
+    });
+
+    doc.save("PP2_Off_Loading_Sheet.pdf");
+}
