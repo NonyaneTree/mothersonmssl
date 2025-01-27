@@ -1,7 +1,35 @@
-async function generatePDF() {
+// Initialize data storage
+let pp2LoadingSheetData = JSON.parse(localStorage.getItem('pp2LoadingSheetData')) || [];
+
+// Function to save data when an "Add" button is clicked
+function addData(part, color, total, rework, polished, scrap, remarks) {
+    const date = new Date().toLocaleDateString(); // Get current date
+    const dataEntry = {
+        part,
+        color,
+        total,
+        rework: {
+            value: rework.value,
+            defect: rework.defect
+        },
+        polished,
+        scrap: {
+            value: scrap.value,
+            defect: scrap.defect
+        },
+        remarks,
+        date
+    };
+
+    pp2LoadingSheetData.push(dataEntry);
+    localStorage.setItem('pp2LoadingSheetData', JSON.stringify(pp2LoadingSheetData)); // Save to local storage
+}
+
+// Function to compile data and generate PDF based on user-specified date
+async function generatePDF(inputDate) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-
+    
     doc.setFontSize(16);
     doc.text("PP2 Off Loading Sheet", 10, 10);
 
@@ -21,20 +49,34 @@ async function generatePDF() {
     const storedData = localStorage.getItem('pp2LoadingSheetData');
     if (storedData) {
         const tableData = JSON.parse(storedData);
-        tableData.forEach(rowData => {
-            doc.text(rowData.part, 10, y);
-            doc.text(rowData.color, 60, y);
-            doc.text(rowData.total, 110, y);
-            doc.text(`${rowData.rework.value} (${rowData.rework.defect})`, 140, y);
-            doc.text(rowData.polished, 180, y);
-            doc.text(`${rowData.scrap.value} (${rowData.scrap.defect})`, 220, y);
-            doc.text(rowData.remarks, 260, y);
-            doc.text(rowData.date, 280, y); // Add the date to the PDF
-            y += 10;
-        });
+        
+        // Filter data based on the input date
+        const filteredData = tableData.filter(row => row.date === inputDate);
+
+        if (filteredData.length > 0) {
+            filteredData.forEach(rowData => {
+                doc.text(rowData.part, 10, y);
+                doc.text(rowData.color, 60, y);
+                doc.text(rowData.total, 110, y);
+                doc.text(`${rowData.rework.value} (${rowData.rework.defect})`, 140, y);
+                doc.text(rowData.polished, 180, y);
+                doc.text(`${rowData.scrap.value} (${rowData.scrap.defect})`, 220, y);
+                doc.text(rowData.remarks, 260, y);
+                doc.text(rowData.date, 280, y); // Add the date to the PDF
+                y += 10;
+            });
+        } else {
+            doc.text("No data available for the selected date.", 10, y);
+        }
     } else {
         doc.text("No data available to generate PDF.", 10, y);
     }
 
     doc.save("PP2_Off_Loading_Sheet.pdf");
 }
+
+// Example usage of addData (this should be called when the respective add buttons are clicked)
+// addData('Part A', 'Red', 100, {value: 10, defect: 'Color Issue'}, 'Yes', {value: 5, defect: 'Surface Issue'}, 'None');
+
+// Call generatePDF with a specific date input (e.g., '10/1/2023') when compiling
+// generatePDF('10/1/2023');
