@@ -10,26 +10,31 @@ async function generatePDF() {
     doc.text("Part", 10, y);
     doc.text("Color", 60, y);
     doc.text("Total", 110, y);
-    doc.text("Rework", 140, y);
+    doc.text("Rework (Defect)", 140, y);
     doc.text("Polished", 180, y);
-    doc.text("Scrap", 220, y);
+    doc.text("Scrap (Defect)", 220, y);
     doc.text("Remarks", 260, y);
-    doc.text("Date", 300, y); // Add Date column header
+    doc.text("Date", 280, y); // Include the Date column
     y += 10;
 
-    const rows = document.querySelectorAll("tbody tr");
-    rows.forEach((row) => {
-        const cells = row.querySelectorAll("td");
-        doc.text(cells[0].querySelector("select").value, 10, y);
-        doc.text(cells[1].querySelector("select").value, 60, y);
-        doc.text(cells[2].textContent, 110, y);
-        doc.text(cells[3].querySelector("input").value, 140, y);
-        doc.text(cells[4].querySelector("input").value, 180, y);
-        doc.text(cells[5].querySelector("input").value, 220, y);
-        doc.text(cells[6].querySelector("input").value, 260, y);
-        doc.text(cells[7].textContent, 300, y); // Add Date value
-        y += 10;
-    });
+    // Retrieve all saved data from local storage
+    const storedData = localStorage.getItem('pp2LoadingSheetData');
+    if (storedData) {
+        const tableData = JSON.parse(storedData);
+        tableData.forEach(rowData => {
+            doc.text(rowData.part, 10, y);
+            doc.text(rowData.color, 60, y);
+            doc.text(rowData.total, 110, y);
+            doc.text(`${rowData.rework.value} (${rowData.rework.defect})`, 140, y);
+            doc.text(rowData.polished, 180, y);
+            doc.text(`${rowData.scrap.value} (${rowData.scrap.defect})`, 220, y);
+            doc.text(rowData.remarks, 260, y);
+            doc.text(rowData.date, 280, y); // Add the date to the PDF
+            y += 10;
+        });
+    } else {
+        doc.text("No data available to generate PDF.", 10, y);
+    }
 
     doc.save("PP2_Off_Loading_Sheet.pdf");
 }
