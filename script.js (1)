@@ -1,5 +1,6 @@
 // Initialize data storage
-let pp2LoadingSheetData = JSON.parse(localStorage.getItem('pp2LoadingSheetData')) || [];
+let pp2LoadingSheetData = JSON.parse(localStorage.getItem('pp2LoadingSheetData')) || {};
+let currentDate = new Date().toLocaleDateString(); // Get current date in MM/DD/YYYY format
 
 // Function to save data when an "Add" button is clicked
 function addData(part, color, total, rework, polished, scrap, remarks) {
@@ -17,15 +18,19 @@ function addData(part, color, total, rework, polished, scrap, remarks) {
             value: scrap.value,
             defect: scrap.defect
         },
-        remarks,
-        date
+        remarks
     };
 
-    pp2LoadingSheetData.push(dataEntry);
+    // Initialize date folder if it doesn't exist
+    if (!pp2LoadingSheetData[date]) {
+        pp2LoadingSheetData[date] = [];
+    }
+    
+    pp2LoadingSheetData[date].push(dataEntry);
     localStorage.setItem('pp2LoadingSheetData', JSON.stringify(pp2LoadingSheetData)); // Save to local storage
 }
 
-// Function to compile data and generate PDF based on user-specified date
+// Function to compile all data for a specific date and generate PDF
 async function generatePDF(inputDate) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -42,16 +47,15 @@ async function generatePDF(inputDate) {
     doc.text("Polished", 180, y);
     doc.text("Scrap (Defect)", 220, y);
     doc.text("Remarks", 260, y);
-    doc.text("Date", 280, y); // Include the Date column
     y += 10;
 
     // Retrieve all saved data from local storage
     const storedData = localStorage.getItem('pp2LoadingSheetData');
     if (storedData) {
         const tableData = JSON.parse(storedData);
-        
-        // Filter data based on the input date
-        const filteredData = tableData.filter(row => row.date === inputDate);
+
+        // Get data for the specified input date
+        const filteredData = tableData[inputDate] || [];
 
         if (filteredData.length > 0) {
             filteredData.forEach(rowData => {
@@ -62,7 +66,6 @@ async function generatePDF(inputDate) {
                 doc.text(rowData.polished, 180, y);
                 doc.text(`${rowData.scrap.value} (${rowData.scrap.defect})`, 220, y);
                 doc.text(rowData.remarks, 260, y);
-                doc.text(rowData.date, 280, y); // Add the date to the PDF
                 y += 10;
             });
         } else {
