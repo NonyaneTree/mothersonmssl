@@ -1,40 +1,10 @@
-// Initialize data storage
-let pp2LoadingSheetData = JSON.parse(localStorage.getItem('pp2LoadingSheetData')) || {};
-let currentDate = new Date().toLocaleDateString(); // Get current date in MM/DD/YYYY format
+let doc; // Declare jsPDF document object globally
+let lastDate = ""; // Track the last date used to determine if we need to reset doc.text
 
-// Function to save data when an "Add" button is clicked
-function addData(part, color, total, rework, polished, scrap, remarks) {
-    const date = new Date().toLocaleDateString(); // Get current date
-    const dataEntry = {
-        part,
-        color,
-        total,
-        rework: {
-            value: rework.value,
-            defect: rework.defect
-        },
-        polished,
-        scrap: {
-            value: scrap.value,
-            defect: scrap.defect
-        },
-        remarks
-    };
-
-    // Initialize date folder if it doesn't exist
-    if (!pp2LoadingSheetData[date]) {
-        pp2LoadingSheetData[date] = [];
-    }
-    
-    pp2LoadingSheetData[date].push(dataEntry);
-    localStorage.setItem('pp2LoadingSheetData', JSON.stringify(pp2LoadingSheetData)); // Save to local storage
-}
-
-// Function to compile all data for a specific date and generate PDF
-async function generatePDF(inputDate) {
+function initializePDF() {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    
+    doc = new jsPDF(); // Initialize jsPDF instance
+
     doc.setFontSize(16);
     doc.text("PP2 Off Loading Sheet", 10, 10);
 
@@ -47,39 +17,65 @@ async function generatePDF(inputDate) {
     doc.text("Polished", 180, y);
     doc.text("Scrap (Defect)", 220, y);
     doc.text("Remarks", 260, y);
+    doc.text("Date", 280, y); // Include the Date column
     y += 10;
+}
 
-    // Retrieve all saved data from local storage
-    const storedData = localStorage.getItem('pp2LoadingSheetData');
-    if (storedData) {
-        const tableData = JSON.parse(storedData);
-
-        // Get data for the specified input date
-        const filteredData = tableData[inputDate] || [];
-
-        if (filteredData.length > 0) {
-            filteredData.forEach(rowData => {
-                doc.text(rowData.part, 10, y);
-                doc.text(rowData.color, 60, y);
-                doc.text(rowData.total, 110, y);
-                doc.text(`${rowData.rework.value} (${rowData.rework.defect})`, 140, y);
-                doc.text(rowData.polished, 180, y);
-                doc.text(`${rowData.scrap.value} (${rowData.scrap.defect})`, 220, y);
-                doc.text(rowData.remarks, 260, y);
-                y += 10;
-            });
-        } else {
-            doc.text("No data available for the selected date.", 10, y);
-        }
-    } else {
-        doc.text("No data available to generate PDF.", 10, y);
+// Function to handle the new date being set
+function handleDateChange(newDate) {
+    if (newDate !== lastDate) {
+        // Reset the document if the date changes
+        doc = new jsPDF(); // Create a new PDF instance
+        initializePDF(); // Reinitialize the header for the new date
+        lastDate = newDate; // Update the last date used
     }
+}
 
+function addDataToPDF(row) {
+    const cells = row.querySelectorAll("td");
+    const reworkDefect = cells[3].querySelector("select").value;
+    const scrapDefect = cells[5].querySelector("select").value;
+    const date = cells[7].querySelector("input").value; // Date value
+
+    // Ensure that the date is set and handled before saving data
+    if (date) {
+        handleDateChange(date); // Reset the doc if the date changes
+
+        // Create the text string for each row
+        const rowText = `${cells[0].querySelector("select").value} | ${cells[1].querySelector("select").value} | ${cells[2].textContent} | ${cells[3].querySelector("input").value} (${reworkDefect}) | ${cells[4].querySelector("input").value} | ${cells[5].querySelector("input").value} (${scrapDefect}) | ${cells[6].querySelector("input").value} | ${date}`;
+        
+        // Add the row data to doc.text
+        let y = doc.internal.pageSize.height - 10;
+        doc.text(rowText, 10, y);
+    } else {
+        alert("Please set a date before adding data.");
+    }
+}
+
+function generatePDF() {
+    // Create PDF with all data stored in doc.text
     doc.save("PP2_Off_Loading_Sheet.pdf");
 }
 
-// Example usage of addData (this should be called when the respective add buttons are clicked)
-// addData('Part A', 'Red', 100, {value: 10, defect: 'Color Issue'}, 'Yes', {value: 5, defect: 'Surface Issue'}, 'None');
+// Add event listener for each Add button in the table
+function addEventListenersToAddButtons() {
+    const addButtons = document.querySelectorAll(".calc-btn");
+    addButtons.forEach(button => {
+        button.addEventListener("click", function(event) {
+            const row = event.target.closest("tr"); // Find the row the button belongs to
+            addDataToPDF(row); // Add the row data to the PDF
+        });
+    });
+}
 
-// Call generatePDF with a specific date input (e.g., '10/1/2023') when compiling
-// generatePDF('10/1/2023');
+// Run this function on page load or after dynamic content loading
+function loadTableData() {
+    // Your logic to load the table rows, which may be dynamic
+    addEventListenersToAddButtons(); // Attach event listeners to add buttons
+}
+
+document.getElementById("compileBtn").addEventListener("click", generatePDF);
+
+// Initialize PDF when the page loads
+initializePDF();
+loadTableData();
