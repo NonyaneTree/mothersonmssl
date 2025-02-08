@@ -13,7 +13,20 @@
             box-sizing: border-box;
             height: 100vh;
             overflow: hidden;
+            position: relative;
         }
+        
+        /* Video Background */
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
         /* Custom Logo */
         .logo {
             display: flex;
@@ -36,6 +49,8 @@
             color: red;
             margin-top: 2vh;
         }
+
+        /* Typing Text */
         .typing-container {
             margin-top: 4vh;
             font-size: 4vw; /* Larger text size */
@@ -51,6 +66,8 @@
             word-wrap: break-word; /* Allow the text to break onto the next line */
             width: 100%;
         }
+
+        /* Buttons Below */
         .button-container {
             margin-top: 10vh;
         }
@@ -60,9 +77,40 @@
             font-size: 3vw; /* Larger button font */
             cursor: pointer;
         }
+
+        /* Animated Icon for QC */
+        .qc-icon {
+            position: fixed;
+            top: 10vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background-image: url('qc.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: animateIcon 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes animateIcon {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            50% { transform: translateX(-50%) rotate(180deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+
+    <!-- Video Background -->
+    <video class="video-background" autoplay loop muted>
+        <source src="video1.mp4" type="video/mp4">
+        <source src="video2.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Animated QC Icon -->
+    <div class="qc-icon" onclick="window.location.href='qc.html'"></div>
 
     <!-- Custom Logo -->
     <div class="logo">
