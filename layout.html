@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motherson PP2</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        /* Custom Logo */
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        .bar {
+            width: 10px;
+            background-color: black;
+            margin: 0 5px;
+        }
+        .small { height: 20px; }
+        .medium { height: 40px; }
+        .tall { height: 60px; }
+        .motherson-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: red;
+            margin-top: 5px;
+        }
+        .typing-container {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .typing-text {
+            white-space: pre-line;
+            overflow: hidden;
+            border-right: 2px solid black;
+            display: inline-block;
+        }
+        .button-container {
+            margin-top: 50px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Logo -->
+    <div class="logo">
+        <div class="bar small"></div>
+        <div class="bar medium"></div>
+        <div class="bar tall"></div>
+    </div>
+
+    <!-- Motherson Text -->
+    <div class="motherson-text">Motherson</div>
+
+    <!-- Animated Typing Text -->
+    <div class="typing-container">
+        <h2 class="typing-text"></h2>
+    </div>
+
+    <!-- Buttons Below -->
+    <div class="button-container">
+        <button onclick="window.location.href='data.html'">PDF</button>
+        <button onclick="window.location.href='motherson.html'">PP2</button>
+    </div>
+
+    <script>
+        const text = "Quality is what we aim for. Think Quality every day.";
+        let i = 0;
+        function typeEffect() {
+            if (i < text.length) {
+                document.querySelector(".typing-text").innerHTML += text[i] === " " ? "&nbsp;" : text[i];
+                i++;
+                setTimeout(typeEffect, 100);
+            } else {
+                document.querySelector(".typing-text").style.borderRight = "none";
+            }
+        }
+        window.onload = typeEffect;
+    </script>
+
+</body>
+</html>
