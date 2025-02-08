@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plastic Defect Analysis System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .analysis-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .defect-image {
+            max-width: 300px;
+            border: 1px solid #ccc;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>Plastic Defect Analysis System</h2>
+    
+    <div class="upload-section">
+        <input type="file" id="defectInput" accept="image/*">
+        <button onclick="analyzeDefect()">Analyze Defect</button>
+        <img id="previewImage" class="defect-image" style="display: none;">
+    </div>
+
+    <div id="defectAnalysis" class="analysis-section" style="display: none;">
+        <h3>Analysis Result: <span id="defectTitle"></span></h3>
+        <img id="defectExample" class="defect-image" alt="Defect example">
+        <div class="defect-info">
+            <h4>Characteristics:</h4>
+            <p id="defectCharacteristics"></p>
+            <h4>Root Causes:</h4>
+            <p id="defectCauses"></p>
+            <h4>Corrective Actions:</h4>
+            <p id="defectSolutions"></p>
+        </div>
+    </div>
+
+    <script>
+        const defectRegistry = {
+            "burn_marks": {
+                title: "Burn Marks",
+                characteristics: "Black or brown discoloration on surface caused by thermal degradation",
+                causes: "Excessive heating, prolonged residence time, venting issues",
+                solutions: "Reduce melt temperature, optimize cycle time, improve venting system"
+            },
+            "flow_lines": {
+                title: "Flow Lines",
+                characteristics: "Visible flow patterns following material flow direction",
+                causes: "Inconsistent cooling rates, improper gate placement",
+                solutions: "Optimize mold temperature, adjust injection speed, modify gate design"
+            },
+            "weld_lines": {
+                title: "Weld Lines",
+                characteristics: "Visible lines where molten fronts meet and fail to bond properly",
+                causes: "Low melt temperature, inadequate injection pressure",
+                solutions: "Increase melt temperature, raise injection pressure, optimize gate locations"
+            },
+            "sink_marks": {
+                title: "Sink Marks",
+                characteristics: "Surface depressions in thick wall sections",
+                causes: "Insufficient packing pressure, inadequate cooling time",
+                solutions: "Increase holding pressure, extend cooling time, modify wall thickness"
+            }
+        };
+
+        function analyzeDefect() {
+            const fileInput = document.getElementById('defectInput');
+            if (!fileInput.files.length) {
+                alert('Please select a defect image');
+                return;
+            }
+
+            const fileName = fileInput.files[0].name.split('.')[0].toLowerCase();
+            const defectData = defectRegistry[fileName];
+
+            if (defectData) {
+                document.getElementById('defectTitle').textContent = defectData.title;
+                document.getElementById('defectCharacteristics').textContent = defectData.characteristics;
+                document.getElementById('defectCauses').textContent = defectData.causes;
+                document.getElementById('defectSolutions').textContent = defectData.solutions;
+                document.getElementById('defectAnalysis').style.display = 'block';
+                
+                // Preview uploaded image
+                const reader = new FileReader();
+                reader.onload = (e) => document.getElementById('previewImage').src = e.target.result;
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                alert('Defect not recognized. Supported defects: ' + Object.keys(defectRegistry).join(', '));
+            }
+        }
+    </script>
+</body>
+  </html>
