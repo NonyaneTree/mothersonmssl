@@ -8,48 +8,56 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            height: 100vh;
+            overflow: hidden;
         }
         /* Custom Logo */
         .logo {
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            height: 60px;
-            margin-bottom: 10px;
+            height: 10vh; /* Relative to screen height */
+            margin-bottom: 2vh;
         }
         .bar {
-            width: 10px;
+            width: 1vw; /* Relative to screen width */
             background-color: black;
-            margin: 0 5px;
+            margin: 0 0.5vw;
         }
-        .small { height: 20px; }
-        .medium { height: 40px; }
-        .tall { height: 60px; }
+        .small { height: 4vh; }
+        .medium { height: 8vh; }
+        .tall { height: 12vh; }
         .motherson-text {
-            font-size: 24px;
+            font-size: 8vw; /* Increased font size for better visibility */
             font-weight: bold;
             color: red;
-            margin-top: 5px;
+            margin-top: 2vh;
         }
         .typing-container {
-            margin-top: 20px;
-            font-size: 20px;
+            margin-top: 4vh;
+            font-size: 4vw; /* Larger text size */
             font-weight: bold;
+            max-width: 90%; /* Prevent text from stretching too far */
+            margin: 0 auto;
         }
         .typing-text {
-            white-space: pre-line;
+            white-space: pre-wrap; /* Allow wrapping of words */
             overflow: hidden;
             border-right: 2px solid black;
             display: inline-block;
+            word-wrap: break-word; /* Allow the text to break onto the next line */
+            width: 100%;
         }
         .button-container {
-            margin-top: 50px;
+            margin-top: 10vh;
         }
         button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
+            margin: 1vh;
+            padding: 2vh 4vw;
+            font-size: 3vw; /* Larger button font */
             cursor: pointer;
         }
     </style>
@@ -78,7 +86,7 @@
     </div>
 
     <script>
-        const text = "Quality is what we aim for. Think Quality every day.";
+        const text = "Quality is what we aim for. Think Quality everyday.";
         let i = 0;
         function typeEffect() {
             if (i < text.length) {
