@@ -3,102 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plastic Defect Analysis System</title>
+    <title>Automotive Paint Defect Assistant</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 20px auto;
+            background-color: #f5f5f5;
         }
-        .analysis-section {
-            margin: 20px 0;
-            padding: 15px;
+        .chat-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #e3f2fd;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #f5f5f5;
+            margin-right: auto;
+        }
+        input[type="text"] {
+            width: calc(100% - 80px);
+            padding: 8px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        .defect-image {
-            max-width: 300px;
-            border: 1px solid #ccc;
+        button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .defect-info {
+            background-color: #fff8e1;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
             margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <h2>Plastic Defect Analysis System</h2>
-    
-    <div class="upload-section">
-        <input type="file" id="defectInput" accept="image/*">
-        <button onclick="analyzeDefect()">Analyze Defect</button>
-        <img id="previewImage" class="defect-image" style="display: none;">
-    </div>
-
-    <div id="defectAnalysis" class="analysis-section" style="display: none;">
-        <h3>Analysis Result: <span id="defectTitle"></span></h3>
-        <img id="defectExample" class="defect-image" alt="Defect example">
-        <div class="defect-info">
-            <h4>Characteristics:</h4>
-            <p id="defectCharacteristics"></p>
-            <h4>Root Causes:</h4>
-            <p id="defectCauses"></p>
-            <h4>Corrective Actions:</h4>
-            <p id="defectSolutions"></p>
+    <div class="chat-container">
+        <h2>Automotive Paint Defect Assistant 🤖</h2>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Hi! I'm your paint defect assistant. Describe a defect you're seeing, and I'll help identify it.<br>
+                Example: "I see black marks on the surface"
+            </div>
         </div>
+        <input type="text" id="userInput" placeholder="Describe the defect...">
+        <button onclick="processUserMessage()">Send</button>
     </div>
 
     <script>
-        const defectRegistry = {
-            "burn_marks": {
-                title: "Burn Marks",
-                characteristics: "Black or brown discoloration on surface caused by thermal degradation",
-                causes: "Excessive heating, prolonged residence time, venting issues",
-                solutions: "Reduce melt temperature, optimize cycle time, improve venting system"
+        const defectKnowledgeBase = {
+            add_run: {
+                keywords: ['dripping', 'streak', 'too much paint', 'running paint'],
+                name: "Add Run (Paint Run)",
+                definition: "Excess paint flows downward, creating streaks or sagging lines.",
+                causes: ["Over-application of paint", "Incorrect spray angle", "Improper drying time"],
+                solutions: ["Reduce paint thickness", "Adjust spray angle", "Allow proper drying between coats"]
             },
-            "flow_lines": {
-                title: "Flow Lines",
-                characteristics: "Visible flow patterns following material flow direction",
-                causes: "Inconsistent cooling rates, improper gate placement",
-                solutions: "Optimize mold temperature, adjust injection speed, modify gate design"
+            scratch: {
+                keywords: ['line', 'scratch', 'surface damage', 'scraped'],
+                name: "Scratch",
+                definition: "A visible groove on the surface caused by physical damage.",
+                causes: ["Poor handling", "Abrasion from tools or dust", "Hard objects contacting paint"],
+                solutions: ["Avoid rough handling", "Use protective coatings", "Polish minor scratches"]
             },
-            "weld_lines": {
-                title: "Weld Lines",
-                characteristics: "Visible lines where molten fronts meet and fail to bond properly",
-                causes: "Low melt temperature, inadequate injection pressure",
-                solutions: "Increase melt temperature, raise injection pressure, optimize gate locations"
+            hazel: {
+                keywords: ['hazy', 'cloudy', 'foggy', 'dull finish'],
+                name: "Hazel (Cloudy Finish)",
+                definition: "A dull or foggy appearance in the paint, often in metallic or clear coat layers.",
+                causes: ["High humidity during painting", "Incorrect solvent ratio", "Improper curing"],
+                solutions: ["Improve humidity control", "Use correct solvent mix", "Follow recommended drying time"]
             },
-            "sink_marks": {
-                title: "Sink Marks",
-                characteristics: "Surface depressions in thick wall sections",
-                causes: "Insufficient packing pressure, inadequate cooling time",
-                solutions: "Increase holding pressure, extend cooling time, modify wall thickness"
+            bubble: {
+                keywords: ['bubble', 'blister', 'raised spot', 'pimples'],
+                name: "Bubble (Blistering)",
+                definition: "Raised areas or blisters on the paint surface due to trapped air, moisture, or solvent.",
+                causes: ["Poor surface preparation", "Moisture contamination", "Overheating during curing"],
+                solutions: ["Ensure proper cleaning", "Use moisture-free air supply", "Control drying temperature"]
+            },
+            moulding_mark: {
+                keywords: ['dent', 'mark', 'molding defect', 'odd shape'],
+                name: "Moulding Mark",
+                definition: "Impression left from the molding process that is visible through paint.",
+                causes: ["Poor mold design", "Improper resin flow", "Cooling issues"],
+                solutions: ["Use high-quality molds", "Optimize cooling process", "Refinish affected areas"]
+            },
+            orange_peel: {
+                keywords: ['rough texture', 'uneven surface', 'bumpy finish'],
+                name: "Orange Peel",
+                definition: "A rough or textured surface resembling the skin of an orange.",
+                causes: ["Improper spray pressure", "Thick paint application", "Short drying time"],
+                solutions: ["Adjust spray settings", "Thin paint properly", "Allow sufficient drying"]
+            },
+            pinhole: {
+                keywords: ['tiny holes', 'small pits', 'surface pores'],
+                name: "Pinholes",
+                definition: "Tiny holes in the paint caused by trapped air or solvent evaporation.",
+                causes: ["Poor surface cleaning", "Contaminated air supply", "Incorrect drying process"],
+                solutions: ["Ensure clean air supply", "Use proper painting techniques", "Control drying conditions"]
+            },
+            fish_eye: {
+                keywords: ['crater', 'paint separation', 'uneven spots'],
+                name: "Fish Eye",
+                definition: "Circular spots where paint fails to stick due to contamination.",
+                causes: ["Oil or grease on surface", "Silicone contamination", "Incorrect solvent usage"],
+                solutions: ["Thoroughly clean surface", "Use silicone-free products", "Use proper solvent mix"]
             }
         };
 
-        function analyzeDefect() {
-            const fileInput = document.getElementById('defectInput');
-            if (!fileInput.files.length) {
-                alert('Please select a defect image');
-                return;
-            }
-
-            const fileName = fileInput.files[0].name.split('.')[0].toLowerCase();
-            const defectData = defectRegistry[fileName];
-
-            if (defectData) {
-                document.getElementById('defectTitle').textContent = defectData.title;
-                document.getElementById('defectCharacteristics').textContent = defectData.characteristics;
-                document.getElementById('defectCauses').textContent = defectData.causes;
-                document.getElementById('defectSolutions').textContent = defectData.solutions;
-                document.getElementById('defectAnalysis').style.display = 'block';
-                
-                // Preview uploaded image
-                const reader = new FileReader();
-                reader.onload = (e) => document.getElementById('previewImage').src = e.target.result;
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                alert('Defect not recognized. Supported defects: ' + Object.keys(defectRegistry).join(', '));
-            }
+        function appendMessage(message, isUser = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.innerHTML = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
+
+        function analyzeDefect(description) {
+            const lowerDesc = description.toLowerCase();
+            for (const [key, defect] of Object.entries(defectKnowledgeBase)) {
+                if (defect.keywords.some(keyword => lowerDesc.includes(keyword))) {
+                    return defect;
+                }
+            }
+            return null;
+        }
+
+        function formatDefectInfo(defect) {
+            return `
+                <div class="defect-info">
+                    <strong>${defect.name}</strong><br>
+                    <em>Definition:</em> ${defect.definition}<br>
+                    <em>Common Causes:</em> ${defect.causes.join(', ')}<br>
+                    <em>Recommended Solutions:</em> ${defect.solutions.join(', ')}
+                </div>
+            `;
+        }
+
+        function processUserMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+
+            if (!message) return;
+
+            appendMessage(message, true);
+
+            const defect = analyzeDefect(message);
+            if (defect) {
+                appendMessage(`Based on your description, this appears to be:<br>${formatDefectInfo(defect)}`);
+            } else {
+                appendMessage("I couldn't recognize the defect. Try describing its shape, texture, or location.");
+            }
+
+            userInput.value = '';
+        }
+
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') processUserMessage();
+        });
     </script>
 </body>
-  </html>
+</html>
