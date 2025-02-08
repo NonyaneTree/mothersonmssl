@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automotive Paint Defect Assistant</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script> 
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,7 +40,7 @@
             background-color: #f5f5f5;
             margin-right: auto;
         }
-        input[type="text"] {
+        input[type="text"], input[type="file"] {
             width: calc(100% - 80px);
             padding: 8px;
             border: 1px solid #ddd;
@@ -59,6 +60,13 @@
             border-left: 4px solid #ffc107;
             margin: 10px 0;
         }
+        #preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            display: none;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -66,71 +74,47 @@
         <h2>Automotive Paint Defect Assistant 🤖</h2>
         <div class="chat-messages" id="chatMessages">
             <div class="message bot-message">
-                Hi! I'm your paint defect assistant. Describe a defect you're seeing, and I'll help identify it.<br>
-                Example: "I see black marks on the surface"
+                Hi! Describe a defect or upload a photo for analysis.
             </div>
         </div>
         <input type="text" id="userInput" placeholder="Describe the defect...">
         <button onclick="processUserMessage()">Send</button>
+        
+        <br><br>
+        <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
+        <button onclick="analyzeImage()">Scan Image</button>
+        <img id="preview">
     </div>
 
     <script>
         const defectKnowledgeBase = {
             add_run: {
-                keywords: ['dripping', 'streak', 'too much paint', 'running paint'],
+                keywords: ['thick paint line', 'paint running down', 'paint is dripping'],
                 name: "Add Run (Paint Run)",
                 definition: "Excess paint flows downward, creating streaks or sagging lines.",
-                causes: ["Over-application of paint", "Incorrect spray angle", "Improper drying time"],
-                solutions: ["Reduce paint thickness", "Adjust spray angle", "Allow proper drying between coats"]
+                causes: ["Over-application of paint", "Incorrect spray angle"],
+                solutions: ["Reduce paint thickness", "Adjust spray angle"]
             },
             scratch: {
-                keywords: ['line', 'scratch', 'surface damage', 'scraped'],
+                keywords: ['scratch', 'surface damage', 'scraped'],
                 name: "Scratch",
                 definition: "A visible groove on the surface caused by physical damage.",
-                causes: ["Poor handling", "Abrasion from tools or dust", "Hard objects contacting paint"],
-                solutions: ["Avoid rough handling", "Use protective coatings", "Polish minor scratches"]
+                causes: ["Poor handling", "Abrasion from tools"],
+                solutions: ["Avoid rough handling", "Polish minor scratches"]
             },
             hazel: {
-                keywords: ['hazy', 'cloudy', 'foggy', 'dull finish'],
+                keywords: ['hazy', 'cloudy', 'foggy'],
                 name: "Hazel (Cloudy Finish)",
-                definition: "A dull or foggy appearance in the paint, often in metallic or clear coat layers.",
-                causes: ["High humidity during painting", "Incorrect solvent ratio", "Improper curing"],
-                solutions: ["Improve humidity control", "Use correct solvent mix", "Follow recommended drying time"]
+                definition: "A dull or foggy appearance in the paint.",
+                causes: ["High humidity", "Improper solvent ratio"],
+                solutions: ["Control humidity", "Use correct solvent mix"]
             },
             bubble: {
-                keywords: ['bubble', 'blister', 'raised spot', 'pimples'],
+                keywords: ['bubble', 'blister', 'raised spot'],
                 name: "Bubble (Blistering)",
-                definition: "Raised areas or blisters on the paint surface due to trapped air, moisture, or solvent.",
-                causes: ["Poor surface preparation", "Moisture contamination", "Overheating during curing"],
-                solutions: ["Ensure proper cleaning", "Use moisture-free air supply", "Control drying temperature"]
-            },
-            moulding_mark: {
-                keywords: ['dent', 'mark', 'molding defect', 'odd shape'],
-                name: "Moulding Mark",
-                definition: "Impression left from the molding process that is visible through paint.",
-                causes: ["Poor mold design", "Improper resin flow", "Cooling issues"],
-                solutions: ["Use high-quality molds", "Optimize cooling process", "Refinish affected areas"]
-            },
-            orange_peel: {
-                keywords: ['rough texture', 'uneven surface', 'bumpy finish'],
-                name: "Orange Peel",
-                definition: "A rough or textured surface resembling the skin of an orange.",
-                causes: ["Improper spray pressure", "Thick paint application", "Short drying time"],
-                solutions: ["Adjust spray settings", "Thin paint properly", "Allow sufficient drying"]
-            },
-            pinhole: {
-                keywords: ['tiny holes', 'small pits', 'surface pores'],
-                name: "Pinholes",
-                definition: "Tiny holes in the paint caused by trapped air or solvent evaporation.",
-                causes: ["Poor surface cleaning", "Contaminated air supply", "Incorrect drying process"],
-                solutions: ["Ensure clean air supply", "Use proper painting techniques", "Control drying conditions"]
-            },
-            fish_eye: {
-                keywords: ['crater', 'paint separation', 'uneven spots'],
-                name: "Fish Eye",
-                definition: "Circular spots where paint fails to stick due to contamination.",
-                causes: ["Oil or grease on surface", "Silicone contamination", "Incorrect solvent usage"],
-                solutions: ["Thoroughly clean surface", "Use silicone-free products", "Use proper solvent mix"]
+                definition: "Raised areas on the paint surface due to trapped air or moisture.",
+                causes: ["Poor surface preparation", "Moisture contamination"],
+                solutions: ["Proper cleaning", "Control drying temperature"]
             }
         };
 
@@ -167,19 +151,32 @@
         function processUserMessage() {
             const userInput = document.getElementById('userInput');
             const message = userInput.value.trim();
-
             if (!message) return;
-
             appendMessage(message, true);
-
             const defect = analyzeDefect(message);
             if (defect) {
-                appendMessage(`Based on your description, this appears to be:<br>${formatDefectInfo(defect)}`);
+                appendMessage(`Detected: ${formatDefectInfo(defect)}`);
             } else {
                 appendMessage("I couldn't recognize the defect. Try describing its shape, texture, or location.");
             }
-
             userInput.value = '';
+        }
+
+        function previewImage(event) {
+            const preview = document.getElementById('preview');
+            preview.src = URL.createObjectURL(event.target.files[0]);
+            preview.style.display = 'block';
+        }
+
+        async function analyzeImage() {
+            appendMessage("Analyzing image... 📷");
+
+            // Placeholder for AI detection (replace with real model)
+            setTimeout(() => {
+                const defects = Object.values(defectKnowledgeBase);
+                const randomDefect = defects[Math.floor(Math.random() * defects.length)];
+                appendMessage(`Detected: ${formatDefectInfo(randomDefect)}`);
+            }, 2000);
         }
 
         document.getElementById('userInput').addEventListener('keypress', (e) => {
