@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automotive Paint Defect Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #f5f5f5;
+        }
+        .chat-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #e3f2fd;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #f5f5f5;
+            margin-right: auto;
+        }
+        input[type="text"] {
+            width: calc(100% - 80px);
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .defect-info {
+            background-color: #fff8e1;
+            padding: 10px;
+            border-left: 4px solid #ffc107;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>Automotive Paint Defect Assistant 🤖</h2>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Hi! I'm your paint defect assistant. Describe a defect you're seeing, and I'll help identify it.<br>
+                Example: "I see a thick paint line running down."
+            </div>
+        </div>
+        <input type="text" id="userInput" placeholder="Describe the defect...">
+        <button onclick="processUserMessage()">Send</button>
+    </div>
+
+    <script>
+        const defectKnowledgeBase = {
+            add_run: {
+                keywords: ['thick paint line', 'paint running down', 'paint is dripping', 'streaks in paint'],
+                name: "Add Run (Paint Run)",
+                definition: "Excess paint flows downward, creating streaks or sagging lines.",
+                causes: ["Over-application of paint", "Incorrect spray angle", "Improper drying time"],
+                solutions: ["Reduce paint thickness", "Adjust spray angle", "Allow proper drying between coats"]
+            },
+            scratch: {
+                keywords: ['line', 'scratch', 'surface damage', 'scraped', 'something dragged across'],
+                name: "Scratch",
+                definition: "A visible groove on the surface caused by physical damage.",
+                causes: ["Poor handling", "Abrasion from tools or dust", "Hard objects contacting paint"],
+                solutions: ["Avoid rough handling", "Use protective coatings", "Polish minor scratches"]
+            },
+            hazel: {
+                keywords: ['hazy', 'cloudy', 'foggy', 'dull finish', 'not clear'],
+                name: "Hazel (Cloudy Finish)",
+                definition: "A dull or foggy appearance in the paint, often in metallic or clear coat layers.",
+                causes: ["High humidity during painting", "Incorrect solvent ratio", "Improper curing"],
+                solutions: ["Improve humidity control", "Use correct solvent mix", "Follow recommended drying time"]
+            },
+            bubble: {
+                keywords: ['bubble', 'blister', 'raised spot', 'pimples in paint'],
+                name: "Bubble (Blistering)",
+                definition: "Raised areas or blisters on the paint surface due to trapped air, moisture, or solvent.",
+                causes: ["Poor surface preparation", "Moisture contamination", "Overheating during curing"],
+                solutions: ["Ensure proper cleaning", "Use moisture-free air supply", "Control drying temperature"]
+            },
+            moulding_mark: {
+                keywords: ['dent', 'mark', 'molding defect', 'odd shape in paint', 'impression in paint'],
+                name: "Moulding Mark",
+                definition: "Impression left from the molding process that is visible through paint.",
+                causes: ["Poor mold design", "Improper resin flow", "Cooling issues"],
+                solutions: ["Use high-quality molds", "Optimize cooling process", "Refinish affected areas"]
+            }
+        };
+
+        function appendMessage(message, isUser = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.innerHTML = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function analyzeDefect(description) {
+            const lowerDesc = description.toLowerCase();
+            for (const [key, defect] of Object.entries(defectKnowledgeBase)) {
+                if (defect.keywords.some(keyword => lowerDesc.includes(keyword))) {
+                    return defect;
+                }
+            }
+            return null;
+        }
+
+        function formatDefectInfo(defect) {
+            return `
+                <div class="defect-info">
+                    <strong>${defect.name}</strong><br>
+                    <em>Definition:</em> ${defect.definition}<br>
+                    <em>Common Causes:</em> ${defect.causes.join(', ')}<br>
+                    <em>Recommended Solutions:</em> ${defect.solutions.join(', ')}
+                </div>
+            `;
+        }
+
+        function processUserMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value.trim();
+
+            if (!message) return;
+
+            appendMessage(message, true);
+
+            const defect = analyzeDefect(message);
+            if (defect) {
+                appendMessage(`Based on your description, this appears to be:<br>${formatDefectInfo(defect)}`);
+            } else {
+                appendMessage("I couldn't recognize the defect. Try describing its shape, texture, or location.");
+            }
+
+            userInput.value = '';
+        }
+
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') processUserMessage();
+        });
+    </script>
+</body>
+</html>
