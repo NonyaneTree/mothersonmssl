@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motherson</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        .bar {
+            width: 10px;
+            background-color: black;
+            margin: 0 5px;
+        }
+        .small { height: 20px; }
+        .medium { height: 40px; }
+        .tall { height: 60px; }
+        #fileInput {
+            margin-bottom: 10px;
+        }
+        textarea, pre {
+            width: 90%;
+            height: 300px;
+            display: block;
+            margin: 10px auto;
+            white-space: pre;
+            background: #f4f4f4;
+            padding: 10px;
+            text-align: left;
+            overflow: auto;
+        }
+        button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">
+        <div class="bar small"></div>
+        <div class="bar medium"></div>
+        <div class="bar tall"></div>
+    </div>
+
+    <h2>Motherson</h2>
+    <input type="file" id="fileInput" multiple accept="application/pdf" />
+    <button onclick="processPDFs()">Extract</button>
+    <button onclick="arrangeText()">Arrange</button>
+    <button onclick="saveToPDF()">Compile</button>
+
+    <textarea id="output" placeholder="Extracted text will appear here..."></textarea>
+    <h3>Sorted and Grouped Output:</h3>
+    <pre id="sortedOutput"></pre>
+
+    <script>
+        let extractedText = "";
+
+        async function processPDFs() {
+            extractedText = "";
+            const fileInput = document.getElementById('fileInput');
+            const files = fileInput.files;
+
+            if (files.length === 0 || files.length > 32) {
+                alert("Please select between 1 and 32 PDF files.");
+                return;
+            }
+
+            for (let file of files) {
+                let text = await extractTextFromPDF(file);
+                extractedText += text + "\n";
+            }
+
+            document.getElementById('output').value = extractedText;
+        }
+
+        async function extractTextFromPDF(file) {
+            return new Promise((resolve) => {
+                const fileReader = new FileReader();
+                fileReader.onload = async function () {
+                    const typedarray = new Uint8Array(this.result);
+                    const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                    let fullText = "";
+
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        let page = await pdf.getPage(i);
+                        let content = await page.getTextContent();
+                        
+                        const lines = {};
+                        content.items.forEach(item => {
+                            const yPos = item.transform[5].toFixed(1);
+                            if (!lines[yPos]) lines[yPos] = [];
+                            lines[yPos].push(item);
+                        });
+
+                        const sortedLines = Object.keys(lines)
+                            .sort((a, b) => b - a)
+                            .map(y => ({
+                                items: lines[y].sort((a, b) => a.transform[4] - b.transform[4])
+                            }));
+
+                        let pageText = sortedLines
+                            .map(line => line.items.map(item => item.str).join(' '))
+                            .join('\n');
+                            
+                        fullText += pageText + '\n';
+                    }
+                    resolve(fullText);
+                };
+                fileReader.readAsArrayBuffer(file);
+            });
+        }
+
+        function arrangeText() {
+            let lines = extractedText.split("\n").map(line => line.trim()).filter(line => line);
+            let dataMap = {};
+            let totalSum = 0;
+
+            lines.forEach(line => {
+                let parts = line.match(/^([\w\s\-_]+)(?:\s+(\d+))?$/);
+                if (parts) {
+                    let name = parts[1].trim();
+                    let value = parts[2] ? parseInt(parts[2]) : 0;
+
+                    dataMap[name] = (dataMap[name] || 0) + value;
+                    totalSum += value;
+                }
+            });
+
+            let sortedEntries = Object.entries(dataMap).sort(([a], [b]) => a.localeCompare(b));
+
+            let groupedData = {};
+            sortedEntries.forEach(([name, total]) => {
+                let mainPart = getMainPart(name);
+                if (!groupedData[mainPart]) groupedData[mainPart] = [];
+                groupedData[mainPart].push({ name, total });
+            });
+
+            let outputText = "";
+            Object.keys(groupedData).sort().forEach(mainPart => {
+                outputText += `**${mainPart}**\n`;
+                groupedData[mainPart].sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
+                    outputText += `  ${item.name} ${item.total}\n`;
+                });
+                outputText += "\n";
+            });
+
+            document.getElementById('sortedOutput').innerText = outputText + `\n\nOverall Total: ${totalSum}`;
+        }
+
+        function getMainPart(name) {
+            if (name.startsWith("Sporthoop")) return "Sporthoop";
+            if (name.startsWith("Wheel lip")) return "Wheel Lip";
+            if (name.startsWith("Box Rails")) return "Box Rails";
+            if (name.startsWith("Inner")) return "Inner Parts";
+            if (name.includes("Bumper")) return "Bumpers";
+            if (name.includes("H_Bar")) return "H_Bar";
+            if (name.includes("LTD")) return "LTD";
+            if (name.includes("WLT")) return "WLT";
+            return "Miscellaneous";
+        }
+
+        function saveToPDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            let outputText = document.getElementById('sortedOutput').innerText;
+            let lines = outputText.split("\n");
+
+            doc.setFontSize(14);
+            doc.text("Motherson - Sorted and Grouped Output", 10, 10);
+            doc.setFontSize(10);
+
+            let y = 20;
+            lines.forEach(line => {
+                if (y > 280) {
+                    doc.addPage();
+                    y = 10;
+                }
+                doc.text(line, 10, y);
+                y += 6;
+            });
+
+            doc.save("Motherson_Sorted_Output.pdf");
+        }
+    </script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motherson</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        .bar {
+            width: 10px;
+            background-color: black;
+            margin: 0 5px;
+        }
+        .small { height: 20px; }
+        .medium { height: 40px; }
+        .tall { height: 60px; }
+        #fileInput {
+            margin-bottom: 10px;
+        }
+        textarea, pre {
+            width: 90%;
+            height: 300px;
+            display: block;
+            margin: 10px auto;
+            white-space: pre;
+            background: #f4f4f4;
+            padding: 10px;
+            text-align: left;
+            overflow: auto;
+        }
+        button {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #progressBar {
+            width: 90%;
+            height: 10px;
+            background: #ccc;
+            margin: 10px auto;
+            display: none;
+            position: relative;
+        }
+        #progressBar div {
+            height: 100%;
+            width: 0%;
+            background: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">
+        <div class="bar small"></div>
+        <div class="bar medium"></div>
+        <div class="bar tall"></div>
+    </div>
+
+    <h2>Motherson</h2>
+    <input type="file" id="fileInput" multiple accept="application/pdf" />
+    <button onclick="processPDFs()">Extract</button>
+    <button onclick="arrangeText()">Arrange</button>
+    <button onclick="saveToPDF()">Compile</button>
+    <button onclick="eraseStoredText()">Erase</button>
+
+    <div id="progressBar"><div></div></div>
+
+    <textarea id="output" placeholder="Extracted text will appear here..."></textarea>
+    <h3>Sorted and Grouped Output:</h3>
+    <pre id="sortedOutput"></pre>
+
+    <script>
+        let extractedText = localStorage.getItem('storedText') || "";
+
+        document.getElementById('output').value = extractedText;
+
+        async function processPDFs() {
+            const fileInput = document.getElementById('fileInput');
+            const files = fileInput.files;
+            const progressBar = document.getElementById('progressBar');
+            const progress = progressBar.querySelector('div');
+
+            if (files.length === 0 || files.length > 32) {
+                alert("Please select between 1 and 32 PDF files.");
+                return;
+            }
+
+            progressBar.style.display = "block";
+            progress.style.width = "0%";
+
+            for (let i = 0; i < files.length; i++) {
+                let text = await extractTextFromPDF(files[i]);
+                extractedText += text + "\n";
+                progress.style.width = `${((i + 1) / files.length) * 100}%`;
+            }
+
+            localStorage.setItem('storedText', extractedText);
+            document.getElementById('output').value = extractedText;
+
+            progressBar.style.display = "none";
+        }
+
+        async function extractTextFromPDF(file) {
+            return new Promise((resolve) => {
+                const fileReader = new FileReader();
+                fileReader.onload = async function () {
+                    const typedarray = new Uint8Array(this.result);
+                    const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                    let fullText = "";
+
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        let page = await pdf.getPage(i);
+                        let content = await page.getTextContent();
+                        
+                        const lines = {};
+                        content.items.forEach(item => {
+                            const yPos = item.transform[5].toFixed(1);
+                            if (!lines[yPos]) lines[yPos] = [];
+                            lines[yPos].push(item);
+                        });
+
+                        const sortedLines = Object.keys(lines)
+                            .sort((a, b) => b - a)
+                            .map(y => ({
+                                items: lines[y].sort((a, b) => a.transform[4] - b.transform[4])
+                            }));
+
+                        let pageText = sortedLines
+                            .map(line => line.items.map(item => item.str).join(' '))
+                            .join('\n');
+                            
+                        fullText += pageText + '\n';
+                    }
+                    resolve(fullText);
+                };
+                fileReader.readAsArrayBuffer(file);
+            });
+        }
+
+        function arrangeText() {
+            let lines = extractedText.split("\n").map(line => line.trim()).filter(line => line);
+            let dataMap = {};
+            let totalSum = 0;
+
+            lines.forEach(line => {
+                let parts = line.match(/^([\w\s\-_]+)(?:\s+(\d+))?$/);
+                if (parts) {
+                    let name = parts[1].trim();
+                    let value = parts[2] ? parseInt(parts[2]) : 0;
+
+                    dataMap[name] = (dataMap[name] || 0) + value;
+                    totalSum += value;
+                }
+            });
+
+            let sortedEntries = Object.entries(dataMap).sort(([a], [b]) => a.localeCompare(b));
+
+            let groupedData = {};
+            sortedEntries.forEach(([name, total]) => {
+                let mainPart = getMainPart(name);
+                if (!groupedData[mainPart]) groupedData[mainPart] = [];
+                groupedData[mainPart].push({ name, total });
+            });
+
+            let outputText = "";
+            Object.keys(groupedData).sort().forEach(mainPart => {
+                outputText += `**${mainPart}**\n`;
+                groupedData[mainPart].sort((a, b) => a.name.localeCompare(b.name)).forEach(item => {
+                    outputText += `  ${item.name} ${item.total}\n`;
+                });
+                outputText += "\n";
+            });
+
+            document.getElementById('sortedOutput').innerText = outputText + `\n\nOverall Total: ${totalSum}`;
+        }
+
+        function getMainPart(name) {
+            if (name.startsWith("Sporthoop")) return "Sporthoop";
+            if (name.startsWith("Wheel lip")) return "Wheel Lip";
+            if (name.startsWith("Box Rails")) return "Box Rails";
+            if (name.startsWith("Inner")) return "Inner Parts";
+            if (name.includes("Bumper")) return "Bumpers";
+            if (name.includes("H_Bar")) return "H_Bar";
+            if (name.includes("LTD")) return "LTD";
+            if (name.includes("WLT")) return "WLT";
+            return "Miscellaneous";
+        }
+
+        function saveToPDF() {
+            const { jsPDF } = window.jspdf;
+            let doc = new jsPDF();
+            let outputText = document.getElementById('sortedOutput').innerText;
+            let lines = outputText.split("\n");
+
+            doc.setFontSize(14);
+            doc.text("Motherson - Sorted and Grouped Output", 10, 10);
+            doc.setFontSize(10);
+
+            let y = 20;
+            lines.forEach(line => {
+                if (y > 280) {
+                    doc.addPage();
+                    y = 10;
+                }
+                doc.text(line, 10, y);
+                y += 6;
+            });
+
+            doc.save("Motherson_Sorted_Output.pdf");
+        }
+
+        function eraseStoredText() {
+            localStorage.removeItem('storedText');
+            extractedText = "";
+            document.getElementById('output').value = "";
+        }
+    </script>
+
+</body>
+</html>
