@@ -44,7 +44,7 @@
         }
         .bar {
             width: 1vw;
-            background-color: black;
+            background-color: red; /* Changed to red */
             margin: 0 0.5vw;
         }
         .small { height: 4vh; }
@@ -65,17 +65,18 @@
             font-weight: bold;
             max-width: 90%;
             margin: 0 auto;
+            color: red; /* Makes the typing text red */
         }
         .typing-text {
             white-space: pre-wrap;
             overflow: hidden;
-            border-right: 2px solid black;
+            border-right: 2px solid red;
             display: inline-block;
             word-wrap: break-word;
             width: 100%;
         }
 
-        /* Buttons Below */
+        /* Buttons */
         .button-container {
             margin-top: 10vh;
         }
@@ -89,9 +90,11 @@
             color: red;
         }
 
-        /* Animated Icon for QC */
+        /* QC Icon Below Buttons */
+        .qc-container {
+            margin-top: 5vh; /* Adds spacing below buttons */
+        }
         .qc-icon {
-            margin-top: 5vh;
             width: 60px;
             height: 60px;
             background-image: url('qc.png');
@@ -137,8 +140,10 @@
         <button onclick="window.location.href='mssl.html'">PP2</button>
     </div>
 
-    <!-- QC Icon Below Buttons -->
-    <div class="qc-icon" onclick="window.location.href='qc.html'"></div>
+    <!-- QC Icon Clearly Below Buttons -->
+    <div class="qc-container">
+        <div class="qc-icon" onclick="window.location.href='qc.html'"></div>
+    </div>
 
     <script>
         const text = "Quality is what we aim for. Think Quality everyday.";
@@ -170,4 +175,4 @@
     </script>
 
 </body>
-</html>
+    </html>
