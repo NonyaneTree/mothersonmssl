@@ -80,8 +80,8 @@
         .button-container {
             margin-top: 10vh;
         }
-        button {
-            margin: 1vh;
+        .button-container button {
+            display: inline-block;
             padding: 2vh 4vw;
             font-size: 3vw;
             cursor: pointer;
@@ -89,12 +89,13 @@
             border: 2px solid red;
             color: red;
             position: relative;
+            margin: 1vh;
         }
 
-        /* Animated PDF and PP2 Icons */
+        /* PDF and PP2 Icons */
         .icon {
-            width: 20px;
-            height: 20px;
+            width: 40px;
+            height: 40px;
             margin-left: 10px;
             animation: spin 2s linear infinite;
         }
@@ -120,14 +121,13 @@
             background-repeat: no-repeat;
             display: inline-block;
             position: relative;
-            top: 40px; /* Move the QC icon a little bit below */
+            top: 10px; /* Adjust QC icon position */
             cursor: pointer;
         }
 
-        /* Speech Bubble */
         .qc-bubble {
             position: absolute;
-            bottom: 80px;
+            bottom: 60px; /* Adjust bubble position */
             left: 50%;
             transform: translateX(-50%);
             background: red;
@@ -180,9 +180,12 @@
 
     <!-- Buttons Below -->
     <div class="button-container">
+        <!-- PDF Button -->
         <button onclick="window.location.href='data.html'">
             <img src="pdf.png" class="icon" alt="PDF Icon">
         </button>
+
+        <!-- PP2 Button -->
         <button onclick="window.location.href='mssl.html'">
             <img src="pp2.png" class="icon" alt="PP2 Icon">
         </button>
@@ -224,4 +227,4 @@
     </script>
 
 </body>
-</html>
+    </html>
