@@ -119,12 +119,9 @@
             background-size: contain;
             background-repeat: no-repeat;
             display: inline-block;
-            animation: bounce 1.5s infinite;
+            position: relative;
+            top: 40px; /* Move the QC icon a little bit below */
             cursor: pointer;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
         }
 
         /* Speech Bubble */
@@ -183,8 +180,12 @@
 
     <!-- Buttons Below -->
     <div class="button-container">
-        <button onclick="window.location.href='data.html'">PDF <img src="pdf.png" class="icon" alt="PDF Icon"></button>
-        <button onclick="window.location.href='mssl.html'">PP2 <img src="pp2.png" class="icon" alt="PP2 Icon"></button>
+        <button onclick="window.location.href='data.html'">
+            <img src="pdf.png" class="icon" alt="PDF Icon">
+        </button>
+        <button onclick="window.location.href='mssl.html'">
+            <img src="pp2.png" class="icon" alt="PP2 Icon">
+        </button>
     </div>
 
     <!-- QC Icon and Message Bubble -->
@@ -223,4 +224,4 @@
     </script>
 
 </body>
-            </html>
+</html>
