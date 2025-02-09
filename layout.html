@@ -88,6 +88,20 @@
             background: transparent;
             border: 2px solid red;
             color: red;
+            position: relative;
+        }
+
+        /* Animated PDF and PP2 Icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* QC Icon and Message Bubble */
@@ -169,8 +183,8 @@
 
     <!-- Buttons Below -->
     <div class="button-container">
-        <button onclick="window.location.href='data.html'">PDF</button>
-        <button onclick="window.location.href='mssl.html'">PP2</button>
+        <button onclick="window.location.href='data.html'">PDF <img src="pdf.png" class="icon" alt="PDF Icon"></button>
+        <button onclick="window.location.href='mssl.html'">PP2 <img src="pp2.png" class="icon" alt="PP2 Icon"></button>
     </div>
 
     <!-- QC Icon and Message Bubble -->
@@ -209,4 +223,4 @@
     </script>
 
 </body>
-</html>
+            </html>
