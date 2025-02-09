@@ -44,7 +44,7 @@
         }
         .bar {
             width: 1vw;
-            background-color: red; /* Changed to red */
+            background-color: red;
             margin: 0 0.5vw;
         }
         .small { height: 4vh; }
@@ -65,7 +65,7 @@
             font-weight: bold;
             max-width: 90%;
             margin: 0 auto;
-            color: red; /* Makes the typing text red */
+            color: red;
         }
         .typing-text {
             white-space: pre-wrap;
@@ -90,9 +90,13 @@
             color: red;
         }
 
-        /* QC Icon Below Buttons */
+        /* QC Icon and Message Bubble */
         .qc-container {
-            margin-top: 5vh; /* Adds spacing below buttons */
+            margin-top: 5vh;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .qc-icon {
             width: 60px;
@@ -101,14 +105,43 @@
             background-size: contain;
             background-repeat: no-repeat;
             display: inline-block;
-            animation: animateIcon 2s infinite;
+            animation: bounce 1.5s infinite;
             cursor: pointer;
         }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
 
-        @keyframes animateIcon {
-            0% { transform: rotate(0deg); }
-            50% { transform: rotate(180deg); }
-            100% { transform: rotate(360deg); }
+        /* Speech Bubble */
+        .qc-bubble {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: red;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            white-space: nowrap;
+            opacity: 0;
+            animation: fadeIn 2s infinite alternate;
+        }
+        .qc-bubble::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px;
+            border-style: solid;
+            border-color: red transparent transparent transparent;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
@@ -140,8 +173,9 @@
         <button onclick="window.location.href='mssl.html'">PP2</button>
     </div>
 
-    <!-- QC Icon Clearly Below Buttons -->
+    <!-- QC Icon and Message Bubble -->
     <div class="qc-container">
+        <div class="qc-bubble">Hi, check QC with me</div>
         <div class="qc-icon" onclick="window.location.href='qc.html'"></div>
     </div>
 
@@ -167,7 +201,7 @@
         function playNextVideo() {
             videoPlayer.src = videos[currentVideo];
             videoPlayer.play();
-            currentVideo = (currentVideo + 1) % videos.length; // Toggle between video1 and video2
+            currentVideo = (currentVideo + 1) % videos.length;
         }
 
         videoPlayer.addEventListener("ended", playNextVideo);
@@ -175,4 +209,4 @@
     </script>
 
 </body>
-    </html>
+</html>
