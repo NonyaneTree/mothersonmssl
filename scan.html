@@ -62,7 +62,7 @@
             max-width: 80%;
         }
 
-        #capture-btn {
+        #scan-btn {
             position: absolute;
             bottom: 20px;
             left: 50%;
@@ -83,13 +83,15 @@
         <canvas id="canvas"></canvas>
         <div id="defect-name"></div>
         <div id="defect-description"></div>
-        <button id="capture-btn"></button>
+        <button id="scan-btn">Start</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script>
         let model, isModelReady = false;
         const CONFIDENCE_THRESHOLD = 0.7;
+        let isScanning = false;
+        let scanInterval;
 
         const defectData = {
             "Burn Marks": "Dark or blackened areas caused by overheating.",
@@ -146,7 +148,7 @@
             }
         }
 
-        async function captureAndDetect() {
+        async function detectDefects() {
             const video = document.getElementById('camera');
             const canvas = document.getElementById('canvas');
             const context = canvas.getContext('2d');
@@ -187,11 +189,24 @@
             }
         }
 
-        document.getElementById('capture-btn').addEventListener('click', () => {
-            captureAndDetect();
-        });
+        function toggleScanning() {
+            const button = document.getElementById('scan-btn');
+            isScanning = !isScanning;
+
+            if (isScanning) {
+                button.textContent = 'Stop';
+                scanInterval = setInterval(detectDefects, 1000); 
+            } else {
+                button.textContent = 'Start';
+                clearInterval(scanInterval);
+                updateUI('');
+            }
+        }
+
+        document.getElementById('scan-btn').addEventListener('click', toggleScanning);
 
         window.addEventListener('load', initialize);
     </script>
 </body>
 </html>
+
