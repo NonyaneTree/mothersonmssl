@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Automotive Parts Defect Detection</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        #camera-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        #defect-name {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 20px;
+            display: none;
+        }
+
+        #defect-description {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            display: none;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        #capture-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            background-color: #fff;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="camera-container">
+        <video id="camera" autoplay playsinline></video>
+        <canvas id="canvas"></canvas>
+        <div id="defect-name"></div>
+        <div id="defect-description"></div>
+        <button id="capture-btn"></button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script>
+        let model, isModelReady = false;
+        const CONFIDENCE_THRESHOLD = 0.7;
+
+        const defectData = {
+            "Burn Marks": "Dark or blackened areas caused by overheating.",
+            "Flow Lines": "Visible lines or streaks due to improper flow.",
+            "Short Shots": "Incomplete filling resulting in missing sections.",
+            "Weld Lines": "Lines where two flow fronts meet.",
+            "Sink Marks": "Depressions on the surface due to shrinkage.",
+            "Scratches": "Surface scratches caused by handling or tooling.",
+            "Deep Cuts": "Deep gouges or cuts on the surface.",
+            "Bubbles": "Air trapped under the surface causing bubbles.",
+            "Paint Runs": "Uneven paint flow causing dripping.",
+            "Hazel": "Discoloration or hazy appearance.",
+            "Dry Paint": "Rough or dull finish due to improper application.",
+            "Dry Spray": "Rough texture from uneven paint spray."
+        };
+
+        const defectNames = Object.keys(defectData);
+
+        async function initialize() {
+            try {
+                await Promise.all([loadModel(), startCamera()]);
+            } catch (error) {
+                alert(`Initialization failed: ${error.message}`);
+            }
+        }
+
+        async function startCamera() {
+            const video = document.getElementById('camera');
+            const constraints = {
+                video: {
+                    facingMode: "environment",
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 }
+                }
+            };
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = stream;
+                await new Promise(resolve => video.onloadedmetadata = resolve);
+                video.play();
+            } catch (error) {
+                alert('Error accessing the camera: ' + error.message);
+            }
+        }
+
+        async function loadModel() {
+            try {
+                model = await tf.loadLayersModel('https://your-model-server.com/model.json');
+                isModelReady = true;
+                console.log("Model loaded successfully");
+            } catch (error) {
+                throw new Error('Failed to load model: ' + error.message);
+            }
+        }
+
+        async function captureAndDetect() {
+            const video = document.getElementById('camera');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            let tensor = tf.browser.fromPixels(canvas)
+                .resizeBilinear([224, 224])
+                .expandDims()
+                .toFloat()
+                .div(255.0);
+
+            const prediction = await model.predict(tensor).data();
+            tensor.dispose();
+
+            const maxIndex = prediction.indexOf(Math.max(...prediction));
+            const confidence = prediction[maxIndex];
+
+            updateUI(confidence > CONFIDENCE_THRESHOLD ? defectNames[maxIndex] : '');
+        }
+
+        function updateUI(defect = '') {
+            const defectNameDisplay = document.getElementById('defect-name');
+            const defectDescriptionDisplay = document.getElementById('defect-description');
+            
+            if (defect) {
+                defectNameDisplay.textContent = defect;
+                defectNameDisplay.style.display = 'block';
+                defectDescriptionDisplay.textContent = defectData[defect];
+                defectDescriptionDisplay.style.display = 'block';
+            } else {
+                defectNameDisplay.textContent = '';
+                defectNameDisplay.style.display = 'none';
+                defectDescriptionDisplay.textContent = '';
+                defectDescriptionDisplay.style.display = 'none';
+            }
+        }
+
+        document.getElementById('capture-btn').addEventListener('click', () => {
+            captureAndDetect();
+        });
+
+        window.addEventListener('load', initialize);
+    </script>
+</body>
+</html>
