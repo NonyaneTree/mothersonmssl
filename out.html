@@ -58,6 +58,16 @@
             border: none;
             border-radius: 5px;
         }
+        #submit-btn {
+            background-color: orange;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -75,6 +85,9 @@
         <label for="telegramNumber">Enter your Telegram number:</label>
         <input type="text" id="telegramNumber" placeholder="Enter your Telegram number (with country code)">
     </div>
+
+    <!-- Submit Button -->
+    <button id="submit-btn" onclick="verifyAndRedirect()">Submit</button>
 
     <!-- Terms and Conditions Modal -->
     <div id="terms-modal">
@@ -178,11 +191,7 @@ This website is 100% owned and operated by Nonyane Investment Tree. All content,
             termsAccepted = true;
             document.getElementById('terms-modal').style.display = 'none';
             alert('You have accepted the terms and conditions.');
-            verifyAndRedirect(); // Proceed to verify and redirect after accepting terms
         }
-
-        // Attach event listener to the Telegram number input
-        document.getElementById('telegramNumber').addEventListener('input', verifyAndRedirect);
     </script>
 </body>
 </html>
