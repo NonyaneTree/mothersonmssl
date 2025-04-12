@@ -1,106 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Number Checker</title>
-    <style>
-        #codeSection {
-            display: none;
-            margin-top: 20px;
-        }
-        #codeInput {
-            width: 100px;
-            padding: 5px;
-            font-size: 16px;
-            text-align: center;
-        }
-        #fillBar {
-            width: 0;
-            height: 5px;
-            background-color: green;
-            transition: width 0.5s;
-        }
-    </style>
-    <script>
-        let generatedCode = '';
-
-        async function checkAndSend() {
-            const phoneNumber = document.getElementById("phoneNumber").value;
-            
-            if (!phoneNumber) {
-                alert("Please enter a phone number");
-                return;
-            }
-            
-            // Generate a random 4-digit code
-            generatedCode = Math.floor(1000 + Math.random() * 9000);
-            console.log('Generated Code:', generatedCode); // For testing purpose
-
-            // Telegram Bot API Information
-            const botToken = '7921041329:AAGh5A66MIhosuZjJ_r5ZR49l36Y8PB1t54';
-            const message = `Your verification code is: ${generatedCode}`;
-            
-            // Fetch Telegram API
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-            const data = {
-                chat_id: phoneNumber,
-                text: message
-            };
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await response.json();
-                
-                if (result.ok) {
-                    alert('Message sent successfully!');
-                    document.getElementById('codeSection').style.display = 'block';
-                    startFillBar();
-                } else {
-                    alert('Failed to send message. Make sure the user has started a chat with your bot.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred. Check console for details.');
-            }
-        }
-
-        function startFillBar() {
-            const fillBar = document.getElementById('fillBar');
-            fillBar.style.width = '100%';
-        }
-
-        function verifyCode() {
-            const userCode = document.getElementById("codeInput").value;
-            if (userCode === generatedCode.toString()) {
-                alert('Code verified! Redirecting...');
-                window.location.href = 'mssl.html';
-            } else {
-                alert('Incorrect code. Please try again.');
-            }
-        }
-    </script>
+  <meta charset="UTF-8">
+  <title>Maintenance Warning</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <h1>Check Telegram Number</h1>
-    <form onsubmit="event.preventDefault(); checkAndSend();">
-        <label for="phoneNumber">Enter Phone Number:</label>
-        <input type="text" id="phoneNumber" placeholder="e.g., +1234567890" required>
-        <button type="submit">Check & Send Code</button>
-    </form>
 
-    <div id="codeSection">
-        <h2>Enter the code sent to your Telegram:</h2>
-        <input type="text" id="codeInput" placeholder="XXXX">
-        <button onclick="verifyCode()">Submit Code</button>
-        <div id="fillBar"></div>
-    </div>
+  <h1>Welcome to the site</h1>
+  <button onclick="handleClick()">Warning This site is under constraction</button>
+
+  <script>
+    function handleClick() {
+      alert("WARNING: THE SITE IS UNDER MAINTENANCE");
+      const password = prompt("Enter password to continue:");
+      if (password === "Thulane@MSSL") {
+        window.location.href = "layout.html";
+      } else {
+        alert("Incorrect password. Access denied.");
+      }
+    }
+  </script>
+
 </body>
 </html>
