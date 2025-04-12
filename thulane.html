@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Site Under Maintenance</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #fef4e8;
+    }
+    img {
+      width: 150px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #b30000;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #codeSection {
+      display: none;
+      margin-top: 20px;
+    }
+    input {
+      padding: 8px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="image3" alt="image3">
+  <h1>WARNING: SITE UNDER MAINTENANCE</h1>
+
+  <button onclick="verifyPassword()">Enter</button>
+
+  <div id="codeSection">
+    <p>Enter the 6-digit code:</p>
+    <input type="text" id="userCode" maxlength="6" placeholder="e.g. 123456">
+    <button onclick="verifyCode()">Verify Code</button>
+  </div>
+
+  <script>
+    let generatedCode = "";
+
+    function verifyPassword() {
+      const password = prompt("Enter password to continue:");
+      if (password === "Thulane@MSSL") {
+        generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+        alert("Your 6-digit verification code is: " + generatedCode);
+        document.getElementById("codeSection").style.display = "block";
+      } else {
+        alert("Incorrect password. Access denied.");
+      }
+    }
+
+    function verifyCode() {
+      const userCode = document.getElementById("userCode").value;
+      if (userCode === generatedCode) {
+        window.location.href = "layout.html";
+      } else {
+        alert("Incorrect code. Try again.");
+      }
+    }
+  </script>
+
+</body>
+</html>
