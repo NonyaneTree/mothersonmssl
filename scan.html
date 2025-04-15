@@ -1,212 +1,149 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Automotive Parts Defect Detection</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ford Ranger 3D Models</title>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #000;
-            color: #fff;
+        body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
-        #camera-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px 0;
+        }
+        .model-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
-
-        video {
+        .model-title {
+            padding: 10px;
+            background: #1CAAD9;
+            color: white;
+            margin: 0;
+            font-size: 16px;
+            text-align: center;
+        }
+        .sketchfab-embed-wrapper {
+            width: 100%;
+            height: 300px;
+            flex-grow: 1;
+        }
+        .sketchfab-embed-wrapper iframe {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            border: none;
         }
-
-        #canvas {
-            display: none;
-        }
-
-        #defect-name {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 20px;
-            display: none;
-        }
-
-        #defect-description {
-            position: absolute;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 16px;
-            display: none;
+        .attribution {
+            font-size: 12px;
+            color: #4A4A4A;
+            padding: 8px;
             text-align: center;
-            max-width: 80%;
+            background: #f9f9f9;
         }
-
-        #scan-btn {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70px;
-            height: 70px;
-            background-color: #fff;
-            border-radius: 50%;
-            border: 5px solid rgba(255, 255, 255, 0.7);
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        .attribution a {
+            color: #1CAAD9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .attribution a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div id="camera-container">
-        <video id="camera" autoplay playsinline></video>
-        <canvas id="canvas"></canvas>
-        <div id="defect-name"></div>
-        <div id="defect-description"></div>
-        <button id="scan-btn">Start</button>
+    <h1>Ford Ranger 3D Models</h1>
+    
+    <div class="models-grid">
+        <!-- Model 1: Wildtrak -->
+        <div class="model-container">
+            <h3 class="model-title">Ford Ranger Wildtrak</h3>
+            <div class="sketchfab-embed-wrapper">
+                <iframe 
+                    title="Ford Ranger Wildtrak" 
+                    frameborder="0" 
+                    allowfullscreen 
+                    mozallowfullscreen="true" 
+                    webkitallowfullscreen="true" 
+                    allow="autoplay; fullscreen; xr-spatial-tracking" 
+                    xr-spatial-tracking 
+                    execution-while-out-of-viewport 
+                    execution-while-not-rendered 
+                    web-share 
+                    src="https://sketchfab.com/models/7370186ee36b4b39a72aafc9460e2bb8/embed">
+                </iframe>
+            </div>
+            <p class="attribution">
+                <a href="https://sketchfab.com/3d-models/ford-ranger-wildtrak-7370186ee36b4b39a72aafc9460e2bb8?utm_medium=embed&utm_campaign=share-popup&utm_content=7370186ee36b4b39a72aafc9460e2bb8" target="_blank" rel="nofollow">View Model</a> by 
+                <a href="https://sketchfab.com/vaidanshi?utm_medium=embed&utm_campaign=share-popup&utm_content=7370186ee36b4b39a72aafc9460e2bb8" target="_blank" rel="nofollow">Vaidanshi</a>
+            </p>
+        </div>
+
+        <!-- Model 2: Next-Gen 2023 Sport -->
+        <div class="model-container">
+            <h3 class="model-title">Ford Ranger Next-Gen 2023 Sport</h3>
+            <div class="sketchfab-embed-wrapper">
+                <iframe 
+                    title="Ford Ranger Next-Gen 2023 Sport" 
+                    frameborder="0" 
+                    allowfullscreen 
+                    mozallowfullscreen="true" 
+                    webkitallowfullscreen="true" 
+                    allow="autoplay; fullscreen; xr-spatial-tracking" 
+                    xr-spatial-tracking 
+                    execution-while-out-of-viewport 
+                    execution-while-not-rendered 
+                    web-share 
+                    src="https://sketchfab.com/models/e93ac097ee9a46a4a9decca9aceed03c/embed">
+                </iframe>
+            </div>
+            <p class="attribution">
+                <a href="https://sketchfab.com/3d-models/ford-ranger-next-gen-2023-sport-e93ac097ee9a46a4a9decca9aceed03c?utm_medium=embed&utm_campaign=share-popup&utm_content=e93ac097ee9a46a4a9decca9aceed03c" target="_blank" rel="nofollow">View Model</a> by 
+                <a href="https://sketchfab.com/Asadawut.Kaewma?utm_medium=embed&utm_campaign=share-popup&utm_content=e93ac097ee9a46a4a9decca9aceed03c" target="_blank" rel="nofollow">Asadawut.Kaewma</a>
+            </p>
+        </div>
+
+        <!-- Model 3: XL -->
+        <div class="model-container">
+            <h3 class="model-title">Ford Ranger XL</h3>
+            <div class="sketchfab-embed-wrapper">
+                <iframe 
+                    title="Ford Ranger Xl" 
+                    frameborder="0" 
+                    allowfullscreen 
+                    mozallowfullscreen="true" 
+                    webkitallowfullscreen="true" 
+                    allow="autoplay; fullscreen; xr-spatial-tracking" 
+                    xr-spatial-tracking 
+                    execution-while-out-of-viewport 
+                    execution-while-not-rendered 
+                    web-share 
+                    src="https://sketchfab.com/models/2dfdbfdb45f240aaa8f0fd00824e9a5c/embed">
+                </iframe>
+            </div>
+            <p class="attribution">
+                <a href="https://sketchfab.com/3d-models/ford-ranger-xl-2dfdbfdb45f240aaa8f0fd00824e9a5c?utm_medium=embed&utm_campaign=share-popup&utm_content=2dfdbfdb45f240aaa8f0fd00824e9a5c" target="_blank" rel="nofollow">View Model</a> by 
+                <a href="https://sketchfab.com/vaidanshi?utm_medium=embed&utm_campaign=share-popup&utm_content=2dfdbfdb45f240aaa8f0fd00824e9a5c" target="_blank" rel="nofollow">Vaidanshi</a>
+            </p>
+        </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script>
-        let model, isModelReady = false;
-        const CONFIDENCE_THRESHOLD = 0.7;
-        let isScanning = false;
-        let scanInterval;
-
-        const defectData = {
-            "Burn Marks": "Dark or blackened areas caused by overheating.",
-            "Flow Lines": "Visible lines or streaks due to improper flow.",
-            "Short Shots": "Incomplete filling resulting in missing sections.",
-            "Weld Lines": "Lines where two flow fronts meet.",
-            "Sink Marks": "Depressions on the surface due to shrinkage.",
-            "Scratches": "Surface scratches caused by handling or tooling.",
-            "Deep Cuts": "Deep gouges or cuts on the surface.",
-            "Bubbles": "Air trapped under the surface causing bubbles.",
-            "Paint Runs": "Uneven paint flow causing dripping.",
-            "Hazel": "Discoloration or hazy appearance.",
-            "Dry Paint": "Rough or dull finish due to improper application.",
-            "Dry Spray": "Rough texture from uneven paint spray."
-        };
-
-        const defectNames = Object.keys(defectData);
-
-        async function initialize() {
-            try {
-                await Promise.all([loadModel(), startCamera()]);
-            } catch (error) {
-                alert(`Initialization failed: ${error.message}`);
-            }
-        }
-
-        async function startCamera() {
-            const video = document.getElementById('camera');
-            const constraints = {
-                video: {
-                    facingMode: "environment",
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 }
-                }
-            };
-
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                video.srcObject = stream;
-                await new Promise(resolve => video.onloadedmetadata = resolve);
-                video.play();
-            } catch (error) {
-                alert('Error accessing the camera: ' + error.message);
-            }
-        }
-
-        async function loadModel() {
-            try {
-                model = await tf.loadLayersModel('https://your-model-server.com/model.json');
-                isModelReady = true;
-                console.log("Model loaded successfully");
-            } catch (error) {
-                throw new Error('Failed to load model: ' + error.message);
-            }
-        }
-
-        async function detectDefects() {
-            const video = document.getElementById('camera');
-            const canvas = document.getElementById('canvas');
-            const context = canvas.getContext('2d');
-
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            let tensor = tf.browser.fromPixels(canvas)
-                .resizeBilinear([224, 224])
-                .expandDims()
-                .toFloat()
-                .div(255.0);
-
-            const prediction = await model.predict(tensor).data();
-            tensor.dispose();
-
-            const maxIndex = prediction.indexOf(Math.max(...prediction));
-            const confidence = prediction[maxIndex];
-
-            updateUI(confidence > CONFIDENCE_THRESHOLD ? defectNames[maxIndex] : '');
-        }
-
-        function updateUI(defect = '') {
-            const defectNameDisplay = document.getElementById('defect-name');
-            const defectDescriptionDisplay = document.getElementById('defect-description');
-            
-            if (defect) {
-                defectNameDisplay.textContent = defect;
-                defectNameDisplay.style.display = 'block';
-                defectDescriptionDisplay.textContent = defectData[defect];
-                defectDescriptionDisplay.style.display = 'block';
-            } else {
-                defectNameDisplay.textContent = '';
-                defectNameDisplay.style.display = 'none';
-                defectDescriptionDisplay.textContent = '';
-                defectDescriptionDisplay.style.display = 'none';
-            }
-        }
-
-        function toggleScanning() {
-            const button = document.getElementById('scan-btn');
-            isScanning = !isScanning;
-
-            if (isScanning) {
-                button.textContent = 'Stop';
-                scanInterval = setInterval(detectDefects, 1000); 
-            } else {
-                button.textContent = 'Start';
-                clearInterval(scanInterval);
-                updateUI('');
-            }
-        }
-
-        document.getElementById('scan-btn').addEventListener('click', toggleScanning);
-
-        window.addEventListener('load', initialize);
-    </script>
 </body>
 </html>
-
