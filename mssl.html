@@ -129,14 +129,6 @@
             border: 1px solid #aaa;
             border-radius: 5px;
         }
-
-        .signature-preview {
-            max-width: 250px;
-            max-height: 100px;
-            margin-top: 10px;
-            display: none;
-            border: 1px solid #aaa;
-        }
     </style>
 </head>
 
@@ -178,30 +170,6 @@
                 type="text"
                 id="operatorName"
                 placeholder="Enter Operator name"
-            >
-
-        </div>
-
-    </div>
-
-
-    <div class="form-row">
-
-        <div class="form-group">
-
-            <label>Signature File</label>
-
-            <input
-                type="file"
-                id="signatureFile"
-                accept="image/*,.pdf"
-                onchange="previewSignature()"
-            >
-
-            <img
-                id="signaturePreview"
-                class="signature-preview"
-                alt="Signature Preview"
             >
 
         </div>
@@ -250,7 +218,6 @@
     <thead>
 
         <tr>
-
             <th>Part</th>
             <th>Color</th>
             <th>Total</th>
@@ -259,7 +226,6 @@
             <th>Scrap</th>
             <th>Remarks</th>
             <th>Date</th>
-
         </tr>
 
     </thead>
@@ -273,117 +239,34 @@
 
                 <select>
 
-                    <option value="H Bar_WLT">
-                        H Bar_WLT
-                    </option>
-
-                    <option value="H Bar WLT22B">
-                        H Bar WLT22B
-                    </option>
-
-                    <option value="H_Bar LTD">
-                        H_Bar LTD
-                    </option>
-
-                    <option value="H_Bar LTD22B">
-                        H_Bar LTD22B
-                    </option>
-
-                    <option value="WLT">
-                        WLT
-                    </option>
-
-                    <option value="XLT">
-                        XLT
-                    </option>
-
-                    <option value="LTD">
-                        LTD
-                    </option>
-
-                    <option value="MID">
-                        MID
-                    </option>
-
-                    <option value="High Bumper">
-                        High Bumper
-                    </option>
-
-                    <option value="BOX Rails J73RH">
-                        BOX Rails J73RH
-                    </option>
-
-                    <option value="Box Rails J73LH">
-                        BOX Rails J73LH
-                    </option>
-
-                    <option value="Box Rails P703RH">
-                        Box Rails P703RH
-                    </option>
-
-                    <option value="Box Rails P703LH">
-                        Box Rails P703LH
-                    </option>
-
-                    <option value="Lower P703">
-                        Lower P703
-                    </option>
-
-                    <option value="Lower J703">
-                        Lower J703
-                    </option>
-
-                    <option value="Sporthoop J703">
-                        Sporthoop J703
-                    </option>
-
-                    <option value="Inner P703RH">
-                        Inner P703RH
-                    </option>
-
-                    <option value="Inner P703LH">
-                        Inner P703LH
-                    </option>
-
-                    <option value="Inner J73RH">
-                        Inner J73RH
-                    </option>
-
-                    <option value="Inner J73LH">
-                        Inner J73LH
-                    </option>
-
-                    <option value="Wheel lip RearRH">
-                        Wheel lip RearRH
-                    </option>
-
-                    <option value="Wheel lip RearLH">
-                        Wheel lip RearLH
-                    </option>
-
-                    <option value="Wheel lip FrontRH">
-                        Wheel lip FrontRH
-                    </option>
-
-                    <option value="Wheel lip FrontLH">
-                        Wheel lip FrontLH
-                    </option>
-
-                    <option value="Wheel lip RearRH22B">
-                        Wheel lip RearRH22B
-                    </option>
-
-                    <option value="Wheel lip RearLH22B">
-                        Wheel lip RearLH22B
-                    </option>
-
-                    <option value="Wheel lip FrontRH22B">
-                        Wheel lip FrontRH22B
-                    </option>
-
-                    <option value="Wheel lip FrontLH22B">
-                        Wheel lip FrontLH22B
-                    </option>
+                    <option value="H Bar_WLT">H Bar_WLT</option>
+                    <option value="H Bar WLT22B">H Bar WLT22B</option>
+                    <option value="H_Bar LTD">H_Bar LTD</option>
+                    <option value="H_Bar LTD22B">H_Bar LTD22B</option>
+                    <option value="WLT">WLT</option>
+                    <option value="XLT">XLT</option>
+                    <option value="LTD">LTD</option>
+                    <option value="MID">MID</option>
+                    <option value="High Bumper">High Bumper</option>
+                    <option value="BOX Rails J73RH">BOX Rails J73RH</option>
+                    <option value="Box Rails J73LH">BOX Rails J73LH</option>
+                    <option value="Box Rails P703RH">Box Rails P703RH</option>
+                    <option value="Box Rails P703LH">Box Rails P703LH</option>
+                    <option value="Lower P703">Lower P703</option>
+                    <option value="Lower J703">Lower J703</option>
+                    <option value="Sporthoop J703">Sporthoop J703</option>
+                    <option value="Inner P703RH">Inner P703RH</option>
+                    <option value="Inner P703LH">Inner P703LH</option>
+                    <option value="Inner J73RH">Inner J73RH</option>
+                    <option value="Inner J73LH">Inner J73LH</option>
+                    <option value="Wheel lip RearRH">Wheel lip RearRH</option>
+                    <option value="Wheel lip RearLH">Wheel lip RearLH</option>
+                    <option value="Wheel lip FrontRH">Wheel lip FrontRH</option>
+                    <option value="Wheel lip FrontLH">Wheel lip FrontLH</option>
+                    <option value="Wheel lip RearRH22B">Wheel lip RearRH22B</option>
+                    <option value="Wheel lip RearLH22B">Wheel lip RearLH22B</option>
+                    <option value="Wheel lip FrontRH22B">Wheel lip FrontRH22B</option>
+                    <option value="Wheel lip FrontLH22B">Wheel lip FrontLH22B</option>
 
                 </select>
 
@@ -394,53 +277,18 @@
 
                 <select>
 
-                    <option value="Boulder Gray">
-                        Boulder Gray
-                    </option>
-
-                    <option value="E Black">
-                        E Black
-                    </option>
-
-                    <option value="Moroccan Blue">
-                        Moroccan Blue
-                    </option>
-
-                    <option value="Frozen White">
-                        Frozen White
-                    </option>
-
-                    <option value="D. Silver">
-                        D. Silver
-                    </option>
-
-                    <option value="I. Silver">
-                        I. Silver
-                    </option>
-
-                    <option value="A Black">
-                        A Black
-                    </option>
-
-                    <option value="Asphalt">
-                        Asphalt
-                    </option>
-
-                    <option value="Blue Lightning">
-                        Blue Lightning
-                    </option>
-
-                    <option value="Carbonised grey">
-                        Carbonised grey
-                    </option>
-
-                    <option value="Lucid Red">
-                        Lucid Red
-                    </option>
-
-                    <option value="Cyber Orange">
-                        Cyber Orange
-                    </option>
+                    <option value="Boulder Gray">Boulder Gray</option>
+                    <option value="E Black">E Black</option>
+                    <option value="Moroccan Blue">Moroccan Blue</option>
+                    <option value="Frozen White">Frozen White</option>
+                    <option value="D. Silver">D. Silver</option>
+                    <option value="I. Silver">I. Silver</option>
+                    <option value="A Black">A Black</option>
+                    <option value="Asphalt">Asphalt</option>
+                    <option value="Blue Lightning">Blue Lightning</option>
+                    <option value="Carbonised grey">Carbonised grey</option>
+                    <option value="Lucid Red">Lucid Red</option>
+                    <option value="Cyber Orange">Cyber Orange</option>
 
                 </select>
 
@@ -460,12 +308,14 @@
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <input
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <button
@@ -484,21 +334,10 @@
 
                 <select class="rework-defect">
 
-                    <option value="None">
-                        None
-                    </option>
-
-                    <option value="Run">
-                        Run
-                    </option>
-
-                    <option value="off colour">
-                        off colour
-                    </option>
-
-                    <option value="Dirt">
-                        Dirt
-                    </option>
+                    <option value="None">None</option>
+                    <option value="Run">Run</option>
+                    <option value="off colour">off colour</option>
+                    <option value="Dirt">Dirt</option>
 
                 </select>
 
@@ -513,12 +352,14 @@
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <input
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <button
@@ -546,12 +387,14 @@
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <input
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <button
@@ -570,29 +413,12 @@
 
                 <select class="scrap-defect">
 
-                    <option value="None">
-                        None
-                    </option>
-
-                    <option value="Deep Cut">
-                        Deep Cut
-                    </option>
-
-                    <option value="Scratch">
-                        Scratch
-                    </option>
-
-                    <option value="3×Painted">
-                        3×Painted
-                    </option>
-
-                    <option value="fell in the oven">
-                        fell in the oven
-                    </option>
-
-                    <option value="Dirt">
-                        Dirt
-                    </option>
+                    <option value="None">None</option>
+                    <option value="Deep Cut">Deep Cut</option>
+                    <option value="Scratch">Scratch</option>
+                    <option value="3×Painted">3×Painted</option>
+                    <option value="fell in the oven">fell in the oven</option>
+                    <option value="Dirt">Dirt</option>
 
                 </select>
 
@@ -607,12 +433,14 @@
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <input
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <button
@@ -662,29 +490,33 @@
     class="compile-btn"
     onclick="generatePDF()"
 >
-    Compile PDF
+    Download PDF
 </button>
 
 
 <script>
 
 /* ==========================================
-   TELEGRAM HOD CONFIGURATION
+   TELEGRAM CONFIGURATION
 ========================================== */
 
 /*
- * These values are NOT displayed on the page.
- *
- * IMPORTANT:
- * Replace these placeholders with a NEW bot token
- * and your HOD Telegram group chat ID.
- */
+   Put your Telegram BOT TOKEN here.
+*/
 
 const HOD_BOT_TOKEN =
-    "8993333232:AAEvtujVGuE3DRo2BmU-mu6yE-zCVovzOdU";
+    "YOUR_NEW_TELEGRAM_BOT_TOKEN";
+
+
+/*
+   Put the Telegram GROUP/USER CHAT ID here.
+
+   Telegram bots cannot send a message directly
+   to a normal telephone number.
+*/
 
 const HOD_CHAT_ID =
-    "-1004327048166";
+    "YOUR_HOD_GROUP_CHAT_ID";
 
 
 /* ==========================================
@@ -698,54 +530,34 @@ document.addEventListener(
 
 
 /* ==========================================
-   SIGNATURE PREVIEW
+   GET TODAY
 ========================================== */
 
-function previewSignature() {
+function getTodayDate() {
 
-    const file =
-        document.getElementById(
-            "signatureFile"
-        ).files[0];
+    const today =
+        new Date();
 
-    const preview =
-        document.getElementById(
-            "signaturePreview"
-        );
+    const year =
+        today.getFullYear();
 
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(2, "0");
 
-    if (!file) {
+    const day =
+        String(
+            today.getDate()
+        ).padStart(2, "0");
 
-        preview.style.display = "none";
-
-        return;
-    }
-
-
-    if (file.type.startsWith("image/")) {
-
-        const reader =
-            new FileReader();
-
-
-        reader.onload =
-            function(e) {
-
-                preview.src =
-                    e.target.result;
-
-                preview.style.display =
-                    "block";
-            };
-
-
-        reader.readAsDataURL(file);
-
-    } else {
-
-        preview.style.display =
-            "none";
-    }
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
 }
 
 
@@ -772,13 +584,37 @@ function calculate(button, type) {
         inputs[1];
 
 
-    const sum =
-        parseInt(
-            firstInput.value || 0
-        ) +
+    /*
+       IMPORTANT:
+
+       Capture ONLY the newly entered
+       quantity BEFORE resetting it.
+
+       Example:
+
+       Existing scrap = 5
+       User enters = 3
+
+       Telegram receives = 3
+
+       New total = 8
+    */
+
+    const addedQuantity =
         parseInt(
             secondInput.value || 0
         );
+
+
+    const existingQuantity =
+        parseInt(
+            firstInput.value || 0
+        );
+
+
+    const sum =
+        existingQuantity +
+        addedQuantity;
 
 
     firstInput.value =
@@ -794,18 +630,23 @@ function calculate(button, type) {
 
 
     /*
-     * ONLY SCRAP AND REWORK
-     * automatically notify HOD.
-     */
+       Scrap and Rework are automatically
+       sent to Telegram every time Add
+       is clicked.
+    */
 
     if (
-        type === "scrap" ||
-        type === "rework"
+        (
+            type === "scrap" ||
+            type === "rework"
+        ) &&
+        addedQuantity > 0
     ) {
 
         sendHODNotification(
             button,
-            type
+            type,
+            addedQuantity
         );
 
     }
@@ -814,7 +655,7 @@ function calculate(button, type) {
 
 
 /* ==========================================
-   CALCULATE TOTAL
+   CALCULATE ROW TOTAL
 ========================================== */
 
 function calculateTotal(button) {
@@ -860,6 +701,7 @@ function calculateTotal(button) {
 
 
     saveData();
+
 }
 
 
@@ -887,6 +729,7 @@ function reset(button) {
     calculateTotal(button);
 
     saveData();
+
 }
 
 
@@ -906,16 +749,18 @@ function addRow() {
         )[0];
 
 
+    const firstRow =
+        table.querySelector(
+            "tr"
+        );
+
+
     const newRow =
         table.insertRow();
 
 
     newRow.innerHTML =
-        document
-        .querySelector(
-            "tbody tr"
-        )
-        .innerHTML;
+        firstRow.innerHTML;
 
 
     const inputs =
@@ -924,24 +769,28 @@ function addRow() {
         );
 
 
-    inputs.forEach(input => {
+    inputs.forEach(
+        input => {
 
-        if (
-            input.type === "number"
-        ) {
+            if (
+                input.type === "number"
+            ) {
 
-            input.value = 0;
+                input.value = 0;
+
+            }
+
+
+            if (
+                input.type === "date"
+            ) {
+
+                input.value = "";
+
+            }
+
         }
-
-
-        if (
-            input.type === "date"
-        ) {
-
-            input.value = "";
-        }
-
-    });
+    );
 
 
     newRow.querySelector(
@@ -950,6 +799,7 @@ function addRow() {
 
 
     saveData();
+
 }
 
 
@@ -974,39 +824,44 @@ function filterData() {
         );
 
 
-    rows.forEach(row => {
+    rows.forEach(
+        row => {
 
-        const cells =
-            row.getElementsByTagName(
-                "td"
-            );
-
-
-        let found = false;
+            const cells =
+                row.getElementsByTagName(
+                    "td"
+                );
 
 
-        for (
-            let cell of cells
-        ) {
+            let found = false;
 
-            if (
-                cell.textContent
-                .toLowerCase()
-                .includes(input)
+
+            for (
+                let cell of cells
             ) {
 
-                found = true;
+                if (
+                    cell.textContent
+                    .toLowerCase()
+                    .includes(input)
+                ) {
 
-                break;
+                    found = true;
+
+                    break;
+
+                }
+
             }
 
+
+            row.style.display =
+                found
+                ? ""
+                : "none";
+
         }
-
-
-        row.style.display =
-            found ? "" : "none";
-
-    });
+    );
 
 }
 
@@ -1039,15 +894,20 @@ function filterByDate() {
         );
 
         return;
+
     }
 
 
     const startDate =
-        new Date(startValue);
+        new Date(
+            startValue
+        );
 
 
     const endDate =
-        new Date(endValue);
+        new Date(
+            endValue
+        );
 
 
     const rows =
@@ -1056,53 +916,60 @@ function filterByDate() {
         );
 
 
-    rows.forEach(row => {
+    rows.forEach(
+        row => {
 
-        const dateCell =
-            row.querySelector(
-                ".date-input"
-            ).value;
+            const dateCell =
+                row.querySelector(
+                    ".date-input"
+                ).value;
 
 
-        if (!dateCell) {
+            if (!dateCell) {
 
-            row.style.display =
-                "none";
+                row.style.display =
+                    "none";
 
-            return;
+                return;
+
+            }
+
+
+            const date =
+                new Date(
+                    dateCell
+                );
+
+
+            if (
+                date >= startDate &&
+                date <= endDate
+            ) {
+
+                row.style.display =
+                    "";
+
+            } else {
+
+                row.style.display =
+                    "none";
+
+            }
+
         }
-
-
-        const date =
-            new Date(dateCell);
-
-
-        if (
-            date >= startDate &&
-            date <= endDate
-        ) {
-
-            row.style.display =
-                "";
-
-        } else {
-
-            row.style.display =
-                "none";
-        }
-
-    });
+    );
 
 }
 
 
 /* ==========================================
-   AUTOMATIC HOD TELEGRAM NOTIFICATION
+   TELEGRAM SCRAP / REWORK NOTIFICATION
 ========================================== */
 
 async function sendHODNotification(
     button,
-    type
+    type,
+    quantity
 ) {
 
     const row =
@@ -1112,15 +979,11 @@ async function sendHODNotification(
     if (!row) return;
 
 
-    /* PART */
-
     const part =
         row.querySelector(
             "td:nth-child(1) select"
         ).value;
 
-
-    /* COLOUR */
 
     const color =
         row.querySelector(
@@ -1128,16 +991,12 @@ async function sendHODNotification(
         ).value;
 
 
-    /* DATE */
-
     const date =
         row.querySelector(
             ".date-input"
         ).value ||
-        "No date";
+        getTodayDate();
 
-
-    /* TEAM LEADER */
 
     const teamLeader =
         document
@@ -1149,8 +1008,6 @@ async function sendHODNotification(
         "Not provided";
 
 
-    /* OPERATOR */
-
     const operator =
         document
         .getElementById(
@@ -1161,24 +1018,13 @@ async function sendHODNotification(
         "Not provided";
 
 
-    let quantity = 0;
+    let defect =
+        "None";
 
-    let defect = "None";
-
-
-    /* SCRAP */
 
     if (
         type === "scrap"
     ) {
-
-        quantity =
-            parseInt(
-                row.querySelector(
-                    ".scrap-cell input"
-                ).value || 0
-            );
-
 
         defect =
             row.querySelector(
@@ -1188,19 +1034,9 @@ async function sendHODNotification(
     }
 
 
-    /* REWORK */
-
     if (
         type === "rework"
     ) {
-
-        quantity =
-            parseInt(
-                row.querySelector(
-                    ".rework-cell input"
-                ).value || 0
-            );
-
 
         defect =
             row.querySelector(
@@ -1210,19 +1046,11 @@ async function sendHODNotification(
     }
 
 
-    if (
-        quantity <= 0
-    ) {
-
-        return;
-    }
-
-
     let message = "";
 
 
     /* ======================================
-       SCRAP MESSAGE
+       SCRAP
     ====================================== */
 
     if (
@@ -1240,7 +1068,7 @@ async function sendHODNotification(
             color +
             "\n" +
 
-            "🗑️ Scrap: " +
+            "🗑️ Scrap Added: " +
             quantity +
             "\n" +
 
@@ -1260,7 +1088,7 @@ async function sendHODNotification(
             operator +
             "\n\n" +
 
-            "⏰ Saved: " +
+            "⏰ Recorded: " +
             new Date()
             .toLocaleString();
 
@@ -1268,7 +1096,7 @@ async function sendHODNotification(
 
 
     /* ======================================
-       REWORK MESSAGE
+       REWORK
     ====================================== */
 
     if (
@@ -1286,7 +1114,7 @@ async function sendHODNotification(
             color +
             "\n" +
 
-            "♻️ Rework: " +
+            "♻️ Rework Added: " +
             quantity +
             "\n" +
 
@@ -1306,16 +1134,57 @@ async function sendHODNotification(
             operator +
             "\n\n" +
 
-            "⏰ Saved: " +
+            "⏰ Recorded: " +
             new Date()
             .toLocaleString();
 
     }
 
 
-    /* ======================================
-       SEND TO TELEGRAM
-    ====================================== */
+    await sendTelegramMessage(
+        message
+    );
+
+}
+
+
+/* ==========================================
+   SEND TELEGRAM MESSAGE
+========================================== */
+
+async function sendTelegramMessage(
+    message
+) {
+
+    if (
+        !HOD_BOT_TOKEN ||
+        HOD_BOT_TOKEN ===
+            "YOUR_NEW_TELEGRAM_BOT_TOKEN"
+    ) {
+
+        console.error(
+            "Telegram bot token has not been configured."
+        );
+
+        return false;
+
+    }
+
+
+    if (
+        !HOD_CHAT_ID ||
+        HOD_CHAT_ID ===
+            "YOUR_HOD_GROUP_CHAT_ID"
+    ) {
+
+        console.error(
+            "Telegram chat ID has not been configured."
+        );
+
+        return false;
+
+    }
+
 
     try {
 
@@ -1354,27 +1223,199 @@ async function sendHODNotification(
         if (!result.ok) {
 
             console.error(
-                "HOD Telegram notification failed:",
+                "Telegram error:",
                 result.description
             );
 
-            return;
+            return false;
+
         }
 
 
         console.log(
-            "HOD notification sent successfully."
+            "Telegram notification sent."
         );
+
+
+        return true;
 
 
     } catch (error) {
 
         console.error(
-            "HOD Telegram error:",
+            "Telegram connection error:",
             error
         );
 
+        return false;
+
     }
+
+}
+
+
+/* ==========================================
+   CALCULATE TODAY'S TOTALS
+========================================== */
+
+function calculateTodayTotals() {
+
+    const today =
+        getTodayDate();
+
+
+    let totalScrap = 0;
+
+    let totalRework = 0;
+
+
+    const rows =
+        document.querySelectorAll(
+            "#loadingSheet tbody tr"
+        );
+
+
+    rows.forEach(
+        row => {
+
+            const dateInput =
+                row.querySelector(
+                    ".date-input"
+                );
+
+
+            const rowDate =
+                dateInput
+                ? dateInput.value
+                : "";
+
+
+            /*
+               Only count rows whose date
+               is today's date.
+            */
+
+            if (
+                rowDate !== today
+            ) {
+
+                return;
+
+            }
+
+
+            const scrapInput =
+                row.querySelector(
+                    ".scrap-cell input"
+                );
+
+
+            const reworkInput =
+                row.querySelector(
+                    ".rework-cell input"
+                );
+
+
+            if (scrapInput) {
+
+                totalScrap +=
+                    parseInt(
+                        scrapInput.value || 0
+                    );
+
+            }
+
+
+            if (reworkInput) {
+
+                totalRework +=
+                    parseInt(
+                        reworkInput.value || 0
+                    );
+
+            }
+
+        }
+    );
+
+
+    return {
+
+        scrap:
+            totalScrap,
+
+        rework:
+            totalRework,
+
+        date:
+            today
+
+    };
+
+}
+
+
+/* ==========================================
+   SEND DAILY TOTAL TO TELEGRAM
+========================================== */
+
+async function sendDailyTotalsToTelegram() {
+
+    const totals =
+        calculateTodayTotals();
+
+
+    const teamLeader =
+        document
+        .getElementById(
+            "teamLeader"
+        )
+        .value
+        .trim() ||
+        "Not provided";
+
+
+    const operator =
+        document
+        .getElementById(
+            "operatorName"
+        )
+        .value
+        .trim() ||
+        "Not provided";
+
+
+    const message =
+        "📊 PP2 DAILY PRODUCTION SUMMARY\n\n" +
+
+        "📅 Date: " +
+        totals.date +
+        "\n\n" +
+
+        "🗑️ Total scrap for the day: " +
+        totals.scrap +
+        "\n" +
+
+        "🔧 Total rework for the day: " +
+        totals.rework +
+        "\n\n" +
+
+        "👷 Team Leader: " +
+        teamLeader +
+        "\n" +
+
+        "👨‍🔧 Operator: " +
+        operator +
+        "\n\n" +
+
+        "⏰ Summary generated: " +
+        new Date()
+        .toLocaleString();
+
+
+    return await sendTelegramMessage(
+        message
+    );
 
 }
 
@@ -1384,6 +1425,28 @@ async function sendHODNotification(
 ========================================== */
 
 async function generatePDF() {
+
+    /*
+       FIRST calculate today's totals
+       and send them to Telegram.
+    */
+
+    const telegramSent =
+        await sendDailyTotalsToTelegram();
+
+
+    if (!telegramSent) {
+
+        console.warn(
+            "Daily totals could not be sent to Telegram."
+        );
+
+    }
+
+
+    /*
+       THEN create the PDF.
+    */
 
     const { jsPDF } =
         window.jspdf;
@@ -1442,7 +1505,37 @@ async function generatePDF() {
     );
 
 
-    y += 10;
+    y += 7;
+
+
+    /*
+       Add today's totals to the PDF.
+    */
+
+    const dailyTotals =
+        calculateTodayTotals();
+
+
+    doc.text(
+        "Total scrap for the day: " +
+        dailyTotals.scrap,
+        10,
+        y
+    );
+
+
+    y += 7;
+
+
+    doc.text(
+        "Total rework for the day: " +
+        dailyTotals.rework,
+        10,
+        y
+    );
+
+
+    y += 12;
 
 
     doc.text(
@@ -1454,49 +1547,49 @@ async function generatePDF() {
 
     doc.text(
         "Color",
-        60,
+        50,
         y
     );
 
 
     doc.text(
         "Total",
-        110,
+        90,
         y
     );
 
 
     doc.text(
         "Rework",
-        140,
+        115,
         y
     );
 
 
     doc.text(
         "Polished",
-        180,
+        145,
         y
     );
 
 
     doc.text(
         "Scrap",
-        220,
+        180,
         y
     );
 
 
     doc.text(
         "Remarks",
-        260,
+        210,
         y
     );
 
 
     doc.text(
         "Date",
-        280,
+        250,
         y
     );
 
@@ -1506,124 +1599,197 @@ async function generatePDF() {
 
     const rows =
         document.querySelectorAll(
-            "tbody tr"
+            "#loadingSheet tbody tr"
         );
 
 
-    rows.forEach(row => {
+    rows.forEach(
+        row => {
 
-        const cells =
-            row.querySelectorAll(
-                "td"
+            const cells =
+                row.querySelectorAll(
+                    "td"
+                );
+
+
+            const part =
+                cells[0]
+                .querySelector(
+                    "select"
+                ).value;
+
+
+            const color =
+                cells[1]
+                .querySelector(
+                    "select"
+                ).value;
+
+
+            const total =
+                cells[2]
+                .textContent;
+
+
+            const rework =
+                cells[3]
+                .querySelector(
+                    "input"
+                ).value;
+
+
+            const polished =
+                cells[4]
+                .querySelector(
+                    "input"
+                ).value;
+
+
+            const scrap =
+                cells[5]
+                .querySelector(
+                    "input"
+                ).value;
+
+
+            const remarks =
+                cells[6]
+                .querySelector(
+                    "input"
+                ).value;
+
+
+            const date =
+                cells[7]
+                .querySelector(
+                    "input"
+                ).value;
+
+
+            doc.setFontSize(8);
+
+
+            doc.text(
+                part.substring(0, 20),
+                10,
+                y
             );
 
 
-        const reworkDefect =
-            cells[3]
-            .querySelector(
-                "select"
-            ).value;
+            doc.text(
+                color.substring(0, 18),
+                50,
+                y
+            );
 
 
-        const scrapDefect =
-            cells[5]
-            .querySelector(
-                "select"
-            ).value;
+            doc.text(
+                total,
+                90,
+                y
+            );
 
 
-        const date =
-            cells[7]
-            .querySelector(
-                "input"
-            ).value;
+            doc.text(
+                rework,
+                115,
+                y
+            );
 
 
-        doc.text(
-            cells[0]
-            .querySelector(
-                "select"
-            ).value,
-            10,
-            y
-        );
+            doc.text(
+                polished,
+                145,
+                y
+            );
 
 
-        doc.text(
-            cells[1]
-            .querySelector(
-                "select"
-            ).value,
-            60,
-            y
-        );
+            doc.text(
+                scrap,
+                180,
+                y
+            );
 
 
-        doc.text(
-            cells[2].textContent,
-            110,
-            y
-        );
+            doc.text(
+                remarks,
+                210,
+                y
+            );
 
 
-        doc.text(
-            `${cells[3]
-                .querySelector("input")
-                .value} (${reworkDefect})`,
-            140,
-            y
-        );
+            doc.text(
+                date,
+                250,
+                y
+            );
 
 
-        doc.text(
-            cells[4]
-            .querySelector(
-                "input"
-            ).value,
-            180,
-            y
-        );
+            y += 8;
 
 
-        doc.text(
-            `${cells[5]
-                .querySelector("input")
-                .value} (${scrapDefect})`,
-            220,
-            y
-        );
+            if (
+                y > 280
+            ) {
 
+                doc.addPage();
 
-        doc.text(
-            cells[6]
-            .querySelector(
-                "input"
-            ).value,
-            260,
-            y
-        );
+                y = 20;
 
+            }
 
-        doc.text(
-            date,
-            280,
-            y
-        );
-
-
-        y += 10;
-
-
-        if (
-            y > 280
-        ) {
-
-            doc.addPage();
-
-            y = 20;
         }
+    );
 
-    });
+
+    /*
+       Final daily summary inside PDF.
+    */
+
+    if (
+        y > 250
+    ) {
+
+        doc.addPage();
+
+        y = 20;
+
+    }
+
+
+    y += 10;
+
+
+    doc.setFontSize(12);
+
+
+    doc.text(
+        "DAILY TOTAL",
+        10,
+        y
+    );
+
+
+    y += 8;
+
+
+    doc.text(
+        "Total scrap for the day: " +
+        dailyTotals.scrap,
+        10,
+        y
+    );
+
+
+    y += 8;
+
+
+    doc.text(
+        "Total rework for the day: " +
+        dailyTotals.rework,
+        10,
+        y
+    );
 
 
     doc.save(
@@ -1648,96 +1814,98 @@ function saveData() {
         );
 
 
-    rows.forEach(row => {
+    rows.forEach(
+        row => {
 
-        const cells =
-            row.querySelectorAll(
-                "td"
+            const cells =
+                row.querySelectorAll(
+                    "td"
+                );
+
+
+            const rowData = {
+
+                part:
+                    cells[0]
+                    .querySelector(
+                        "select"
+                    ).value,
+
+
+                color:
+                    cells[1]
+                    .querySelector(
+                        "select"
+                    ).value,
+
+
+                total:
+                    cells[2].textContent,
+
+
+                rework: {
+
+                    value:
+                        cells[3]
+                        .querySelector(
+                            "input"
+                        ).value,
+
+                    defect:
+                        cells[3]
+                        .querySelector(
+                            "select"
+                        ).value
+
+                },
+
+
+                polished:
+                    cells[4]
+                    .querySelector(
+                        "input"
+                    ).value,
+
+
+                scrap: {
+
+                    value:
+                        cells[5]
+                        .querySelector(
+                            "input"
+                        ).value,
+
+                    defect:
+                        cells[5]
+                        .querySelector(
+                            "select"
+                        ).value
+
+                },
+
+
+                remarks:
+                    cells[6]
+                    .querySelector(
+                        "input"
+                    ).value,
+
+
+                date:
+                    cells[7]
+                    .querySelector(
+                        "input"
+                    ).value
+
+            };
+
+
+            tableData.push(
+                rowData
             );
 
-
-        const rowData = {
-
-            part:
-                cells[0]
-                .querySelector(
-                    "select"
-                ).value,
-
-
-            color:
-                cells[1]
-                .querySelector(
-                    "select"
-                ).value,
-
-
-            total:
-                cells[2].textContent,
-
-
-            rework: {
-
-                value:
-                    cells[3]
-                    .querySelector(
-                        "input"
-                    ).value,
-
-                defect:
-                    cells[3]
-                    .querySelector(
-                        "select"
-                    ).value
-
-            },
-
-
-            polished:
-                cells[4]
-                .querySelector(
-                    "input"
-                ).value,
-
-
-            scrap: {
-
-                value:
-                    cells[5]
-                    .querySelector(
-                        "input"
-                    ).value,
-
-                defect:
-                    cells[5]
-                    .querySelector(
-                        "select"
-                    ).value
-
-            },
-
-
-            remarks:
-                cells[6]
-                .querySelector(
-                    "input"
-                ).value,
-
-
-            date:
-                cells[7]
-                .querySelector(
-                    "input"
-                ).value
-
-        };
-
-
-        tableData.push(
-            rowData
-        );
-
-    });
+        }
+    );
 
 
     localStorage.setItem(
@@ -1790,6 +1958,7 @@ function loadData() {
         )
         .value =
             savedLeader;
+
     }
 
 
@@ -1809,6 +1978,7 @@ function loadData() {
         )
         .value =
             savedOperator;
+
     }
 
 
@@ -1823,6 +1993,7 @@ function loadData() {
     ) {
 
         return;
+
     }
 
 
@@ -1938,6 +2109,38 @@ function loadData() {
                         Inner J73LH
                     </option>
 
+                    <option value="Wheel lip RearRH">
+                        Wheel lip RearRH
+                    </option>
+
+                    <option value="Wheel lip RearLH">
+                        Wheel lip RearLH
+                    </option>
+
+                    <option value="Wheel lip FrontRH">
+                        Wheel lip FrontRH
+                    </option>
+
+                    <option value="Wheel lip FrontLH">
+                        Wheel lip FrontLH
+                    </option>
+
+                    <option value="Wheel lip RearRH22B">
+                        Wheel lip RearRH22B
+                    </option>
+
+                    <option value="Wheel lip RearLH22B">
+                        Wheel lip RearLH22B
+                    </option>
+
+                    <option value="Wheel lip FrontRH22B">
+                        Wheel lip FrontRH22B
+                    </option>
+
+                    <option value="Wheel lip FrontLH22B">
+                        Wheel lip FrontLH22B
+                    </option>
+
                 </select>
 
             </td>
@@ -2015,12 +2218,14 @@ function loadData() {
                     type="number"
                     class="number-input"
                     value="${rowData.rework.value}"
+                    min="0"
                 >
 
                 <input
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <button
@@ -2073,12 +2278,14 @@ function loadData() {
                     type="number"
                     class="number-input"
                     value="${rowData.polished}"
+                    min="0"
                 >
 
                 <input
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <button
@@ -2104,12 +2311,14 @@ function loadData() {
                     type="number"
                     class="number-input"
                     value="${rowData.scrap.value}"
+                    min="0"
                 >
 
                 <input
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <button
@@ -2170,12 +2379,14 @@ function loadData() {
                     type="number"
                     class="number-input"
                     value="${rowData.remarks}"
+                    min="0"
                 >
 
                 <input
                     type="number"
                     class="number-input"
                     value="0"
+                    min="0"
                 >
 
                 <button
@@ -2236,7 +2447,29 @@ document.addEventListener(
     }
 );
 
+
+/* ==========================================
+   AUTO SAVE TABLE CHANGES
+========================================== */
+
+document.addEventListener(
+    "change",
+    function(event) {
+
+        if (
+            event.target.closest(
+                "#loadingSheet"
+            )
+        ) {
+
+            saveData();
+
+        }
+
+    }
+);
+
 </script>
 
 </body>
-    </html>
+                    </html>
