@@ -880,7 +880,7 @@
             class="telegram-btn"
             onclick="sendCompletetoHOD'S()"
         >
-            Send Complete Data to Telegram
+            Send Complete Data to YOYR HOD'S
         </button>
 
 
@@ -2150,11 +2150,11 @@ async function sendTelegramMessage(
     if (
         !TELEGRAM_BOT_TOKEN ||
         TELEGRAM_BOT_TOKEN ===
-            "PASTE_NEW_BOT_TOKEN_HERE"
+            "8993333232:AAEvtujVGuE3DRo2BmU-mu6yE-zCVovzOdU"
     ) {
 
         showStatus(
-            "Telegram token has not been configured.",
+            "HOD'S token has not been configured.",
             "error"
         );
 
@@ -2168,7 +2168,7 @@ async function sendTelegramMessage(
     ) {
 
         showStatus(
-            "Telegram chat ID has not been configured.",
+            "HOD'S chat ID has not been configured.",
             "error"
         );
 
@@ -2255,7 +2255,7 @@ async function sendTelegramMessage(
                 );
 
                 showStatus(
-                    "Telegram error: " +
+                    "HOD CHANNEL error: " +
                     result.description,
                     "error"
                 );
@@ -2272,13 +2272,13 @@ async function sendTelegramMessage(
     } catch (error) {
 
         console.error(
-            "Telegram connection error:",
+            "HOD CHANNEL connection error:",
             error
         );
 
 
         showStatus(
-            "Could not connect to Telegram.",
+            "Could not connect to YOUR HOD'S CHANNEL.",
             "error"
         );
 
@@ -2292,7 +2292,7 @@ async function sendTelegramMessage(
 
 
 /* =========================================================
-   SEND COMPLETE TELEGRAM REPORT
+   SEND COMPLETE DATA TO YOUR HOD'S
 ========================================================= */
 
 
@@ -2329,7 +2329,7 @@ async function sendCompleteTelegramReport() {
 
 
     showStatus(
-        "Sending complete data to Telegram...",
+        "Sending complete data to your HOD'S...",
         "success"
     );
 
@@ -2343,7 +2343,7 @@ async function sendCompleteTelegramReport() {
     if (sent) {
 
         showStatus(
-            "Complete rework data was sent to Telegram.",
+            "Complete rework data was sent to your HOD'S.",
             "success"
         );
 
@@ -2387,7 +2387,7 @@ async function downloadPDF() {
 
 
     /*
-       SEND THE COMPLETE DATA TO TELEGRAM
+       SEND THE COMPLETE DATA TO YOUR HOD'S
        BEFORE CREATING THE PDF.
     */
 
@@ -2397,7 +2397,7 @@ async function downloadPDF() {
 
 
     showStatus(
-        "Sending complete data to Telegram...",
+        "Sending complete data to HOD'S...",
         "success"
     );
 
@@ -2851,7 +2851,7 @@ function newShift() {
             "START NEW SHIFT?\n\n" +
             "This will clear the current rework data " +
             "from this device.\n\n" +
-            "The existing PDF/data already sent to Telegram " +
+            "The existing PDF/data already sent to HOD'S " +
             "will NOT be deleted."
         );
 
