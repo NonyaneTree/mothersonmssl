@@ -4,46 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PP2 Off Loading Sheet</title>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+
         th, td {
             border: 1px solid #000;
             padding: 8px;
             text-align: center;
         }
+
         th {
             background-color: #f4f4f4;
         }
+
         .section-title {
             text-align: center;
             font-size: 1.5em;
             margin: 20px 0;
         }
-        .add-row-btn, .compile-btn {
+
+        .add-row-btn,
+        .compile-btn,
+        .telegram-btn {
             margin: 10px 5px;
             padding: 10px 20px;
-            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
-        .add-row-btn:hover, .compile-btn:hover {
+
+        .add-row-btn {
+            background-color: #007bff;
+        }
+
+        .compile-btn {
+            background-color: #6f42c1;
+        }
+
+        .telegram-btn {
+            background-color: #229ED9;
+        }
+
+        .add-row-btn:hover {
             background-color: #0056b3;
         }
+
+        .compile-btn:hover {
+            background-color: #59339d;
+        }
+
+        .telegram-btn:hover {
+            background-color: #168ac0;
+        }
+
         .number-input {
             width: 60px;
             text-align: center;
         }
+
         .calc-btn {
             margin: 2px;
             padding: 5px 10px;
@@ -53,378 +84,1727 @@
             border-radius: 3px;
             cursor: pointer;
         }
+
         .calc-btn:hover {
             background-color: #218838;
         }
+
         .reset-btn {
             background-color: #dc3545;
         }
+
         .reset-btn:hover {
             background-color: #c82333;
         }
+
         .filter-section {
             margin-bottom: 20px;
         }
+
+        .telegram-section {
+            border: 2px solid #229ED9;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            background: #f5fbff;
+        }
+
+        .telegram-section h3 {
+            margin-top: 0;
+            color: #168ac0;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 220px;
+            flex: 1;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            padding: 9px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+        }
+
+        #telegramStatus {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .signature-preview {
+            max-width: 250px;
+            max-height: 100px;
+            margin-top: 10px;
+            display: none;
+            border: 1px solid #aaa;
+        }
     </style>
 </head>
+
 <body>
-    <div class="section-title">PP2 Off Loading Sheet</div>
-    <div class="filter-section">
-        <input type="text" id="searchBar" placeholder="Search..." onkeyup="filterData()">
-        <input type="date" id="startDate">
-        <input type="date" id="endDate">
-        <button onclick="filterByDate()">Filter by Date</button>
+
+<div class="section-title">PP2 Off Loading Sheet</div>
+
+<!-- TEAM / TELEGRAM INFORMATION -->
+<div class="telegram-section">
+
+    <h3>Production Information</h3>
+
+    <div class="form-row">
+
+        <div class="form-group">
+            <label>Team Leader Name</label>
+            <input
+                type="text"
+                id="teamLeader"
+                placeholder="Enter Team Leader name"
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Operator Name</label>
+            <input
+                type="text"
+                id="operatorName"
+                placeholder="Enter Operator name"
+            >
+        </div>
+
     </div>
-    <table id="loadingSheet">
-        <thead>
-            <tr>
-                <th>Part</th>
-                <th>Color</th>
-                <th>Total</th>
-                <th>Rework</th>
-                <th>Polished</th>
-                <th>Scrap</th>
-                <th>Remarks</th>
-                <th>Date</th> <!-- New Date Column -->
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <select>
-                        <option value="H Bar_WLT">H Bar_WLT</option>
-                        <option value="H Bar WLT22B">H Bar WLT22B</option>
-                        <option value="H_Bar LTD">H_Bar LTD</option>
-                        <option value="H_Bar LTD22B">H_Bar LTD22B</option>
-                        <option value="WLT">WLT</option>
-                        <option value="XLT">XLT</option>
-                        <option value="LTD">LTD</option>
-                        <option value="MID">MID</option>
-                        <option value="High Bumper">High Bumper</option>
-                        <option value="BOX Rails J73RH">BOX Rails J73RH</option>
-                        <option value="Box Rails J73LH">BOX Rails J73LH</option>
-                        <option value="Box Rails P703RH">Box Rails P703RH</option>
-                        <option value="Box Rails P703LH">Box Rails P703LH</option>
-                        <option value="Lower P703">Lower P703</option>
-                        <option value="Lower J703">Lower J703</option>
-                        <option value="Sporthoop J703">Sporthoop J703</option>
-                        <option value="Inner P703RH">Inner P703RH</option>
-                        <option value="Inner P703LH">Inner P703LH</option>
-                        <option value="Inner J73RH">Inner J73RH</option>
-                        <option value="Inner J73LH">Inner J703LH</option>
-                        <option value="Wheel lip RearRH">Wheel lip RearRH</option>
-                        <option value="Wheel lip RearLH">Wheel lip RearLH</option>
-                        <option value="Wheel lip FrontRH">Wheel lip FrontRH</option>
-                        <option value="Wheel lip FrontLH">Wheel lip FrontLH</option>
-                        <option value="Wheel lip RearRH22B">Wheel lip RearRH22B</option>
-                        <option value="Wheel lip RearLH22B">Wheel lip RearLH22B</option>
-                        <option value="Wheel lip FrontRH22B">Wheel lip FrontRH22B</option>
-                        <option value="Wheel lip FrontLH22B">Wheel lip FrontLH22B</option>
-                    </select>
-                </td>
-                <td>
-                    <select>
-                        <option value="Boulder Gray">Boulder Gray</option>
-                        <option value="E Black">E Black</option>
-                        <option value="Moroccan Blue">Moroccan Blue</option>
-                        <option value="Frozen White">Frozen White</option>
-                        <option value="D. Silver">D. Silver</option>
-                        <option value="I. Silver">I. Silver</option>
-                        <option value="A Black">A Black</option>
-                        <option value="Asphalt">Asphalt</option>
-                        <option value="Blue Lightning">Blue Lightning</option>
-                        <option value="Carbonised grey">Carbonised grey</option>
-                        <option value="Lucid Red">Lucid Red</option>
-                        <option value="Cyber Orange">Cyber Orange</option>
-                    </select>
-                </td>
-                <td class="total-cell">0</td>
-                <td class="rework-cell">
-                    <input type="number" class="number-input" value="0" />
-                    <input type="number" class="number-input" value="0" />
-                    <button class="calc-btn" onclick="calculate(this, 'rework')">Add</button>
-                    <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
-                    <select class="rework-defect">
-                        <option value="None">None</option>
-                        <option value="Run">Run</option>
-                        <option value="off colour">off colour</option>
-                        <option value="Dirt">Dirt</option>
-                    </select>
-                </td>
-                <td class="polished-cell">
-                    <input type="number" class="number-input" value="0" />
-                    <input type="number" class="number-input" value="0" />
-                    <button class="calc-btn" onclick="calculate(this, 'polished')">Add</button>
-                    <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
-                </td>
-                <td class="scrap-cell">
-                    <input type="number" class="number-input" value="0" />
-                    <input type="number" class="number-input" value="0" />
-                    <button class="calc-btn" onclick="calculate(this, 'scrap')">Add</button>
-                    <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
-                    <select class="scrap-defect">
-                        <option value="None">None</option>
-                        <option value="Deep Cut">Deep Cut</option>
-                        <option value="Scratch">Scratch</option>
-                        <option value="3×Painted">3×Painted</option>
-                        <option value="fell in the oven">fell in the oven</option>
-                        <option value="Dirt">Dirt</option>
-                    </select>
-                </td>
-                <td class="remarks-cell">
-                    <input type="number" class="number-input" value="0" />
-                    <input type="number" class="number-input" value="0" />
-                    <button class="calc-btn" onclick="calculate(this, 'remarks')">Add</button>
-                    <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
-                </td>
-                <td>
-                    <input type="date" class="date-input" />
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <button class="add-row-btn" onclick="addRow()">Add Row</button>
-    <button class="compile-btn" onclick="generatePDF()">Compile PDF</button>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', loadData);
+    <div class="form-row">
 
-        function calculate(button, type) {
-            const cell = button.parentNode;
-            const inputs = cell.getElementsByTagName("input");
-            const firstInput = inputs[0];
-            const secondInput = inputs[1];
+        <div class="form-group">
+            <label>Signature File</label>
+            <input
+                type="file"
+                id="signatureFile"
+                accept="image/*,.pdf"
+                onchange="previewSignature()"
+            >
 
-            const sum = parseInt(firstInput.value || 0) + parseInt(secondInput.value || 0);
-            firstInput.value = sum; // Update the first input
-            secondInput.value = 0; // Reset the second input
+            <img
+                id="signaturePreview"
+                class="signature-preview"
+                alt="Signature Preview"
+            >
+        </div>
 
-            calculateTotal(button); // Update the total after calculation
-            saveData(); // Save data to local storage
+    </div>
+
+    <h3>Telegram Configuration</h3>
+
+    <div class="form-row">
+
+        <div class="form-group">
+            <label>Telegram Bot Token</label>
+            <input
+                type="password"
+                id="telegramBotToken"
+                placeholder="123456789:ABC..."
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Telegram Chat ID</label>
+            <input
+                type="text"
+                id="telegramChatId"
+                placeholder="-1001234567890"
+            >
+        </div>
+
+    </div>
+
+    <button class="telegram-btn" onclick="sendToTelegram()">
+        📲 Send Scrap & Rework to Telegram
+    </button>
+
+    <div id="telegramStatus"></div>
+
+</div>
+
+
+<!-- SEARCH / DATE FILTER -->
+<div class="filter-section">
+
+    <input
+        type="text"
+        id="searchBar"
+        placeholder="Search..."
+        onkeyup="filterData()"
+    >
+
+    <input type="date" id="startDate">
+    <input type="date" id="endDate">
+
+    <button onclick="filterByDate()">
+        Filter by Date
+    </button>
+
+</div>
+
+
+<table id="loadingSheet">
+
+    <thead>
+        <tr>
+            <th>Part</th>
+            <th>Color</th>
+            <th>Total</th>
+            <th>Rework</th>
+            <th>Polished</th>
+            <th>Scrap</th>
+            <th>Remarks</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+
+            <td>
+                <select>
+                    <option value="H Bar_WLT">H Bar_WLT</option>
+                    <option value="H Bar WLT22B">H Bar WLT22B</option>
+                    <option value="H_Bar LTD">H_Bar LTD</option>
+                    <option value="H_Bar LTD22B">H_Bar LTD22B</option>
+                    <option value="WLT">WLT</option>
+                    <option value="XLT">XLT</option>
+                    <option value="LTD">LTD</option>
+                    <option value="MID">MID</option>
+                    <option value="High Bumper">High Bumper</option>
+                    <option value="BOX Rails J73RH">BOX Rails J73RH</option>
+                    <option value="Box Rails J73LH">BOX Rails J73LH</option>
+                    <option value="Box Rails P703RH">Box Rails P703RH</option>
+                    <option value="Box Rails P703LH">Box Rails P703LH</option>
+                    <option value="Lower P703">Lower P703</option>
+                    <option value="Lower J703">Lower J703</option>
+                    <option value="Sporthoop J703">Sporthoop J703</option>
+                    <option value="Inner P703RH">Inner P703RH</option>
+                    <option value="Inner P703LH">Inner P703LH</option>
+                    <option value="Inner J73RH">Inner J73RH</option>
+                    <option value="Inner J73LH">Inner J703LH</option>
+                    <option value="Wheel lip RearRH">Wheel lip RearRH</option>
+                    <option value="Wheel lip RearLH">Wheel lip RearLH</option>
+                    <option value="Wheel lip FrontRH">Wheel lip FrontRH</option>
+                    <option value="Wheel lip FrontLH">Wheel lip FrontLH</option>
+                    <option value="Wheel lip RearRH22B">Wheel lip RearRH22B</option>
+                    <option value="Wheel lip RearLH22B">Wheel lip RearLH22B</option>
+                    <option value="Wheel lip FrontRH22B">Wheel lip FrontRH22B</option>
+                    <option value="Wheel lip FrontLH22B">Wheel lip FrontLH22B</option>
+                </select>
+            </td>
+
+            <td>
+                <select>
+                    <option value="Boulder Gray">Boulder Gray</option>
+                    <option value="E Black">E Black</option>
+                    <option value="Moroccan Blue">Moroccan Blue</option>
+                    <option value="Frozen White">Frozen White</option>
+                    <option value="D. Silver">D. Silver</option>
+                    <option value="I. Silver">I. Silver</option>
+                    <option value="A Black">A Black</option>
+                    <option value="Asphalt">Asphalt</option>
+                    <option value="Blue Lightning">Blue Lightning</option>
+                    <option value="Carbonised grey">Carbonised grey</option>
+                    <option value="Lucid Red">Lucid Red</option>
+                    <option value="Cyber Orange">Cyber Orange</option>
+                </select>
+            </td>
+
+            <td class="total-cell">0</td>
+
+            <td class="rework-cell">
+
+                <input type="number" class="number-input" value="0">
+                <input type="number" class="number-input" value="0">
+
+                <button class="calc-btn"
+                        onclick="calculate(this, 'rework')">
+                    Add
+                </button>
+
+                <button class="calc-btn reset-btn"
+                        onclick="reset(this)">
+                    Reset
+                </button>
+
+                <select class="rework-defect">
+                    <option value="None">None</option>
+                    <option value="Run">Run</option>
+                    <option value="off colour">off colour</option>
+                    <option value="Dirt">Dirt</option>
+                </select>
+
+            </td>
+
+            <td class="polished-cell">
+
+                <input type="number" class="number-input" value="0">
+                <input type="number" class="number-input" value="0">
+
+                <button class="calc-btn"
+                        onclick="calculate(this, 'polished')">
+                    Add
+                </button>
+
+                <button class="calc-btn reset-btn"
+                        onclick="reset(this)">
+                    Reset
+                </button>
+
+            </td>
+
+            <td class="scrap-cell">
+
+                <input type="number" class="number-input" value="0">
+                <input type="number" class="number-input" value="0">
+
+                <button class="calc-btn"
+                        onclick="calculate(this, 'scrap')">
+                    Add
+                </button>
+
+                <button class="calc-btn reset-btn"
+                        onclick="reset(this)">
+                    Reset
+                </button>
+
+                <select class="scrap-defect">
+                    <option value="None">None</option>
+                    <option value="Deep Cut">Deep Cut</option>
+                    <option value="Scratch">Scratch</option>
+                    <option value="3×Painted">3×Painted</option>
+                    <option value="fell in the oven">fell in the oven</option>
+                    <option value="Dirt">Dirt</option>
+                </select>
+
+            </td>
+
+            <td class="remarks-cell">
+
+                <input type="number" class="number-input" value="0">
+                <input type="number" class="number-input" value="0">
+
+                <button class="calc-btn"
+                        onclick="calculate(this, 'remarks')">
+                    Add
+                </button>
+
+                <button class="calc-btn reset-btn"
+                        onclick="reset(this)">
+                    Reset
+                </button>
+
+            </td>
+
+            <td>
+                <input type="date" class="date-input">
+            </td>
+
+        </tr>
+
+    </tbody>
+
+</table>
+
+
+<button class="add-row-btn" onclick="addRow()">
+    Add Row
+</button>
+
+<button class="compile-btn" onclick="generatePDF()">
+    Compile PDF
+</button>
+
+
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    loadData
+);
+
+
+/* ==========================================
+   SIGNATURE PREVIEW
+========================================== */
+
+function previewSignature() {
+
+    const file =
+        document.getElementById("signatureFile").files[0];
+
+    const preview =
+        document.getElementById("signaturePreview");
+
+    if (!file) {
+
+        preview.style.display = "none";
+
+        return;
+    }
+
+    if (file.type.startsWith("image/")) {
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+
+            preview.src = e.target.result;
+
+            preview.style.display = "block";
+        };
+
+        reader.readAsDataURL(file);
+
+    } else {
+
+        preview.style.display = "none";
+    }
+}
+
+
+/* ==========================================
+   CALCULATIONS
+========================================== */
+
+function calculate(button, type) {
+
+    const cell = button.parentNode;
+
+    const inputs =
+        cell.getElementsByTagName("input");
+
+    const firstInput = inputs[0];
+
+    const secondInput = inputs[1];
+
+    const sum =
+        parseInt(firstInput.value || 0) +
+        parseInt(secondInput.value || 0);
+
+    firstInput.value = sum;
+
+    secondInput.value = 0;
+
+    calculateTotal(button);
+
+    saveData();
+}
+
+
+function calculateTotal(button) {
+
+    const row =
+        button.closest("tr");
+
+    const rework =
+        parseInt(
+            row.querySelector(
+                ".rework-cell input"
+            ).value || 0
+        );
+
+    const polished =
+        parseInt(
+            row.querySelector(
+                ".polished-cell input"
+            ).value || 0
+        );
+
+    const scrap =
+        parseInt(
+            row.querySelector(
+                ".scrap-cell input"
+            ).value || 0
+        );
+
+    const totalCell =
+        row.querySelector(".total-cell");
+
+    totalCell.textContent =
+        rework + polished + scrap;
+
+    saveData();
+}
+
+
+function reset(button) {
+
+    const cell = button.parentNode;
+
+    const inputs =
+        cell.getElementsByTagName("input");
+
+    inputs[0].value = 0;
+    inputs[1].value = 0;
+
+    calculateTotal(button);
+
+    saveData();
+}
+
+
+/* ==========================================
+   ADD ROW
+========================================== */
+
+function addRow() {
+
+    const table =
+        document
+        .getElementById("loadingSheet")
+        .getElementsByTagName("tbody")[0];
+
+    const newRow =
+        table.insertRow();
+
+    newRow.innerHTML =
+        document
+        .querySelector("tbody tr")
+        .innerHTML;
+
+    const inputs =
+        newRow.querySelectorAll("input");
+
+    inputs.forEach(input => {
+
+        if (input.type === "number") {
+            input.value = 0;
         }
 
-        function calculateTotal(button) {
-            const row = button.closest("tr");
-            const rework = parseInt(row.querySelector(".rework-cell input").value || 0);
-            const polished = parseInt(row.querySelector(".polished-cell input").value || 0);
-            const scrap = parseInt(row.querySelector(".scrap-cell input").value || 0);
-
-            const totalCell = row.querySelector(".total-cell");
-            totalCell.textContent = rework + polished + scrap; // Update the Total column
-            saveData(); // Save data to local storage
+        if (input.type === "date") {
+            input.value = "";
         }
 
-        function reset(button) {
-            const cell = button.parentNode;
-            const inputs = cell.getElementsByTagName("input");
-            inputs[0].value = 0;
-            inputs[1].value = 0;
+    });
 
-            calculateTotal(button); // Update the total after reset
-            saveData(); // Save data to local storage
-        }
+    newRow.querySelector(
+        ".total-cell"
+    ).textContent = 0;
 
-        function addRow() {
-            const table = document.getElementById('loadingSheet').getElementsByTagName('tbody')[0];
-            const newRow = table.insertRow();
-            newRow.innerHTML = document.querySelector("tbody tr").innerHTML;
+    saveData();
+}
 
-            // Reset inputs in the new row
-            const inputs = newRow.querySelectorAll("input");
-            inputs.forEach(input => input.value = 0);
 
-            const totalCell = newRow.querySelector(".total-cell");
-            totalCell.textContent = 0; // Reset Total column
-            saveData(); // Save data to local storage
-        }
+/* ==========================================
+   SEARCH
+========================================== */
 
-        function filterData() {
-            const input = document.getElementById('searchBar').value.toLowerCase();
-            const rows = document.querySelectorAll("#loadingSheet tbody tr");
-            rows.forEach(row => {
-                const cells = row.getElementsByTagName("td");
-                let found = false;
-                for (let cell of cells) {
-                    if (cell.textContent.toLowerCase().includes(input)) {
-                        found = true;
-                        break;
-                    }
-                }
-                row.style.display = found ? "" : "none";
-            });
-        }
+function filterData() {
 
-        function filterByDate() {
-            const startDate = new Date(document.getElementById('startDate').value);
-            const endDate = new Date(document.getElementById('endDate').value);
-            const rows = document.querySelectorAll("#loadingSheet tbody tr");
-            rows.forEach(row => {
-                const dateCell = row.querySelector(".date-input").value;
-                if (dateCell) {
-                    const date = new Date(dateCell);
-                    if (date >= startDate && date <= endDate) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                }
-            });
-        }
+    const input =
+        document
+        .getElementById("searchBar")
+        .value
+        .toLowerCase();
 
-        async function generatePDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+    const rows =
+        document.querySelectorAll(
+            "#loadingSheet tbody tr"
+        );
 
-            doc.setFontSize(16);
-            doc.text("PP2 Off Loading Sheet", 10, 10);
+    rows.forEach(row => {
 
-            let y = 20;
-            doc.setFontSize(12);
-            doc.text("Part", 10, y);
-            doc.text("Color", 60, y);
-            doc.text("Total", 110, y);
-            doc.text("Rework (Defect)", 140, y);
-            doc.text("Polished", 180, y);
-            doc.text("Scrap (Defect)", 220, y);
-            doc.text("Remarks", 260, y);
-            doc.text("Date", 280, y); // Include the Date column
-            y += 10;
+        const cells =
+            row.getElementsByTagName("td");
 
-            const rows = document.querySelectorAll("tbody tr");
-            rows.forEach((row) => {
-                const cells = row.querySelectorAll("td");
-                const reworkDefect = cells[3].querySelector("select").value;
-                const scrapDefect = cells[5].querySelector("select").value;
-                const date = cells[7].querySelector("input").value; // Date value
-                doc.text(cells[0].querySelector("select").value, 10, y);
-                doc.text(cells[1].querySelector("select").value, 60, y);
-                doc.text(cells[2].textContent, 110, y);
-                doc.text(`${cells[3].querySelector("input").value} (${reworkDefect})`, 140, y);
-                doc.text(cells[4].querySelector("input").value, 180, y);
-                doc.text(`${cells[5].querySelector("input").value} (${scrapDefect})`, 220, y);
-                doc.text(cells[6].querySelector("input").value, 260, y);
-                doc.text(date, 280, y); // Add the date to the PDF
-                y += 10;
-            });
+        let found = false;
 
-            doc.save("PP2_Off_Loading_Sheet.pdf");
-        }
+        for (let cell of cells) {
 
-        function saveData() {
-            const tableData = [];
-            const rows = document.querySelectorAll("#loadingSheet tbody tr");
-            rows.forEach(row => {
-                const cells = row.querySelectorAll("td");
-                const rowData = {
-                    part: cells[0].querySelector("select").value,
-                    color: cells[1].querySelector("select").value,
-                    total: cells[2].textContent,
-                    rework: {
-                        value: cells[3].querySelector("input").value,
-                        defect: cells[3].querySelector("select").value
-                    },
-                    polished: cells[4].querySelector("input").value,
-                    scrap: {
-                        value: cells[5].querySelector("input").value,
-                        defect: cells[5].querySelector("select").value
-                    },
-                    remarks: cells[6].querySelector("input").value,
-                    date: cells[7].querySelector("input").value
-                };
-                tableData.push(rowData);
-            });
-            localStorage.setItem('pp2LoadingSheetData', JSON.stringify(tableData));
-        }
+            if (
+                cell.textContent
+                .toLowerCase()
+                .includes(input)
+            ) {
 
-        function loadData() {
-            const storedData = localStorage.getItem('pp2LoadingSheetData');
-            if (storedData) {
-                const tableData = JSON.parse(storedData);
-                const tableBody = document.querySelector("#loadingSheet tbody");
-                tableBody.innerHTML = ""; // Clear existing rows
-                tableData.forEach(rowData => {
-                    const newRow = tableBody.insertRow();
-                    newRow.innerHTML = `
-                        <td>
-                            <select>
-                                <option value="${rowData.part}" selected>${rowData.part}</option>
-                                <option value="H Bar_WLT">H Bar_WLT</option>
-                                <option value="H_Bar LTD">H_Bar LTD</option>
-                                <option value="WLT">WLT</option>
-                                <option value="XLT">XLT</option>
-                                <option value="LTD">LTD</option>
-                                <option value="MID">MID</option>
-                                <option value="High Bumper">High Bumper</option>
-                                <option value="BOX Rails J73">BOX Rails J73</option>
-                                <option value="Box Rails J73LF">Box Rails J73LF</option>
-                                <option value="Box Rails P703">Box Rails P703</option>
-                                <option value="Lower P703RH">Lower P703RH</option>
-                                <option value="Lower p703LH">Lower P703LH</option>
-                                <option value="Lower J703">Lower J703</option>
-                                <option value="Sporthoop J703">Sporthoop J703</>
-                                <option value="Inner P703LH">Inner P703LH</option>
-                                <option value="Inner P703RH">Inner P703RH</option>
-                                <option value="Inner J703RH">Inner J703RH</option>
-                                <option value="Inner J703LH">Inner J703LH</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select>
-                                <option value="${rowData.color}" selected>${rowData.color}</option>
-                                <option value="Boulder Gray">Boulder Gray</option>
-                                <option value="Black">Black</option>
-                                <option value="Moroccan Blue">Moroccan Blue</option>
-                                <option value="Frozen White">Frozen White</option>
-                                <option value="D. Silver">D. Silver</option>
-                                <option value="I. Silver">I. Silver</option>
-                            </select>
-                        </td>
-                        <td class="total-cell">${rowData.total}</td>
-                        <td class="rework-cell">
-                            <input type="number" class="number-input" value="${rowData.rework.value}" />
-                            <input type="number" class="number-input" value="0" />
-                            <button class="calc-btn" onclick="calculate(this, 'rework')">Add</button>
-                            <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
-                            <select class="rework-defect">
-                                <option value="${rowData.rework.defect}" selected>${rowData.rework.defect}</option>
-                                <option value="None">None</option>
-                                <option value="Deep Cut">Deep Cut</option>
-                                <option value="Scratch">Scratch</option>
-                                <option value="3×Painted">3×Painted</option>
-                            </select>
-                        </td>
-                        <td class="polished-cell">
-                            <input type="number" class="number-input" value="${rowData.polished}" />
-                            <input type="number" class="number-input" value="0" />
-                            <button class="calc-btn" onclick="calculate(this, 'polished')">Add</button>
-                            <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
-                        </td>
-                        <td class="scrap-cell">
-                            <input type="number" class="number-input" value="${rowData.scrap.value}" />
-                            <input type="number" class="number-input" value="0" />
-                            <button class="calc-btn" onclick="calculate(this, 'scrap')">Add</button>
-                            <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
-                            <select class="scrap-defect">
-                                <option value="${rowData.scrap.defect}" selected>${rowData.scrap.defect}</option>
-                                <option value="None">None</option>
-                                <option value="Deep Cut">Deep Cut</option>
-                                <option value="Scratch">Scratch</option>
-                                <option value="3×Painted">3×Painted</option>
-                            </select>
-                        </td>
-                        <td class="remarks-cell">
-                            <input type="number" class="number-input" value="${rowData.remarks}" />
-                            <input type="number" class="number-input" value="0" />
-                            <button class="calc-btn" onclick="calculate(this, 'remarks')">Add</button>
-                            <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
-                        </td>
-                        <td>
-                            <input type="date" class="date-input" value="${rowData.date}" />
-                        </td>
-                    `;
-                });
+                found = true;
+
+                break;
             }
         }
-    </script>
+
+        row.style.display =
+            found ? "" : "none";
+    });
+}
+
+
+/* ==========================================
+   DATE FILTER
+========================================== */
+
+function filterByDate() {
+
+    const startValue =
+        document.getElementById(
+            "startDate"
+        ).value;
+
+    const endValue =
+        document.getElementById(
+            "endDate"
+        ).value;
+
+    if (!startValue || !endValue) {
+
+        alert("Please select both dates.");
+
+        return;
+    }
+
+    const startDate =
+        new Date(startValue);
+
+    const endDate =
+        new Date(endValue);
+
+    const rows =
+        document.querySelectorAll(
+            "#loadingSheet tbody tr"
+        );
+
+    rows.forEach(row => {
+
+        const dateCell =
+            row.querySelector(
+                ".date-input"
+            ).value;
+
+        if (!dateCell) {
+
+            row.style.display = "none";
+
+            return;
+        }
+
+        const date =
+            new Date(dateCell);
+
+        if (
+            date >= startDate &&
+            date <= endDate
+        ) {
+
+            row.style.display = "";
+
+        } else {
+
+            row.style.display = "none";
+        }
+
+    });
+}
+
+
+/* ==========================================
+   TELEGRAM
+========================================== */
+
+function getTelegramReport() {
+
+    const teamLeader =
+        document
+        .getElementById("teamLeader")
+        .value
+        .trim();
+
+    const operator =
+        document
+        .getElementById("operatorName")
+        .value
+        .trim();
+
+    const rows =
+        document.querySelectorAll(
+            "#loadingSheet tbody tr"
+        );
+
+    let totalScrap = 0;
+    let totalRework = 0;
+
+    let scrapDetails = [];
+    let reworkDetails = [];
+
+    rows.forEach(row => {
+
+        const part =
+            row
+            .querySelector("td:nth-child(1) select")
+            .value;
+
+        const color =
+            row
+            .querySelector("td:nth-child(2) select")
+            .value;
+
+        const reworkInput =
+            row.querySelector(
+                ".rework-cell input"
+            );
+
+        const scrapInput =
+            row.querySelector(
+                ".scrap-cell input"
+            );
+
+        const rework =
+            parseInt(
+                reworkInput.value || 0
+            );
+
+        const scrap =
+            parseInt(
+                scrapInput.value || 0
+            );
+
+        const reworkDefect =
+            row.querySelector(
+                ".rework-defect"
+            ).value;
+
+        const scrapDefect =
+            row.querySelector(
+                ".scrap-defect"
+            ).value;
+
+        const date =
+            row.querySelector(
+                ".date-input"
+            ).value;
+
+        totalRework += rework;
+
+        totalScrap += scrap;
+
+
+        if (rework > 0) {
+
+            reworkDetails.push(
+                "• " +
+                part +
+                " | " +
+                color +
+                " | " +
+                rework +
+                " | " +
+                reworkDefect +
+                " | " +
+                (date || "No date")
+            );
+        }
+
+
+        if (scrap > 0) {
+
+            scrapDetails.push(
+                "• " +
+                part +
+                " | " +
+                color +
+                " | " +
+                scrap +
+                " | " +
+                scrapDefect +
+                " | " +
+                (date || "No date")
+            );
+        }
+
+    });
+
+
+    let message =
+        "🏭 PP2 OFF LOADING REPORT\n\n" +
+
+        "👷 Team Leader: " +
+        (teamLeader || "Not provided") +
+        "\n" +
+
+        "👨‍🔧 Operator: " +
+        (operator || "Not provided") +
+        "\n\n" +
+
+        "♻️ TOTAL REWORK: " +
+        totalRework +
+        "\n" +
+
+        "🗑️ TOTAL SCRAP: " +
+        totalScrap +
+        "\n\n";
+
+
+    message +=
+        "🔧 REWORK DETAILS\n";
+
+    if (reworkDetails.length > 0) {
+
+        message +=
+            reworkDetails.join("\n");
+
+    } else {
+
+        message +=
+            "No rework recorded.";
+    }
+
+
+    message +=
+        "\n\n🗑️ SCRAP DETAILS\n";
+
+    if (scrapDetails.length > 0) {
+
+        message +=
+            scrapDetails.join("\n");
+
+    } else {
+
+        message +=
+            "No scrap recorded.";
+    }
+
+
+    message +=
+        "\n\n📅 Report generated: " +
+        new Date().toLocaleString();
+
+    return {
+        message,
+        totalScrap,
+        totalRework
+    };
+}
+
+
+/* ==========================================
+   SEND MESSAGE TO TELEGRAM
+========================================== */
+
+async function sendToTelegram() {
+
+    const botToken =
+        document
+        .getElementById("telegramBotToken")
+        .value
+        .trim();
+
+    const chatId =
+        document
+        .getElementById("telegramChatId")
+        .value
+        .trim();
+
+    const status =
+        document.getElementById(
+            "telegramStatus"
+        );
+
+
+    if (!botToken) {
+
+        alert(
+            "Please enter the Telegram Bot Token."
+        );
+
+        return;
+    }
+
+
+    if (!chatId) {
+
+        alert(
+            "Please enter the Telegram Chat ID."
+        );
+
+        return;
+    }
+
+
+    const report =
+        getTelegramReport();
+
+
+    status.textContent =
+        "Sending report to Telegram...";
+
+    status.style.color = "#168ac0";
+
+
+    try {
+
+        /* SEND REPORT MESSAGE */
+
+        const response =
+            await fetch(
+                `https://api.telegram.org/bot${botToken}/sendMessage`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        chat_id: chatId,
+
+                        text: report.message
+
+                    })
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!result.ok) {
+
+            throw new Error(
+                result.description ||
+                "Telegram message failed."
+            );
+        }
+
+
+        /* ==================================
+           SEND SIGNATURE FILE
+        ================================== */
+
+        const signature =
+            document
+            .getElementById(
+                "signatureFile"
+            )
+            .files[0];
+
+
+        if (signature) {
+
+            const formData =
+                new FormData();
+
+            formData.append(
+                "chat_id",
+                chatId
+            );
+
+            formData.append(
+                "document",
+                signature
+            );
+
+            formData.append(
+                "caption",
+                "✍️ PP2 Report Signature\n" +
+                "Team Leader: " +
+                (
+                    document
+                    .getElementById(
+                        "teamLeader"
+                    )
+                    .value ||
+                    "Not provided"
+                ) +
+                "\nOperator: " +
+                (
+                    document
+                    .getElementById(
+                        "operatorName"
+                    )
+                    .value ||
+                    "Not provided"
+                )
+            );
+
+
+            const fileResponse =
+                await fetch(
+                    `https://api.telegram.org/bot${botToken}/sendDocument`,
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+            const fileResult =
+                await fileResponse.json();
+
+
+            if (!fileResult.ok) {
+
+                throw new Error(
+                    fileResult.description ||
+                    "Signature upload failed."
+                );
+            }
+        }
+
+
+        status.textContent =
+            "✅ Scrap and rework successfully sent to Telegram.";
+
+        status.style.color =
+            "#28a745";
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "❌ Telegram error: " +
+            error.message;
+
+        status.style.color =
+            "#dc3545";
+    }
+}
+
+
+/* ==========================================
+   PDF
+========================================== */
+
+async function generatePDF() {
+
+    const { jsPDF } =
+        window.jspdf;
+
+    const doc =
+        new jsPDF();
+
+    doc.setFontSize(16);
+
+    doc.text(
+        "PP2 Off Loading Sheet",
+        10,
+        10
+    );
+
+
+    let y = 20;
+
+    doc.setFontSize(12);
+
+    doc.text(
+        "Team Leader: " +
+        (
+            document
+            .getElementById(
+                "teamLeader"
+            )
+            .value ||
+            "Not provided"
+        ),
+        10,
+        y
+    );
+
+    y += 7;
+
+    doc.text(
+        "Operator: " +
+        (
+            document
+            .getElementById(
+                "operatorName"
+            )
+            .value ||
+            "Not provided"
+        ),
+        10,
+        y
+    );
+
+    y += 10;
+
+
+    doc.text("Part", 10, y);
+    doc.text("Color", 60, y);
+    doc.text("Total", 110, y);
+    doc.text("Rework", 140, y);
+    doc.text("Polished", 180, y);
+    doc.text("Scrap", 220, y);
+    doc.text("Remarks", 260, y);
+    doc.text("Date", 280, y);
+
+    y += 10;
+
+
+    const rows =
+        document.querySelectorAll(
+            "tbody tr"
+        );
+
+
+    rows.forEach(row => {
+
+        const cells =
+            row.querySelectorAll("td");
+
+        const reworkDefect =
+            cells[3]
+            .querySelector("select")
+            .value;
+
+        const scrapDefect =
+            cells[5]
+            .querySelector("select")
+            .value;
+
+        const date =
+            cells[7]
+            .querySelector("input")
+            .value;
+
+
+        doc.text(
+            cells[0]
+            .querySelector("select")
+            .value,
+            10,
+            y
+        );
+
+        doc.text(
+            cells[1]
+            .querySelector("select")
+            .value,
+            60,
+            y
+        );
+
+        doc.text(
+            cells[2].textContent,
+            110,
+            y
+        );
+
+        doc.text(
+            `${cells[3].querySelector("input").value} (${reworkDefect})`,
+            140,
+            y
+        );
+
+        doc.text(
+            cells[4]
+            .querySelector("input")
+            .value,
+            180,
+            y
+        );
+
+        doc.text(
+            `${cells[5].querySelector("input").value} (${scrapDefect})`,
+            220,
+            y
+        );
+
+        doc.text(
+            cells[6]
+            .querySelector("input")
+            .value,
+            260,
+            y
+        );
+
+        doc.text(
+            date,
+            280,
+            y
+        );
+
+        y += 10;
+
+
+        /* Create a new page if needed */
+
+        if (y > 280) {
+
+            doc.addPage();
+
+            y = 20;
+        }
+
+    });
+
+
+    doc.save(
+        "PP2_Off_Loading_Sheet.pdf"
+    );
+}
+
+
+/* ==========================================
+   LOCAL STORAGE
+========================================== */
+
+function saveData() {
+
+    const tableData = [];
+
+    const rows =
+        document.querySelectorAll(
+            "#loadingSheet tbody tr"
+        );
+
+
+    rows.forEach(row => {
+
+        const cells =
+            row.querySelectorAll("td");
+
+
+        const rowData = {
+
+            part:
+                cells[0]
+                .querySelector("select")
+                .value,
+
+            color:
+                cells[1]
+                .querySelector("select")
+                .value,
+
+            total:
+                cells[2].textContent,
+
+            rework: {
+
+                value:
+                    cells[3]
+                    .querySelector("input")
+                    .value,
+
+                defect:
+                    cells[3]
+                    .querySelector("select")
+                    .value
+            },
+
+            polished:
+                cells[4]
+                .querySelector("input")
+                .value,
+
+            scrap: {
+
+                value:
+                    cells[5]
+                    .querySelector("input")
+                    .value,
+
+                defect:
+                    cells[5]
+                    .querySelector("select")
+                    .value
+            },
+
+            remarks:
+                cells[6]
+                .querySelector("input")
+                .value,
+
+            date:
+                cells[7]
+                .querySelector("input")
+                .value
+        };
+
+
+        tableData.push(rowData);
+
+    });
+
+
+    localStorage.setItem(
+        "pp2LoadingSheetData",
+        JSON.stringify(tableData)
+    );
+
+
+    /* Save names locally */
+
+    localStorage.setItem(
+        "pp2TeamLeader",
+        document
+        .getElementById("teamLeader")
+        .value
+    );
+
+    localStorage.setItem(
+        "pp2Operator",
+        document
+        .getElementById("operatorName")
+        .value
+    );
+}
+
+
+/* ==========================================
+   LOAD DATA
+========================================== */
+
+function loadData() {
+
+    /* Load team leader */
+
+    const savedLeader =
+        localStorage.getItem(
+            "pp2TeamLeader"
+        );
+
+    if (savedLeader) {
+
+        document
+        .getElementById(
+            "teamLeader"
+        )
+        .value = savedLeader;
+    }
+
+
+    /* Load operator */
+
+    const savedOperator =
+        localStorage.getItem(
+            "pp2Operator"
+        );
+
+    if (savedOperator) {
+
+        document
+        .getElementById(
+            "operatorName"
+        )
+        .value = savedOperator;
+    }
+
+
+    const storedData =
+        localStorage.getItem(
+            "pp2LoadingSheetData"
+        );
+
+
+    if (!storedData) {
+
+        return;
+    }
+
+
+    const tableData =
+        JSON.parse(storedData);
+
+
+    const tableBody =
+        document.querySelector(
+            "#loadingSheet tbody"
+        );
+
+
+    tableBody.innerHTML = "";
+
+
+    tableData.forEach(rowData => {
+
+        const newRow =
+            tableBody.insertRow();
+
+
+        newRow.innerHTML = `
+
+        <td>
+
+            <select>
+
+                <option value="${rowData.part}" selected>
+                    ${rowData.part}
+                </option>
+
+                <option value="H Bar_WLT">
+                    H Bar_WLT
+                </option>
+
+                <option value="H Bar WLT22B">
+                    H Bar WLT22B
+                </option>
+
+                <option value="H_Bar LTD">
+                    H_Bar LTD
+                </option>
+
+                <option value="H_Bar LTD22B">
+                    H_Bar LTD22B
+                </option>
+
+                <option value="WLT">WLT</option>
+                <option value="XLT">XLT</option>
+                <option value="LTD">LTD</option>
+                <option value="MID">MID</option>
+                <option value="High Bumper">
+                    High Bumper
+                </option>
+
+                <option value="BOX Rails J73RH">
+                    BOX Rails J73RH
+                </option>
+
+                <option value="Box Rails J73LH">
+                    Box Rails J73LH
+                </option>
+
+                <option value="Box Rails P703RH">
+                    Box Rails P703RH
+                </option>
+
+                <option value="Box Rails P703LH">
+                    Box Rails P703LH
+                </option>
+
+                <option value="Lower P703">
+                    Lower P703
+                </option>
+
+                <option value="Lower J703">
+                    Lower J703
+                </option>
+
+                <option value="Sporthoop J703">
+                    Sporthoop J703
+                </option>
+
+                <option value="Inner P703RH">
+                    Inner P703RH
+                </option>
+
+                <option value="Inner P703LH">
+                    Inner P703LH
+                </option>
+
+                <option value="Inner J73RH">
+                    Inner J73RH
+                </option>
+
+                <option value="Inner J73LH">
+                    Inner J73LH
+                </option>
+
+            </select>
+
+        </td>
+
+
+        <td>
+
+            <select>
+
+                <option value="${rowData.color}" selected>
+                    ${rowData.color}
+                </option>
+
+                <option value="Boulder Gray">
+                    Boulder Gray
+                </option>
+
+                <option value="E Black">
+                    E Black
+                </option>
+
+                <option value="Moroccan Blue">
+                    Moroccan Blue
+                </option>
+
+                <option value="Frozen White">
+                    Frozen White
+                </option>
+
+                <option value="D. Silver">
+                    D. Silver
+                </option>
+
+                <option value="I. Silver">
+                    I. Silver
+                </option>
+
+                <option value="A Black">
+                    A Black
+                </option>
+
+                <option value="Asphalt">
+                    Asphalt
+                </option>
+
+                <option value="Blue Lightning">
+                    Blue Lightning
+                </option>
+
+                <option value="Carbonised grey">
+                    Carbonised grey
+                </option>
+
+                <option value="Lucid Red">
+                    Lucid Red
+                </option>
+
+                <option value="Cyber Orange">
+                    Cyber Orange
+                </option>
+
+            </select>
+
+        </td>
+
+
+        <td class="total-cell">
+            ${rowData.total}
+        </td>
+
+
+        <td class="rework-cell">
+
+            <input
+                type="number"
+                class="number-input"
+                value="${rowData.rework.value}"
+            >
+
+            <input
+                type="number"
+                class="number-input"
+                value="0"
+            >
+
+            <button
+                class="calc-btn"
+                onclick="calculate(this, 'rework')"
+            >
+                Add
+            </button>
+
+            <button
+                class="calc-btn reset-btn"
+                onclick="reset(this)"
+            >
+                Reset
+            </button>
+
+            <select class="rework-defect">
+
+                <option
+                    value="${rowData.rework.defect}"
+                    selected
+                >
+                    ${rowData.rework.defect}
+                </option>
+
+                <option value="None">
+                    None
+                </option>
+
+                <option value="Run">
+                    Run
+                </option>
+
+                <option value="off colour">
+                    off colour
+                </option>
+
+                <option value="Dirt">
+                    Dirt
+                </option>
+
+            </select>
+
+        </td>
+
+
+        <td class="polished-cell">
+
+            <input
+                type="number"
+                class="number-input"
+                value="${rowData.polished}"
+            >
+
+            <input
+                type="number"
+                class="number-input"
+                value="0"
+            >
+
+            <button
+                class="calc-btn"
+                onclick="calculate(this, 'polished')"
+            >
+                Add
+            </button>
+
+            <button
+                class="calc-btn reset-btn"
+                onclick="reset(this)"
+            >
+                Reset
+            </button>
+
+        </td>
+
+
+        <td class="scrap-cell">
+
+            <input
+                type="number"
+                class="number-input"
+                value="${rowData.scrap.value}"
+            >
+
+            <input
+                type="number"
+                class="number-input"
+                value="0"
+            >
+
+            <button
+                class="calc-btn"
+                onclick="calculate(this, 'scrap')"
+            >
+                Add
+            </button>
+
+            <button
+                class="calc-btn reset-btn"
+                onclick="reset(this)"
+            >
+                Reset
+            </button>
+
+            <select class="scrap-defect">
+
+                <option
+                    value="${rowData.scrap.defect}"
+                    selected
+                >
+                    ${rowData.scrap.defect}
+                </option>
+
+                <option value="None">
+                    None
+                </option>
+
+                <option value="Deep Cut">
+                    Deep Cut
+                </option>
+
+                <option value="Scratch">
+                    Scratch
+                </option>
+
+                <option value="3×Painted">
+                    3×Painted
+                </option>
+
+                <option value="fell in the oven">
+                    fell in the oven
+                </option>
+
+                <option value="Dirt">
+                    Dirt
+                </option>
+
+            </select>
+
+        </td>
+
+
+        <td class="remarks-cell">
+
+            <input
+                type="number"
+                class="number-input"
+                value="${rowData.remarks}"
+            >
+
+            <input
+                type="number"
+                class="number-input"
+                value="0"
+            >
+
+            <button
+                class="calc-btn"
+                onclick="calculate(this, 'remarks')"
+            >
+                Add
+            </button>
+
+            <button
+                class="calc-btn reset-btn"
+                onclick="reset(this)"
+            >
+                Reset
+            </button>
+
+        </td>
+
+
+        <td>
+
+            <input
+                type="date"
+                class="date-input"
+                value="${rowData.date}"
+            >
+
+        </td>
+
+        `;
+
+    });
+}
+
+
+/* ==========================================
+   AUTO SAVE NAMES
+========================================== */
+
+document.addEventListener(
+    "input",
+    function(event) {
+
+        if (
+            event.target.id === "teamLeader" ||
+            event.target.id === "operatorName"
+        ) {
+
+            saveData();
+        }
+
+    }
+);
+
+</script>
+
 </body>
     </html>
