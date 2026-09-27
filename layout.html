@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MSSL Paintshop</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,7 +15,7 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
-            color: red; /* Makes all text red */
+            color: red;
         }
 
         /* Video Background */
@@ -42,11 +43,13 @@
             height: 10vh;
             margin-bottom: 2vh;
         }
+
         .bar {
             width: 1vw;
             background-color: red;
             margin: 0 0.5vw;
         }
+
         .small { height: 4vh; }
         .medium { height: 8vh; }
         .tall { height: 12vh; }
@@ -67,6 +70,7 @@
             margin: 0 auto;
             color: red;
         }
+
         .typing-text {
             white-space: pre-wrap;
             overflow: hidden;
@@ -79,9 +83,15 @@
         /* Buttons */
         .button-container {
             margin-top: 10vh;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
         }
+
         .button-container button {
-            display: inline-block;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
             padding: 2vh 4vw;
             font-size: 3vw;
             cursor: pointer;
@@ -93,18 +103,24 @@
             z-index: 1;
         }
 
-        /* PDF and PP2 Icons */
+        /* Icons */
         .icon {
             width: 40px;
             height: 40px;
             margin-left: 10px;
             animation: spin 2s linear infinite;
-            z-index: 1; /* Ensure icons are visible */
+            z-index: 1;
+            object-fit: contain;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* QC Icon and Message Bubble */
@@ -116,6 +132,7 @@
             align-items: center;
             z-index: 1;
         }
+
         .qc-icon {
             width: 60px;
             height: 60px;
@@ -124,13 +141,13 @@
             background-repeat: no-repeat;
             display: inline-block;
             position: relative;
-            top: 10px; /* Adjust QC icon position */
+            top: 10px;
             cursor: pointer;
         }
 
         .qc-bubble {
             position: absolute;
-            bottom: 60px; /* Adjust bubble position */
+            bottom: 60px;
             left: 50%;
             transform: translateX(-50%);
             background: red;
@@ -142,6 +159,7 @@
             opacity: 0;
             animation: fadeIn 2s infinite alternate;
         }
+
         .qc-bubble::after {
             content: "";
             position: absolute;
@@ -154,14 +172,20 @@
         }
 
         @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <!-- Video Background Container -->
+    <!-- Video Background -->
     <div class="video-container">
         <video class="video-background" id="video-player" autoplay muted></video>
     </div>
@@ -181,8 +205,9 @@
         <h2 class="typing-text"></h2>
     </div>
 
-    <!-- Buttons Below -->
+    <!-- Buttons -->
     <div class="button-container">
+
         <!-- PDF Button -->
         <button onclick="window.location.href='data.html'">
             <img src="pdf.png" class="icon" alt="PDF Icon">
@@ -195,45 +220,69 @@
 
         <!-- Scan Button -->
         <button onclick="window.location.href='scan.html'">
-            <img src="car.png" class="icon" alt="car Icon">
+            <img src="car.png" class="icon" alt="Car Icon">
         </button>
+
+        <!-- Loader Button -->
+        <button onclick="window.location.href='loader.html'">
+            <img src="loader.png" class="icon" alt="Loader Icon">
+        </button>
+
+        <!-- Preparation Button -->
+        <button onclick="window.location.href='preparation.html'">
+            <img src="preparation.png" class="icon" alt="Preparation Icon">
+        </button>
+
     </div>
 
     <!-- QC Icon and Message Bubble -->
     <div class="qc-container">
         <div class="qc-bubble">Rework Area</div>
-        <div class="qc-icon" onclick="window.location.href='rework.html'"></div>
+
+        <div
+            class="qc-icon"
+            onclick="window.location.href='rework.html'">
+        </div>
     </div>
 
     <script>
+        /* Typing Effect */
         const text = "Quality is what we aim for. Think Quality everyday.";
         let i = 0;
+
         function typeEffect() {
             if (i < text.length) {
-                document.querySelector(".typing-text").innerHTML += text[i] === " " ? "&nbsp;" : text[i];
+                document.querySelector(".typing-text").innerHTML +=
+                    text[i] === " " ? "&nbsp;" : text[i];
+
                 i++;
+
                 setTimeout(typeEffect, 100);
             } else {
                 document.querySelector(".typing-text").style.borderRight = "none";
             }
         }
+
         window.onload = typeEffect;
 
-        // Video Switching Logic
+
+        /* Video Switching Logic */
         const videos = ["video1.mp4", "video2.mp4"];
         let currentVideo = 0;
+
         const videoPlayer = document.getElementById("video-player");
 
         function playNextVideo() {
             videoPlayer.src = videos[currentVideo];
             videoPlayer.play();
+
             currentVideo = (currentVideo + 1) % videos.length;
         }
 
         videoPlayer.addEventListener("ended", playNextVideo);
-        playNextVideo(); // Start with the first video
+
+        playNextVideo();
     </script>
 
 </body>
 </html>
-
