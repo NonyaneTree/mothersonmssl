@@ -146,6 +146,37 @@ button {
     margin-top: 7px;
 }
 
+
+/* =====================================================
+   3 HOUR TIMER
+   ===================================================== */
+
+.timer {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #168443;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.timer.expired-timer {
+    background: #e53935;
+}
+
+.expired-label {
+    color: #ff5252;
+    font-weight: bold;
+    margin-left: 8px;
+}
+
+
+/* =====================================================
+   EMPTY
+   ===================================================== */
+
 .empty {
     text-align: center;
     color: #777;
@@ -160,6 +191,7 @@ button {
     font-size: 13px;
 }
 
+
 @media(max-width:600px) {
 
     .controls {
@@ -173,6 +205,7 @@ button {
     .telegram-message {
         font-size: 15px;
     }
+
 }
 
 </style>
@@ -226,18 +259,26 @@ button {
 ========================================================
 TELEGRAM SETTINGS
 ========================================================
-
-IMPORTANT:
-
-Use the TOKEN of the BOT that is monitoring the channel.
-
-Do not publish a real bot token publicly on GitHub.
-========================================================
 */
 
 const TELEGRAM_BOT_TOKEN = "8873950020:AAHk-n7MglR5uC9YXuH5I19KqL6C29DwCDU";
 
 const TELEGRAM_CHAT_ID = "-1004385640479";
+
+
+/*
+========================================================
+3 HOUR TIMER
+========================================================
+
+Every Telegram message has 3 hours.
+
+3 hours = 10,800,000 milliseconds
+========================================================
+*/
+
+const MESSAGE_LIFETIME =
+    3 * 60 * 60 * 1000;
 
 
 /*
@@ -270,7 +311,7 @@ let doneLoads =
 
 /*
 ========================================================
-SAVE
+SAVE DATA
 ========================================================
 */
 
@@ -368,12 +409,6 @@ async function fetchTelegram() {
 
             data.result.forEach(update => {
 
-                console.log(
-                    "Telegram update:",
-                    update
-                );
-
-
                 if (
                     update.update_id >=
                     highestUpdateId
@@ -400,14 +435,8 @@ async function fetchTelegram() {
                 }
 
 
-                console.log(
-                    "CHANNEL MESSAGE:",
-                    message
-                );
-
-
                 /*
-                Check channel ID
+                CHECK CHANNEL ID
                 */
 
                 if (
@@ -415,18 +444,13 @@ async function fetchTelegram() {
                     String(TELEGRAM_CHAT_ID)
                 ) {
 
-                    console.log(
-                        "Message from another channel:",
-                        message.chat.id
-                    );
-
                     return;
 
                 }
 
 
                 /*
-                Process EVERY message
+                PROCESS MESSAGE
                 */
 
                 processMessage(message);
@@ -475,14 +499,14 @@ async function fetchTelegram() {
 
 /*
 ========================================================
-PROCESS ANY CHANNEL MESSAGE
+PROCESS TELEGRAM MESSAGE
 ========================================================
 */
 
 function processMessage(message) {
 
     /*
-    Telegram text message
+    Telegram text
     OR
     caption from photo/video/document
     */
@@ -494,10 +518,7 @@ function processMessage(message) {
 
 
     /*
-    Ignore completely empty messages.
-
-    This means a photo with no caption
-    will not create a text card.
+    Ignore completely empty messages
     */
 
     if (!text.trim()) {
@@ -508,7 +529,7 @@ function processMessage(message) {
 
 
     /*
-    Unique Telegram message ID
+    Unique Telegram ID
     */
 
     const messageId =
@@ -516,7 +537,7 @@ function processMessage(message) {
 
 
     /*
-    Do not display duplicate messages
+    Don't display duplicate
     */
 
     if (
@@ -532,7 +553,7 @@ function processMessage(message) {
 
 
     /*
-    Do not display messages already marked DONE
+    Don't display messages already DONE
     */
 
     if (
@@ -545,6 +566,15 @@ function processMessage(message) {
 
     }
 
+
+    /*
+    IMPORTANT:
+
+    Use Telegram's original message time.
+
+    The timer therefore does NOT reset
+    when the page refreshes.
+    */
 
     const receivedAt =
         message.date
@@ -573,6 +603,84 @@ function processMessage(message) {
             message.message_id
 
     });
+
+}
+
+
+/*
+========================================================
+CALCULATE TIMER
+========================================================
+*/
+
+function getTimeRemaining(receivedAt) {
+
+    const receivedTime =
+        new Date(receivedAt).getTime();
+
+
+    const expiryTime =
+        receivedTime +
+        MESSAGE_LIFETIME;
+
+
+    const now =
+        Date.now();
+
+
+    const remaining =
+        expiryTime - now;
+
+
+    return remaining;
+
+}
+
+
+/*
+========================================================
+FORMAT TIMER
+========================================================
+*/
+
+function formatTimer(milliseconds) {
+
+    if (milliseconds <= 0) {
+
+        return "EXPIRED";
+
+    }
+
+
+    const totalSeconds =
+        Math.floor(
+            milliseconds / 1000
+        );
+
+
+    const hours =
+        Math.floor(
+            totalSeconds / 3600
+        );
+
+
+    const minutes =
+        Math.floor(
+            (totalSeconds % 3600) / 60
+        );
+
+
+    const seconds =
+        totalSeconds % 60;
+
+
+    return (
+        String(hours).padStart(2, "0") +
+        ":" +
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0")
+    );
 
 }
 
@@ -622,6 +730,16 @@ function renderLoads() {
 
     activeLoads.forEach(item => {
 
+        const remaining =
+            getTimeRemaining(
+                item.receivedAt
+            );
+
+
+        const expired =
+            remaining <= 0;
+
+
         const box =
             document.createElement(
                 "div"
@@ -629,7 +747,9 @@ function renderLoads() {
 
 
         box.className =
-            "load active";
+            expired
+                ? "load expired"
+                : "load active";
 
 
         box.id =
@@ -657,16 +777,43 @@ function renderLoads() {
                         ${escapeHTML(item.text)}
                     </div>
 
-                    <div class="loaded-time">
-                        Received:
-                        ${formatDate(item.receivedAt)}
+
+                    <div
+                        class="timer ${expired ? "expired-timer" : ""}"
+                        id="timer-${safeId(item.id)}">
+
+                        ⏱ ${
+                            expired
+                                ? "EXPIRED"
+                                : formatTimer(remaining)
+                        }
+
                     </div>
 
+
+                    <div class="loaded-time">
+
+                        Received:
+                        ${formatDate(item.receivedAt)}
+
+                        ${
+                            expired
+                                ? `<span class="expired-label">
+                                    • 3 HOURS PASSED
+                                   </span>`
+                                : ""
+                        }
+
+                    </div>
+
+
                     <div class="telegram-id">
+
                         Telegram message:
                         ${escapeHTML(
                             item.telegramMessageId
                         )}
+
                     </div>
 
                 </div>
@@ -677,6 +824,92 @@ function renderLoads() {
 
 
         container.appendChild(box);
+
+    });
+
+}
+
+
+/*
+========================================================
+UPDATE TIMERS
+
+This runs every second.
+
+It does NOT remove expired messages.
+========================================================
+*/
+
+function updateTimers() {
+
+    activeLoads.forEach(item => {
+
+        const timer =
+            document.getElementById(
+                "timer-" +
+                safeId(item.id)
+            );
+
+
+        const box =
+            document.getElementById(
+                "load-" +
+                safeId(item.id)
+            );
+
+
+        if (!timer || !box) {
+
+            return;
+
+        }
+
+
+        const remaining =
+            getTimeRemaining(
+                item.receivedAt
+            );
+
+
+        if (remaining <= 0) {
+
+            /*
+            Message stays visible.
+            */
+
+            timer.innerHTML =
+                "⏱ EXPIRED";
+
+
+            timer.classList.add(
+                "expired-timer"
+            );
+
+
+            box.classList.remove(
+                "active"
+            );
+
+
+            box.classList.add(
+                "expired"
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+        Message still has time.
+        */
+
+        timer.innerHTML =
+            "⏱ " +
+            formatTimer(
+                remaining
+            );
 
     });
 
@@ -769,6 +1002,12 @@ function markSelectedDone() {
             box.dataset.id;
 
 
+        /*
+        Permanently remember
+        this Telegram message
+        as DONE.
+        */
+
         if (
             !doneLoads.includes(id)
         ) {
@@ -779,6 +1018,10 @@ function markSelectedDone() {
 
     });
 
+
+    /*
+    Remove from active display.
+    */
 
     activeLoads =
         activeLoads.filter(
@@ -902,7 +1145,11 @@ fetchTelegram();
 
 
 /*
-Check Telegram every 10 seconds
+========================================================
+TELEGRAM CHECK
+
+New messages are checked every 10 seconds.
+========================================================
 */
 
 setInterval(
@@ -910,7 +1157,28 @@ setInterval(
     10000
 );
 
+
+/*
+========================================================
+TIMER CHECK
+
+Timer updates every 1 second.
+========================================================
+*/
+
+setInterval(
+    updateTimers,
+    1000
+);
+
+
+/*
+Initial timer update
+*/
+
+updateTimers();
+
 </script>
 
 </body>
-</html>
+    </html>
