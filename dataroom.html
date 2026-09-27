@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PP2 Production Summary</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f2f4f7;
+            color: #222;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .info-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .info-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .summary-card h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+        }
+
+        .summary-number {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .total-produced {
+            border-top: 5px solid #007bff;
+        }
+
+        .total-rework {
+            border-top: 5px solid #ffc107;
+        }
+
+        .total-polished {
+            border-top: 5px solid #28a745;
+        }
+
+        .total-scrap {
+            border-top: 5px solid #dc3545;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            border: none;
+            border-radius: 6px;
+            padding: 12px 18px;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .refresh-btn {
+            background: #007bff;
+        }
+
+        .pdf-btn {
+            background: #6f42c1;
+        }
+
+        .clear-btn {
+            background: #dc3545;
+        }
+
+        .refresh-btn:hover {
+            background: #0056b3;
+        }
+
+        .pdf-btn:hover {
+            background: #59339d;
+        }
+
+        .clear-btn:hover {
+            background: #c82333;
+        }
+
+        .status {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .table-container {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 950px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #343a40;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 30px;
+            font-weight: bold;
+            color: #777;
+        }
+
+        @media (max-width: 800px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            body {
+                padding: 10px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title">
+        PP2 Production Summary
+    </div>
+
+    <div class="info">
+
+        <div class="info-row">
+
+            <div class="info-box">
+                <strong>Team Leader</strong>
+                <span id="teamLeader">Not provided</span>
+            </div>
+
+            <div class="info-box">
+                <strong>Operator</strong>
+                <span id="operatorName">Not provided</span>
+            </div>
+
+            <div class="info-box">
+                <strong>Number of Parts</strong>
+                <span id="numberOfParts">0</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TOTALS -->
+
+    <div class="summary-grid">
+
+        <div class="summary-card total-produced">
+            <h3>TOTAL PRODUCED</h3>
+            <div class="summary-number" id="totalProduced">
+                0
+            </div>
+        </div>
+
+        <div class="summary-card total-rework">
+            <h3>TOTAL REWORK</h3>
+            <div class="summary-number" id="totalRework">
+                0
+            </div>
+        </div>
+
+        <div class="summary-card total-polished">
+            <h3>TOTAL POLISHED</h3>
+            <div class="summary-number" id="totalPolished">
+                0
+            </div>
+        </div>
+
+        <div class="summary-card total-scrap">
+            <h3>TOTAL SCRAP</h3>
+            <div class="summary-number" id="totalScrap">
+                0
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- BUTTONS -->
+
+    <div class="buttons">
+
+        <button
+            class="refresh-btn"
+            onclick="importFromMSSL()">
+            🔄 Fetch Latest Data From MSSL
+        </button>
+
+        <button
+            class="pdf-btn"
+            onclick="downloadPDF()">
+            📄 Download PDF
+        </button>
+
+        <button
+            class="clear-btn"
+            onclick="clearSummary()">
+            🗑️ Clear Summary
+        </button>
+
+    </div>
+
+
+    <div class="status" id="status">
+        Loading data...
+    </div>
+
+
+    <!-- DATA TABLE -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Part</th>
+                    <th>Color</th>
+                    <th>Total</th>
+                    <th>Rework</th>
+                    <th>Polished</th>
+                    <th>Scrap</th>
+                    <th>Remarks</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody id="summaryTableBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/*
+==================================================
+LOCAL STORAGE KEYS
+==================================================
+
+SOURCE:
+mssl.html
+    ↓
+pp2LoadingSheetData
+
+THIS SUMMARY PAGE:
+    ↓
+pp2SummaryData
+
+The summary page NEVER deletes the source data.
+==================================================
+*/
+
+
+const SOURCE_KEY = "pp2LoadingSheetData";
+
+const SUMMARY_KEY = "pp2SummaryData";
+
+const TEAM_LEADER_KEY = "pp2TeamLeader";
+
+const OPERATOR_KEY = "pp2Operator";
+
+
+/*
+==================================================
+START PAGE
+==================================================
+*/
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        /*
+        First check if this summary already
+        has its own saved copy.
+        */
+
+        const savedSummary =
+            localStorage.getItem(SUMMARY_KEY);
+
+        if (savedSummary) {
+
+            loadOwnSummary();
+
+        } else {
+
+            /*
+            If no summary exists yet,
+            fetch from mssl.html storage.
+            */
+
+            importFromMSSL();
+
+        }
+
+    }
+);
+
+
+/*
+==================================================
+FETCH DATA FROM MSSL.HTML
+==================================================
+*/
+
+function importFromMSSL() {
+
+    const sourceData =
+        localStorage.getItem(SOURCE_KEY);
+
+    if (!sourceData) {
+
+        updateStatus(
+            "⚠️ No production data was found in mssl.html.",
+            "orange"
+        );
+
+        displayData([]);
+
+        return;
+    }
+
+
+    try {
+
+        const data =
+            JSON.parse(sourceData);
+
+
+        /*
+        Make a completely separate copy.
+
+        Changes to pp2SummaryData will not
+        affect pp2LoadingSheetData.
+        */
+
+        const copiedData =
+            JSON.parse(
+                JSON.stringify(data)
+            );
+
+
+        localStorage.setItem(
+            SUMMARY_KEY,
+            JSON.stringify(copiedData)
+        );
+
+
+        /*
+        Copy Team Leader and Operator
+        information as well.
+        */
+
+        const teamLeader =
+            localStorage.getItem(
+                TEAM_LEADER_KEY
+            );
+
+        const operator =
+            localStorage.getItem(
+                OPERATOR_KEY
+            );
+
+
+        if (teamLeader !== null) {
+
+            localStorage.setItem(
+                "pp2SummaryTeamLeader",
+                teamLeader
+            );
+        }
+
+
+        if (operator !== null) {
+
+            localStorage.setItem(
+                "pp2SummaryOperator",
+                operator
+            );
+        }
+
+
+        displayData(copiedData);
+
+
+        updateStatus(
+            "✅ Latest data successfully fetched from mssl.html and saved to this summary.",
+            "green"
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        updateStatus(
+            "❌ Could not read the production data.",
+            "red"
+        );
+
+    }
+
+}
+
+
+/*
+==================================================
+LOAD THIS PAGE'S OWN STORAGE
+==================================================
+*/
+
+function loadOwnSummary() {
+
+    const savedData =
+        localStorage.getItem(
+            SUMMARY_KEY
+        );
+
+
+    if (!savedData) {
+
+        displayData([]);
+
+        return;
+    }
+
+
+    try {
+
+        const data =
+            JSON.parse(savedData);
+
+        displayData(data);
+
+
+        updateStatus(
+            "📦 Showing the data saved in this summary.",
+            "blue"
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        updateStatus(
+            "❌ Saved summary data is corrupted.",
+            "red"
+        );
+
+    }
+
+}
+
+
+/*
+==================================================
+DISPLAY DATA
+==================================================
+*/
+
+function displayData(data) {
+
+    const tableBody =
+        document.getElementById(
+            "summaryTableBody"
+        );
+
+
+    tableBody.innerHTML = "";
+
+
+    if (!Array.isArray(data) ||
+        data.length === 0) {
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="9" class="empty">
+                    No production records available.
+                </td>
+            </tr>
+        `;
+
+        updateTotals([]);
+
+        return;
+    }
+
+
+    data.forEach(
+        function(row, index) {
+
+            const rework =
+                Number(
+                    row.rework?.value || 0
+                );
+
+            const polished =
+                Number(
+                    row.polished || 0
+                );
+
+            const scrap =
+                Number(
+                    row.scrap?.value || 0
+                );
+
+            const total =
+                Number(
+                    row.total ||
+                    (rework + polished + scrap)
+                );
+
+            const remarks =
+                Number(
+                    row.remarks || 0
+                );
+
+
+            const reworkDefect =
+                row.rework?.defect ||
+                "None";
+
+            const scrapDefect =
+                row.scrap?.defect ||
+                "None";
+
+
+            const tr =
+                document.createElement("tr");
+
+
+            tr.innerHTML = `
+
+                <td>${index + 1}</td>
+
+                <td>${escapeHTML(
+                    row.part || ""
+                )}</td>
+
+                <td>${escapeHTML(
+                    row.color || ""
+                )}</td>
+
+                <td><strong>${total}</strong></td>
+
+                <td>
+                    ${rework}
+                    ${
+                        rework > 0
+                        ? `<br><small>${escapeHTML(reworkDefect)}</small>`
+                        : ""
+                    }
+                </td>
+
+                <td>${polished}</td>
+
+                <td>
+                    ${scrap}
+                    ${
+                        scrap > 0
+                        ? `<br><small>${escapeHTML(scrapDefect)}</small>`
+                        : ""
+                    }
+                </td>
+
+                <td>${remarks}</td>
+
+                <td>${escapeHTML(
+                    row.date || ""
+                )}</td>
+
+            `;
+
+
+            tableBody.appendChild(tr);
+
+        }
+    );
+
+
+    updateTotals(data);
+
+}
+
+
+/*
+==================================================
+CALCULATE ALL TOTALS
+==================================================
+*/
+
+function updateTotals(data) {
+
+    let totalProduced = 0;
+
+    let totalRework = 0;
+
+    let totalPolished = 0;
+
+    let totalScrap = 0;
+
+
+    data.forEach(
+        function(row) {
+
+            const rework =
+                Number(
+                    row.rework?.value || 0
+                );
+
+            const polished =
+                Number(
+                    row.polished || 0
+                );
+
+            const scrap =
+                Number(
+                    row.scrap?.value || 0
+                );
+
+
+            /*
+            Total Produced is:
+            Rework + Polished + Scrap
+
+            This matches the calculation
+            used by mssl.html.
+            */
+
+            const total =
+                Number(
+                    row.total ||
+                    (rework + polished + scrap)
+                );
+
+
+            totalProduced += total;
+
+            totalRework += rework;
+
+            totalPolished += polished;
+
+            totalScrap += scrap;
+
+        }
+    );
+
+
+    document.getElementById(
+        "totalProduced"
+    ).textContent = totalProduced;
+
+
+    document.getElementById(
+        "totalRework"
+    ).textContent = totalRework;
+
+
+    document.getElementById(
+        "totalPolished"
+    ).textContent = totalPolished;
+
+
+    document.getElementById(
+        "totalScrap"
+    ).textContent = totalScrap;
+
+
+    document.getElementById(
+        "numberOfParts"
+    ).textContent = data.length;
+
+
+    /*
+    Team Leader
+    */
+
+    const leader =
+        localStorage.getItem(
+            "pp2SummaryTeamLeader"
+        ) ||
+        localStorage.getItem(
+            TEAM_LEADER_KEY
+        );
+
+
+    document.getElementById(
+        "teamLeader"
+    ).textContent =
+        leader || "Not provided";
+
+
+    /*
+    Operator
+    */
+
+    const operator =
+        localStorage.getItem(
+            "pp2SummaryOperator"
+        ) ||
+        localStorage.getItem(
+            OPERATOR_KEY
+        );
+
+
+    document.getElementById(
+        "operatorName"
+    ).textContent =
+        operator || "Not provided";
+
+}
+
+
+/*
+==================================================
+CLEAR THIS SUMMARY ONLY
+==================================================
+*/
+
+function clearSummary() {
+
+    const confirmed =
+        confirm(
+            "Clear this summary's saved data?\n\n" +
+            "The original mssl.html data will NOT be deleted."
+        );
+
+
+    if (!confirmed) {
+
+        return;
+    }
+
+
+    /*
+    IMPORTANT:
+    Only delete the summary storage.
+
+    The source pp2LoadingSheetData
+    remains untouched.
+    */
+
+    localStorage.removeItem(
+        SUMMARY_KEY
+    );
+
+    localStorage.removeItem(
+        "pp2SummaryTeamLeader"
+    );
+
+    localStorage.removeItem(
+        "pp2SummaryOperator"
+    );
+
+
+    displayData([]);
+
+
+    updateStatus(
+        "🗑️ Summary cleared. The original mssl.html data is still safe.",
+        "red"
+    );
+
+}
+
+
+/*
+==================================================
+PDF
+==================================================
+*/
+
+function downloadPDF() {
+
+    const {
+        jsPDF
+    } = window.jspdf;
+
+
+    const savedData =
+        localStorage.getItem(
+            SUMMARY_KEY
+        );
+
+
+    if (!savedData) {
+
+        alert(
+            "There is no summary data to create a PDF."
+        );
+
+        return;
+    }
+
+
+    let data;
+
+
+    try {
+
+        data =
+            JSON.parse(savedData);
+
+    } catch (error) {
+
+        alert(
+            "Could not read summary data."
+        );
+
+        return;
+    }
+
+
+    if (!data.length) {
+
+        alert(
+            "There are no production records."
+        );
+
+        return;
+    }
+
+
+    const doc =
+        new jsPDF({
+            orientation: "landscape"
+        });
+
+
+    /*
+    TITLE
+    */
+
+    doc.setFontSize(18);
+
+    doc.text(
+        "PP2 PRODUCTION SUMMARY",
+        14,
+        15
+    );
+
+
+    /*
+    TEAM INFORMATION
+    */
+
+    doc.setFontSize(10);
+
+
+    const leader =
+        localStorage.getItem(
+            "pp2SummaryTeamLeader"
+        ) ||
+        localStorage.getItem(
+            TEAM_LEADER_KEY
+        ) ||
+        "Not provided";
+
+
+    const operator =
+        localStorage.getItem(
+            "pp2SummaryOperator"
+        ) ||
+        localStorage.getItem(
+            OPERATOR_KEY
+        ) ||
+        "Not provided";
+
+
+    doc.text(
+        "Team Leader: " + leader,
+        14,
+        23
+    );
+
+
+    doc.text(
+        "Operator: " + operator,
+        14,
+        30
+    );
+
+
+    /*
+    CALCULATE TOTALS
+    */
+
+    let totalProduced = 0;
+
+    let totalRework = 0;
+
+    let totalPolished = 0;
+
+    let totalScrap = 0;
+
+
+    data.forEach(
+        function(row) {
+
+            const rework =
+                Number(
+                    row.rework?.value || 0
+                );
+
+            const polished =
+                Number(
+                    row.polished || 0
+                );
+
+            const scrap =
+                Number(
+                    row.scrap?.value || 0
+                );
+
+            const total =
+                Number(
+                    row.total ||
+                    (rework + polished + scrap)
+                );
+
+
+            totalProduced += total;
+
+            totalRework += rework;
+
+            totalPolished += polished;
+
+            totalScrap += scrap;
+
+        }
+    );
+
+
+    /*
+    TOTALS SECTION
+    */
+
+    doc.setFontSize(11);
+
+    doc.text(
+        "TOTAL PRODUCED: " +
+        totalProduced,
+        14,
+        40
+    );
+
+    doc.text(
+        "TOTAL REWORK: " +
+        totalRework,
+        75,
+        40
+    );
+
+    doc.text(
+        "TOTAL POLISHED: " +
+        totalPolished,
+        130,
+        40
+    );
+
+    doc.text(
+        "TOTAL SCRAP: " +
+        totalScrap,
+        195,
+        40
+    );
+
+
+    /*
+    TABLE HEADER
+    */
+
+    let y = 52;
+
+    doc.setFontSize(9);
+
+
+    doc.text("#", 10, y);
+
+    doc.text("Part", 20, y);
+
+    doc.text("Color", 65, y);
+
+    doc.text("Total", 105, y);
+
+    doc.text("Rework", 125, y);
+
+    doc.text("Polished", 155, y);
+
+    doc.text("Scrap", 180, y);
+
+    doc.text("Remarks", 210, y);
+
+    doc.text("Date", 240, y);
+
+
+    y += 7;
+
+
+    /*
+    TABLE ROWS
+    */
+
+    data.forEach(
+        function(row, index) {
+
+            const rework =
+                Number(
+                    row.rework?.value || 0
+                );
+
+            const polished =
+                Number(
+                    row.polished || 0
+                );
+
+            const scrap =
+                Number(
+                    row.scrap?.value || 0
+                );
+
+            const total =
+                Number(
+                    row.total ||
+                    (rework + polished + scrap)
+                );
+
+            const remarks =
+                Number(
+                    row.remarks || 0
+                );
+
+
+            doc.text(
+                String(index + 1),
+                10,
+                y
+            );
+
+
+            doc.text(
+                shorten(row.part || "", 25),
+                20,
+                y
+            );
+
+
+            doc.text(
+                shorten(row.color || "", 20),
+                65,
+                y
+            );
+
+
+            doc.text(
+                String(total),
+                105,
+                y
+            );
+
+
+            doc.text(
+                String(rework),
+                125,
+                y
+            );
+
+
+            doc.text(
+                String(polished),
+                155,
+                y
+            );
+
+
+            doc.text(
+                String(scrap),
+                180,
+                y
+            );
+
+
+            doc.text(
+                String(remarks),
+                210,
+                y
+            );
+
+
+            doc.text(
+                String(row.date || ""),
+                240,
+                y
+            );
+
+
+            y += 6;
+
+
+            /*
+            NEW PAGE
+            */
+
+            if (y > 190) {
+
+                doc.addPage();
+
+                y = 20;
+
+            }
+
+        }
+    );
+
+
+    /*
+    SAVE PDF
+    */
+
+    doc.save(
+        "PP2_Production_Summary.pdf"
+    );
+
+}
+
+
+/*
+==================================================
+STATUS
+==================================================
+*/
+
+function updateStatus(
+    message,
+    color
+) {
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+
+    status.textContent = message;
+
+
+    if (color === "green") {
+
+        status.style.color = "#28a745";
+
+    } else if (color === "red") {
+
+        status.style.color = "#dc3545";
+
+    } else if (color === "orange") {
+
+        status.style.color = "#d39e00";
+
+    } else {
+
+        status.style.color = "#007bff";
+
+    }
+
+}
+
+
+/*
+==================================================
+SECURITY / HTML DISPLAY
+==================================================
+*/
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/*
+==================================================
+SHORTEN PDF TEXT
+==================================================
+*/
+
+function shorten(
+    text,
+    maxLength
+) {
+
+    text = String(text);
+
+
+    if (text.length <= maxLength) {
+
+        return text;
+
+    }
+
+
+    return text.substring(
+        0,
+        maxLength - 3
+    ) + "...";
+
+}
+
+</script>
+
+</body>
+  </html>
