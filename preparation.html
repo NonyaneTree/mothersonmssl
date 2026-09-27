@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PP2 Loading Monitor</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #111;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    header {
+        background: #181818;
+        padding: 18px;
+        text-align: center;
+        border-bottom: 2px solid #333;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 25px;
+    }
+
+    header p {
+        margin: 6px 0 0;
+        color: #aaa;
+        font-size: 14px;
+    }
+
+    .controls {
+        max-width: 900px;
+        margin: 15px auto;
+        padding: 0 15px;
+        display: flex;
+        gap: 10px;
+    }
+
+    button {
+        border: none;
+        border-radius: 8px;
+        padding: 13px 16px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+    .select-all {
+        background: #444;
+        color: white;
+        flex: 1;
+    }
+
+    .done {
+        background: #168443;
+        color: white;
+        flex: 1;
+    }
+
+    .refresh {
+        background: #245c9c;
+        color: white;
+        flex: 1;
+    }
+
+    #loads {
+        max-width: 900px;
+        margin: auto;
+        padding: 0 15px 30px;
+    }
+
+    .load {
+        background: #1d1d1d;
+        border: 1px solid #383838;
+        border-radius: 14px;
+        margin-bottom: 14px;
+        padding: 18px;
+        position: relative;
+    }
+
+    .load.active {
+        border-left: 5px solid #168443;
+    }
+
+    .load.warning {
+        border-left: 5px solid orange;
+    }
+
+    .load.expired {
+        border-left: 5px solid #e53935;
+        background: #251515;
+    }
+
+    .top {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .checkbox {
+        width: 24px;
+        height: 24px;
+        margin-top: 3px;
+        flex-shrink: 0;
+    }
+
+    .part-info {
+        flex: 1;
+    }
+
+    .part {
+        font-size: 21px;
+        font-weight: bold;
+    }
+
+    .colour {
+        color: #bbb;
+        margin-top: 6px;
+    }
+
+    .quantity {
+        margin-top: 7px;
+    }
+
+    .timer {
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 18px;
+        letter-spacing: 1px;
+    }
+
+    .active-text {
+        color: #50d890;
+    }
+
+    .warning-text {
+        color: orange;
+    }
+
+    .expired-text {
+        color: #ff3939;
+    }
+
+    .loaded-time {
+        color: #888;
+        font-size: 13px;
+        margin-top: 8px;
+    }
+
+    .telegram-id {
+        color: #555;
+        font-size: 11px;
+        margin-top: 8px;
+    }
+
+    .empty {
+        text-align: center;
+        color: #777;
+        padding: 60px 20px;
+        font-size: 18px;
+    }
+
+    .status {
+        text-align: center;
+        color: #999;
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    @media(max-width:600px) {
+
+        .controls {
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            min-width: 30%;
+        }
+
+        .timer {
+            font-size: 26px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>PP2 LOADING MONITOR</h1>
+    <p>3 Hour Conveyor Monitoring</p>
+</header>
+
+
+<div class="controls">
+
+    <button class="select-all" onclick="selectAll()">
+        ☑ SELECT ALL
+    </button>
+
+    <button class="done" onclick="markSelectedDone()">
+        ✓ DONE
+    </button>
+
+    <button class="refresh" onclick="fetchTelegram()">
+        🔄 REFRESH
+    </button>
+
+</div>
+
+
+<div id="status" class="status">
+    Connecting to Telegram...
+</div>
+
+
+<div id="loads"></div>
+
+
+<script>
+
+/*
+========================================================
+TELEGRAM SETTINGS
+========================================================
+
+IMPORTANT:
+Do NOT publish a real bot token on GitHub Pages.
+
+If you use this directly in HTML, anyone who can inspect
+the page can see the token.
+
+Use a NEW token if an old token was previously exposed.
+========================================================
+*/
+
+const TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN";
+
+const TELEGRAM_CHAT_ID = "YOUR_CHAT_ID";
+
+
+/*
+========================================================
+SYSTEM SETTINGS
+========================================================
+*/
+
+const THREE_HOURS = 3 * 60 * 60 * 1000;
+
+const WARNING_TIME = 30 * 60 * 1000;
+
+
+/*
+========================================================
+LOCAL STORAGE
+========================================================
+*/
+
+const ACTIVE_KEY = "pp2ReceiverActiveLoads";
+
+const DONE_KEY = "pp2ReceiverDoneLoads";
+
+const OFFSET_KEY = "pp2TelegramOffset";
+
+
+let activeLoads =
+    JSON.parse(localStorage.getItem(ACTIVE_KEY) || "[]");
+
+let doneLoads =
+    JSON.parse(localStorage.getItem(DONE_KEY) || "[]");
+
+
+/*
+========================================================
+SAVE DATA
+========================================================
+*/
+
+function saveData() {
+
+    localStorage.setItem(
+        ACTIVE_KEY,
+        JSON.stringify(activeLoads)
+    );
+
+    localStorage.setItem(
+        DONE_KEY,
+        JSON.stringify(doneLoads)
+    );
+}
+
+
+/*
+========================================================
+CHECK WHETHER LOAD IS ALREADY DONE
+========================================================
+*/
+
+function isDone(id) {
+
+    return doneLoads.includes(String(id));
+
+}
+
+
+/*
+========================================================
+FETCH TELEGRAM
+========================================================
+*/
+
+async function fetchTelegram() {
+
+    if (
+        TELEGRAM_BOT_TOKEN === "YOUR_BOT_TOKEN" ||
+        TELEGRAM_CHAT_ID === "YOUR_CHAT_ID"
+    ) {
+
+        document.getElementById("status").innerHTML =
+            "⚠️ Add your Telegram bot token and chat ID.";
+
+        renderLoads();
+
+        return;
+    }
+
+
+    try {
+
+        const offset =
+            Number(localStorage.getItem(OFFSET_KEY) || 0);
+
+
+        const url =
+            `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates` +
+            `?offset=${offset}` +
+            `&timeout=5`;
+
+
+        const response =
+            await fetch(url);
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.ok) {
+
+            throw new Error(
+                data.description || "Telegram error"
+            );
+        }
+
+
+        if (data.result.length > 0) {
+
+            let highestUpdateId = offset;
+
+
+            data.result.forEach(update => {
+
+                if (update.update_id >= highestUpdateId) {
+
+                    highestUpdateId =
+                        update.update_id + 1;
+                }
+
+
+                /*
+                Telegram messages can arrive as:
+
+                update.message
+
+                or
+
+                update.channel_post
+                */
+
+                const message =
+                    update.channel_post ||
+                    update.message;
+
+
+                if (!message) return;
+
+
+                /*
+                Only accept messages from the
+                configured Telegram chat.
+                */
+
+                if (
+                    String(message.chat.id) !==
+                    String(TELEGRAM_CHAT_ID)
+                ) {
+                    return;
+                }
+
+
+                processMessage(
+                    message,
+                    update.update_id
+                );
+
+            });
+
+
+            localStorage.setItem(
+                OFFSET_KEY,
+                highestUpdateId
+            );
+
+        }
+
+
+        saveData();
+
+        renderLoads();
+
+
+        document.getElementById("status").innerHTML =
+            "🟢 Connected • Last checked " +
+            new Date().toLocaleTimeString();
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("status").innerHTML =
+            "🔴 Telegram connection error";
+    }
+}
+
+
+/*
+========================================================
+PROCESS MESSAGE
+========================================================
+*/
+
+function processMessage(message, updateId) {
+
+    const text =
+        message.text || "";
+
+
+    /*
+    Only process our PP2 loader messages.
+    */
+
+    if (
+        !text.includes("PP2 PARTS LOADED")
+    ) {
+        return;
+    }
+
+
+    /*
+    Telegram message ID gives us a unique identifier.
+    */
+
+    const messageId =
+        `${message.chat.id}_${message.message_id}`;
+
+
+    /*
+    Do not add a load that has already been completed.
+    */
+
+    if (isDone(messageId)) {
+        return;
+    }
+
+
+    /*
+    Do not add the same Telegram message twice.
+    */
+
+    const existingMessage =
+        activeLoads.some(
+            item => item.messageId === messageId
+        );
+
+
+    if (existingMessage) {
+        return;
+    }
+
+
+    const loadedAt =
+        message.date
+            ? new Date(message.date * 1000).toISOString()
+            : new Date().toISOString();
+
+
+    /*
+    Parse every part inside the loader message.
+    */
+
+    const parsedParts =
+        parseParts(text);
+
+
+    parsedParts.forEach((part, index) => {
+
+        const uniqueId =
+            `${messageId}_${index}`;
+
+
+        if (
+            activeLoads.some(
+                item => item.id === uniqueId
+            )
+        ) {
+            return;
+        }
+
+
+        activeLoads.push({
+
+            id: uniqueId,
+
+            messageId: messageId,
+
+            part: part.part,
+
+            colour: part.colour,
+
+            quantity: part.quantity,
+
+            loadedAt: loadedAt,
+
+            telegramMessageId:
+                message.message_id
+
+        });
+
+    });
+
+}
+
+
+/*
+========================================================
+PARSE PP2 MESSAGE
+========================================================
+
+Expected format:
+
+🚛 PP2 PARTS LOADED
+
+1. H Bar_WLT
+Colour: Boulder Gray
+Quantity: 25
+Loaded: ...
+
+2. WLT
+Colour: Frozen White
+Quantity: 40
+Loaded: ...
+========================================================
+*/
+
+function parseParts(text) {
+
+    const lines =
+        text.split("\n")
+            .map(line => line.trim())
+            .filter(Boolean);
+
+
+    const result = [];
+
+    let current = null;
+
+
+    lines.forEach(line => {
+
+        /*
+        Detect:
+
+        1. H Bar_WLT
+        */
+
+        const partMatch =
+            line.match(/^\d+\.\s*(.+)$/);
+
+
+        if (partMatch) {
+
+            if (current) {
+                result.push(current);
+            }
+
+
+            current = {
+
+                part:
+                    partMatch[1].trim(),
+
+                colour:
+                    "",
+
+                quantity:
+                    0
+
+            };
+
+            return;
+        }
+
+
+        if (!current) return;
+
+
+        const colourMatch =
+            line.match(
+                /^Colour:\s*(.+)$/i
+            );
+
+
+        if (colourMatch) {
+
+            current.colour =
+                colourMatch[1].trim();
+
+            return;
+        }
+
+
+        const quantityMatch =
+            line.match(
+                /^Quantity:\s*(\d+)$/i
+            );
+
+
+        if (quantityMatch) {
+
+            current.quantity =
+                Number(quantityMatch[1]);
+
+        }
+
+    });
+
+
+    if (current) {
+        result.push(current);
+    }
+
+
+    return result.filter(item =>
+        item.part &&
+        item.colour &&
+        item.quantity > 0
+    );
+}
+
+
+/*
+========================================================
+DISPLAY LOADS
+========================================================
+*/
+
+function renderLoads() {
+
+    const container =
+        document.getElementById("loads");
+
+
+    if (activeLoads.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No active PP2 loads.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    /*
+    Sort oldest first.
+    */
+
+    activeLoads.sort(
+        (a, b) =>
+            new Date(a.loadedAt) -
+            new Date(b.loadedAt)
+    );
+
+
+    container.innerHTML = "";
+
+
+    activeLoads.forEach(item => {
+
+        const box =
+            document.createElement("div");
+
+
+        box.className =
+            "load";
+
+
+        box.id =
+            "load-" + item.id;
+
+
+        box.innerHTML = `
+
+            <div class="top">
+
+                <input
+                    type="checkbox"
+                    class="checkbox load-checkbox"
+                    data-id="${escapeHTML(item.id)}"
+                >
+
+                <div class="part-info">
+
+                    <div class="part">
+                        ${escapeHTML(item.part)}
+                    </div>
+
+                    <div class="colour">
+                        Colour: ${escapeHTML(item.colour)}
+                    </div>
+
+                    <div class="quantity">
+                        Quantity Loaded:
+                        <strong>${item.quantity}</strong>
+                    </div>
+
+                    <div class="timer">
+                        Loading...
+                    </div>
+
+                    <div class="loaded-time">
+                        Loaded:
+                        ${formatDate(item.loadedAt)}
+                    </div>
+
+                    <div class="telegram-id">
+                        Telegram message:
+                        ${item.telegramMessageId}
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+
+        container.appendChild(box);
+
+
+        updateTimer(item);
+
+    });
+
+}
+
+
+/*
+========================================================
+TIMER
+========================================================
+*/
+
+function updateTimer(item) {
+
+    const box =
+        document.getElementById(
+            "load-" + item.id
+        );
+
+
+    if (!box) return;
+
+
+    const timer =
+        box.querySelector(".timer");
+
+
+    const loadedTime =
+        new Date(item.loadedAt).getTime();
+
+
+    const expiry =
+        loadedTime + THREE_HOURS;
+
+
+    const remaining =
+        expiry - Date.now();
+
+
+    /*
+    IMPORTANT:
+
+    Even when remaining <= 0,
+    WE DO NOT REMOVE THE LOAD.
+    */
+
+    if (remaining <= 0) {
+
+        timer.innerHTML =
+            "🔴 TIME EXPIRED";
+
+        timer.className =
+            "timer expired-text";
+
+        box.className =
+            "load expired";
+
+        return;
+    }
+
+
+    const totalSeconds =
+        Math.floor(
+            remaining / 1000
+        );
+
+
+    const hours =
+        Math.floor(
+            totalSeconds / 3600
+        );
+
+
+    const minutes =
+        Math.floor(
+            (totalSeconds % 3600) / 60
+        );
+
+
+    const seconds =
+        totalSeconds % 60;
+
+
+    timer.innerHTML =
+        `⏱ ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+
+    if (remaining <= WARNING_TIME) {
+
+        timer.className =
+            "timer warning-text";
+
+        box.className =
+            "load warning";
+
+    } else {
+
+        timer.className =
+            "timer active-text";
+
+        box.className =
+            "load active";
+    }
+
+
+    setTimeout(
+        () => updateTimer(item),
+        1000
+    );
+}
+
+
+/*
+========================================================
+SELECT ALL
+========================================================
+*/
+
+function selectAll() {
+
+    const boxes =
+        document.querySelectorAll(
+            ".load-checkbox"
+        );
+
+
+    const allChecked =
+        Array.from(boxes)
+            .every(box => box.checked);
+
+
+    boxes.forEach(box => {
+
+        box.checked =
+            !allChecked;
+
+    });
+
+}
+
+
+/*
+========================================================
+MARK SELECTED AS DONE
+========================================================
+*/
+
+function markSelectedDone() {
+
+    const selected =
+        Array.from(
+            document.querySelectorAll(
+                ".load-checkbox:checked"
+            )
+        );
+
+
+    if (selected.length === 0) {
+
+        alert(
+            "Select at least one load."
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            `Mark ${selected.length} load(s) as DONE?`
+        );
+
+
+    if (!confirmed) return;
+
+
+    selected.forEach(box => {
+
+        const id =
+            box.dataset.id;
+
+
+        const item =
+            activeLoads.find(
+                load => load.id === id
+            );
+
+
+        if (!item) return;
+
+
+        /*
+        Save the load as DONE.
+
+        It will never be added again
+        from the same Telegram message.
+        */
+
+        doneLoads.push(item.id);
+
+
+        /*
+        Also remember the parent Telegram message.
+        */
+
+        if (
+            !doneLoads.includes(
+                item.messageId
+            )
+        ) {
+
+            doneLoads.push(
+                item.messageId
+            );
+
+        }
+
+    });
+
+
+    activeLoads =
+        activeLoads.filter(
+            item =>
+                !doneLoads.includes(item.id)
+        );
+
+
+    saveData();
+
+    renderLoads();
+
+}
+
+
+/*
+========================================================
+FORMAT TIME
+========================================================
+*/
+
+function pad(number) {
+
+    return String(number)
+        .padStart(2, "0");
+
+}
+
+
+function formatDate(dateString) {
+
+    const date =
+        new Date(dateString);
+
+
+    return date.toLocaleString(
+        "en-ZA",
+        {
+            timeZone:
+                "Africa/Johannesburg",
+
+            year:
+                "numeric",
+
+            month:
+                "2-digit",
+
+            day:
+                "2-digit",
+
+            hour:
+                "2-digit",
+
+            minute:
+                "2-digit",
+
+            second:
+                "2-digit"
+        }
+    );
+}
+
+
+/*
+========================================================
+SECURITY
+========================================================
+*/
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/*
+========================================================
+AUTOMATIC TELEGRAM CHECK
+========================================================
+*/
+
+fetchTelegram();
+
+
+/*
+Check Telegram every 10 seconds.
+*/
+
+setInterval(
+    fetchTelegram,
+    10000
+);
+
+
+/*
+Update timers/display every second.
+*/
+
+setInterval(
+    () => {
+
+        activeLoads.forEach(
+            updateTimer
+        );
+
+    },
+    1000
+);
+
+</script>
+
+</body>
+  </html>
