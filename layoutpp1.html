@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSSL Paintshop PP1</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            color: red;
+        }
+
+        /* Video Background */
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-background {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Custom Logo */
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 10vh;
+            margin-bottom: 2vh;
+        }
+
+        .bar {
+            width: 1vw;
+            background-color: red;
+            margin: 0 0.5vw;
+        }
+
+        .small { height: 4vh; }
+        .medium { height: 8vh; }
+        .tall { height: 12vh; }
+
+        .motherson-text {
+            font-size: 8vw;
+            font-weight: bold;
+            color: red;
+            margin-top: 2vh;
+        }
+
+        /* Typing Text */
+        .typing-container {
+            margin-top: 4vh;
+            font-size: 4vw;
+            font-weight: bold;
+            max-width: 90%;
+            margin: 0 auto;
+            color: red;
+        }
+
+        .typing-text {
+            white-space: pre-wrap;
+            overflow: hidden;
+            border-right: 2px solid red;
+            display: inline-block;
+            word-wrap: break-word;
+            width: 100%;
+        }
+
+        /* Buttons */
+        .button-container {
+            margin-top: 10vh;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .button-container button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2vh 4vw;
+            font-size: 3vw;
+            cursor: pointer;
+            background: transparent;
+            border: 2px solid red;
+            color: red;
+            position: relative;
+            margin: 1vh;
+            z-index: 1;
+        }
+
+        /* Icons */
+        .icon {
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            animation: spin 2s linear infinite;
+            z-index: 1;
+            object-fit: contain;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* QC Icon and Message Bubble */
+        .qc-container {
+            margin-top: 5vh;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .qc-icon {
+            width: 60px;
+            height: 60px;
+            background-image: url('qc.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            display: inline-block;
+            position: relative;
+            top: 10px;
+            cursor: pointer;
+        }
+
+        .qc-bubble {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: red;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            white-space: nowrap;
+            opacity: 0;
+            animation: fadeIn 2s infinite alternate;
+        }
+
+        .qc-bubble::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px;
+            border-style: solid;
+            border-color: red transparent transparent transparent;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Video Background -->
+    <div class="video-container">
+        <video class="video-background" id="video-player" autoplay muted></video>
+    </div>
+
+    <!-- Custom Logo -->
+    <div class="logo">
+        <div class="bar small"></div>
+        <div class="bar medium"></div>
+        <div class="bar tall"></div>
+    </div>
+
+    <!-- Thulane Text -->
+    <div class="Thulane-text">Thulane</div>
+
+    <!-- Animated Typing Text -->
+    <div class="typing-container">
+        <h2 class="typing-text"></h2>
+    </div>
+
+    <!-- Buttons -->
+    <div class="button-container">
+
+        <!-- PDF Button -->
+        <button onclick="window.location.href='datapp1.html'">
+            <img src="pdf.png" class="icon" alt="PDF Icon">
+        </button>
+
+        <!-- PP2 Button -->
+        <button onclick="window.location.href='msslpp1.html'">
+            <img src="pp2.png" class="icon" alt="PP2 Icon">
+        </button>
+
+        <!-- Scan Button -->
+        <button onclick="window.location.href='scan.html'">
+            <img src="car.png" class="icon" alt="Car Icon">
+        </button>
+
+        <!-- Loader Button -->
+        <button onclick="window.location.href='loaderpp1.html'">
+            <img src="people.png" class="icon" alt="Loader Icon">
+        </button>
+
+        <!-- Preparation Button -->
+        <button onclick="window.location.href='preparationpp1.html'">
+            <img src="cleaning.png" class="icon" alt="Preparation Icon">
+        </button>
+
+    </div>
+
+    <!-- QC Icon and Message Bubble -->
+    <div class="qc-container">
+        <div class="qc-bubble">Rework Area</div>
+
+        <div
+            class="qc-icon"
+            onclick="window.location.href='reworkpp1.html'">
+        </div>
+    </div>
+
+    <script>
+        /* Typing Effect */
+        const text = "Quality is what we aim for. Think Quality everyday.";
+        let i = 0;
+
+        function typeEffect() {
+            if (i < text.length) {
+                document.querySelector(".typing-text").innerHTML +=
+                    text[i] === " " ? "&nbsp;" : text[i];
+
+                i++;
+
+                setTimeout(typeEffect, 100);
+            } else {
+                document.querySelector(".typing-text").style.borderRight = "none";
+            }
+        }
+
+        window.onload = typeEffect;
+
+
+        /* Video Switching Logic */
+        const videos = ["video1.mp4", "video2.mp4"];
+        let currentVideo = 0;
+
+        const videoPlayer = document.getElementById("video-player");
+
+        function playNextVideo() {
+            videoPlayer.src = videos[currentVideo];
+            videoPlayer.play();
+
+            currentVideo = (currentVideo + 1) % videos.length;
+        }
+
+        videoPlayer.addEventListener("ended", playNextVideo);
+
+        playNextVideo();
+    </script>
+
+</body>
+      </html>
