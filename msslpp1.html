@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PP1 Off Loading Sheet</title>
+    <title>PP2 Off Loading Sheet</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
@@ -36,7 +36,8 @@
         }
 
         .add-row-btn,
-        .compile-btn {
+        .compile-btn,
+        .test-btn {
             margin: 10px 5px;
             padding: 10px 20px;
             color: white;
@@ -45,21 +46,13 @@
             cursor: pointer;
         }
 
-        .add-row-btn {
-            background-color: #007bff;
-        }
+        .add-row-btn { background-color: #007bff; }
+        .compile-btn { background-color: #6f42c1; }
+        .test-btn    { background-color: #17a2b8; }
 
-        .compile-btn {
-            background-color: #6f42c1;
-        }
-
-        .add-row-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .compile-btn:hover {
-            background-color: #59339d;
-        }
+        .add-row-btn:hover { background-color: #0056b3; }
+        .compile-btn:hover { background-color: #59339d; }
+        .test-btn:hover    { background-color: #117a8b; }
 
         .number-input {
             width: 60px;
@@ -76,21 +69,12 @@
             cursor: pointer;
         }
 
-        .calc-btn:hover {
-            background-color: #218838;
-        }
+        .calc-btn:hover { background-color: #218838; }
 
-        .reset-btn {
-            background-color: #dc3545;
-        }
+        .reset-btn { background-color: #dc3545; }
+        .reset-btn:hover { background-color: #c82333; }
 
-        .reset-btn:hover {
-            background-color: #c82333;
-        }
-
-        .filter-section {
-            margin-bottom: 20px;
-        }
+        .filter-section { margin-bottom: 20px; }
 
         .production-section {
             border: 2px solid #229ED9;
@@ -138,7 +122,6 @@
     PP2 Off Loading Sheet
 </div>
 
-
 <!-- ==========================================
      PRODUCTION INFORMATION
 ========================================== -->
@@ -150,34 +133,18 @@
     <div class="form-row">
 
         <div class="form-group">
-
             <label>Team Leader Name</label>
-
-            <input
-                type="text"
-                id="teamLeader"
-                placeholder="Enter Team Leader name"
-            >
-
+            <input type="text" id="teamLeader" placeholder="Enter Team Leader name">
         </div>
 
-
         <div class="form-group">
-
             <label>Operator Name</label>
-
-            <input
-                type="text"
-                id="operatorName"
-                placeholder="Enter Operator name"
-            >
-
+            <input type="text" id="operatorName" placeholder="Enter Operator name">
         </div>
 
     </div>
 
 </div>
-
 
 <!-- ==========================================
      SEARCH / DATE FILTER
@@ -185,29 +152,15 @@
 
 <div class="filter-section">
 
-    <input
-        type="text"
-        id="searchBar"
-        placeholder="Search..."
-        onkeyup="filterData()"
-    >
+    <input type="text" id="searchBar" placeholder="Search..." onkeyup="filterData()">
 
-    <input
-        type="date"
-        id="startDate"
-    >
+    <input type="date" id="startDate">
 
-    <input
-        type="date"
-        id="endDate"
-    >
+    <input type="date" id="endDate">
 
-    <button onclick="filterByDate()">
-        Filter by Date
-    </button>
+    <button onclick="filterByDate()">Filter by Date</button>
 
 </div>
-
 
 <!-- ==========================================
      LOADING SHEET
@@ -216,7 +169,6 @@
 <table id="loadingSheet">
 
     <thead>
-
         <tr>
             <th>Part</th>
             <th>Color</th>
@@ -227,29 +179,24 @@
             <th>Remarks</th>
             <th>Date</th>
         </tr>
-
     </thead>
 
-
     <tbody>
-
         <tr>
 
             <td>
-
                 <select>
-
                     <option value="H Bar_WLT">H Bar_WLT</option>
                     <option value="H Bar WLT22B">H Bar WLT22B</option>
                     <option value="H_Bar LTD">H_Bar LTD</option>
                     <option value="H_Bar LTD22B">H_Bar LTD22B</option>
                     <option value="WLT Skid plate">WLT</option>
-                    <option value="WLT SKIDPLATE 22B>WLT 22B</option>
-                    <option value="LTD SKIDPLATE >LTD</option>
+                    <option value="WLT SKIDPLATE 22B>WLT 22B">WLT 22B</option>
+                    <option value="LTD SKIDPLATE >LTD">LTD</option>
                     <option value="LTD SKIDPLATE 22B">LTD 22B</option>
                     <option value="J73 SKIDPLATE">J73</option>
                     <option value="BOX Rails J73RH">BOX Rails J73RH</option>
-                    <option value="Box Rails J73LH">BOX Rails J73LH</option>
+                    <option value="Box Rails J73LH">Box Rails J73LH</option>
                     <option value="Box Rails REP RH">Box Rails REP RH</option>
                     <option value="Box Rails REP LH">Box Rails REP LH</option>
                     <option value="Lower P703">Lower P703</option>
@@ -267,16 +214,11 @@
                     <option value="Wheel lip RearLH22B">Wheel lip RearLH22B</option>
                     <option value="Wheel lip FrontRH22B">Wheel lip FrontRH22B</option>
                     <option value="Wheel lip FrontLH22B">Wheel lip FrontLH22B</option>
-
                 </select>
-
             </td>
 
-
             <td>
-
                 <select>
-
                     <option value="Boulder Gray">Boulder Gray</option>
                     <option value="E Black">E Black</option>
                     <option value="Moroccan Blue">Moroccan Blue</option>
@@ -289,210 +231,70 @@
                     <option value="Carbonised grey">Carbonised grey</option>
                     <option value="Lucid Red">Lucid Red</option>
                     <option value="Cyber Orange">Cyber Orange</option>
-
                 </select>
-
             </td>
 
-
-            <td class="total-cell">
-                0
-            </td>
-
+            <td class="total-cell">0</td>
 
             <!-- REWORK -->
-
             <td class="rework-cell">
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <button
-                    class="calc-btn"
-                    onclick="calculate(this, 'rework')"
-                >
-                    Add
-                </button>
-
-                <button
-                    class="calc-btn reset-btn"
-                    onclick="reset(this)"
-                >
-                    Reset
-                </button>
-
+                <input type="number" class="number-input" value="0" min="0">
+                <input type="number" class="number-input" value="0" min="0">
+                <button class="calc-btn" onclick="calculate(this, 'rework')">Add</button>
+                <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
                 <select class="rework-defect">
-
                     <option value="None">None</option>
                     <option value="Run">Run</option>
                     <option value="off colour">off colour</option>
                     <option value="Dirt">Dirt</option>
-
                 </select>
-
             </td>
-
 
             <!-- POLISHED -->
-
             <td class="polished-cell">
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <button
-                    class="calc-btn"
-                    onclick="calculate(this, 'polished')"
-                >
-                    Add
-                </button>
-
-                <button
-                    class="calc-btn reset-btn"
-                    onclick="reset(this)"
-                >
-                    Reset
-                </button>
-
+                <input type="number" class="number-input" value="0" min="0">
+                <input type="number" class="number-input" value="0" min="0">
+                <button class="calc-btn" onclick="calculate(this, 'polished')">Add</button>
+                <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
             </td>
 
-
             <!-- SCRAP -->
-
             <td class="scrap-cell">
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <button
-                    class="calc-btn"
-                    onclick="calculate(this, 'scrap')"
-                >
-                    Add
-                </button>
-
-                <button
-                    class="calc-btn reset-btn"
-                    onclick="reset(this)"
-                >
-                    Reset
-                </button>
-
+                <input type="number" class="number-input" value="0" min="0">
+                <input type="number" class="number-input" value="0" min="0">
+                <button class="calc-btn" onclick="calculate(this, 'scrap')">Add</button>
+                <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
                 <select class="scrap-defect">
-
                     <option value="None">None</option>
                     <option value="Deep Cut">Deep Cut</option>
                     <option value="Scratch">Scratch</option>
                     <option value="3×Painted">3×Painted</option>
                     <option value="fell in the oven">fell in the oven</option>
                     <option value="Dirt">Dirt</option>
-
                 </select>
-
             </td>
-
 
             <!-- REMARKS -->
-
             <td class="remarks-cell">
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <button
-                    class="calc-btn"
-                    onclick="calculate(this, 'remarks')"
-                >
-                    Add
-                </button>
-
-                <button
-                    class="calc-btn reset-btn"
-                    onclick="reset(this)"
-                >
-                    Reset
-                </button>
-
+                <input type="number" class="number-input" value="0" min="0">
+                <input type="number" class="number-input" value="0" min="0">
+                <button class="calc-btn" onclick="calculate(this, 'remarks')">Add</button>
+                <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
             </td>
 
-
             <!-- DATE -->
-
             <td>
-
-                <input
-                    type="date"
-                    class="date-input"
-                >
-
+                <input type="date" class="date-input">
             </td>
 
         </tr>
-
     </tbody>
 
 </table>
 
-
-<button
-    class="add-row-btn"
-    onclick="addRow()"
->
-    Add Row
-</button>
-
-
-<button
-    class="compile-btn"
-    onclick="generatePDF()"
->
-    Download PDF
-</button>
-
+<button class="add-row-btn" onclick="addRow()">Add Row</button>
+<button class="test-btn" onclick="testTelegram()">Test Telegram</button>
+<button class="compile-btn" onclick="generatePDF()">Download PDF</button>
 
 <script>
 
@@ -501,32 +303,33 @@
 ========================================== */
 
 /*
-   Put your Telegram BOT TOKEN here.
+   ⚠️ SECURITY WARNING:
+   This token is visible inside the page source.
+   Anyone who opens this file can read it and
+   control your bot. If this file was shared
+   publicly, revoke this token in @BotFather
+   (/revoke) and paste the NEW token below.
 */
 
 const HOD_BOT_TOKEN =
     "8993333232:AAEvtujVGuE3DRo2BmU-mu6yE-zCVovzOdU";
 
-
-/*
-   Put the Telegram GROUP/USER CHAT ID here.
-
-   Telegram bots cannot send a message directly
-   to a normal telephone number.
-*/
-
 const HOD_CHAT_ID =
     "-1004327048166";
+
+/*
+   If direct browser requests to Telegram are
+   blocked (CORS), the code will automatically
+   retry through a public CORS proxy.
+*/
+const ALLOW_CORS_PROXY_FALLBACK = true;
 
 
 /* ==========================================
    PAGE LOAD
 ========================================== */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    loadData
-);
+document.addEventListener("DOMContentLoaded", loadData);
 
 
 /* ==========================================
@@ -535,29 +338,154 @@ document.addEventListener(
 
 function getTodayDate() {
 
-    const today =
-        new Date();
+    const today = new Date();
 
-    const year =
-        today.getFullYear();
+    const year  = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day   = String(today.getDate()).padStart(2, "0");
 
-    const month =
-        String(
-            today.getMonth() + 1
-        ).padStart(2, "0");
+    return year + "-" + month + "-" + day;
+}
 
-    const day =
-        String(
-            today.getDate()
-        ).padStart(2, "0");
 
-    return (
-        year +
-        "-" +
-        month +
-        "-" +
-        day
+/* ==========================================
+   FETCH WITH FALLBACK (fixes silent CORS
+   failures that blocked Telegram messages)
+========================================== */
+
+async function telegramFetch(apiMethod, payload) {
+
+    const directUrl =
+        "https://api.telegram.org/bot" +
+        HOD_BOT_TOKEN +
+        "/" +
+        apiMethod;
+
+    let urls = [directUrl];
+
+    if (ALLOW_CORS_PROXY_FALLBACK) {
+        urls.push(
+            "https://corsproxy.io/?url=" +
+            encodeURIComponent(directUrl)
+        );
+        urls.push(
+            "https://api.allorigins.win/raw?url=" +
+            encodeURIComponent(directUrl)
+        );
+    }
+
+    let lastError = "Unknown error";
+
+    for (const url of urls) {
+
+        try {
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (result.ok) {
+                return { ok: true, data: result };
+            }
+
+            lastError = result.description || "Telegram rejected the request";
+            break; // Telegram answered - do not retry proxies
+
+        } catch (error) {
+
+            lastError = error.message;
+
+        }
+
+    }
+
+    return { ok: false, error: lastError };
+
+}
+
+
+/* ==========================================
+   SEND TELEGRAM MESSAGE
+   (now reports failures back to you)
+========================================== */
+
+async function sendTelegramMessage(message) {
+
+    if (!HOD_BOT_TOKEN) {
+        return { ok: false, error: "Bot token is empty." };
+    }
+
+    if (!HOD_CHAT_ID) {
+        return { ok: false, error: "Chat ID is empty." };
+    }
+
+    const result = await telegramFetch("sendMessage", {
+        chat_id: HOD_CHAT_ID,
+        text: message
+    });
+
+    if (!result.ok) {
+        console.error("Telegram error:", result.error);
+    }
+
+    return result;
+
+}
+
+
+/* ==========================================
+   TEST TELEGRAM BUTTON
+   Checks token (getMe) then sends a test
+   message and shows the result on screen.
+========================================== */
+
+async function testTelegram() {
+
+    const check = await telegramFetch("getMe", {});
+
+    if (!check.ok) {
+        alert(
+            "❌ BOT TOKEN PROBLEM\n\n" +
+            "Telegram says: " + check.error + "\n\n" +
+            "Fix: open @BotFather, use /token to get a valid token."
+        );
+        return;
+    }
+
+    const botName = check.data.result.username;
+
+    const sent = await sendTelegramMessage(
+        "✅ TEST MESSAGE\n\n" +
+        "Bot @" + botName + " is connected correctly.\n" +
+        "Scrap & rework notifications will now be sent to this chat.\n\n" +
+        "⏰ " + new Date().toLocaleString()
     );
+
+    if (sent.ok) {
+        alert(
+            "✅ SUCCESS!\n\n" +
+            "Test message sent to chat " + HOD_CHAT_ID + ".\n" +
+            "Check the Telegram group now."
+        );
+    } else {
+        alert(
+            "❌ MESSAGE NOT DELIVERED\n\n" +
+            "Token is VALID, but the message failed:\n" +
+            sent.error + "\n\n" +
+            "Most likely causes:\n" +
+            "1. The bot is NOT a member of the group. Add @" + botName + " to the group.\n" +
+            "2. Wrong chat ID.\n\n" +
+            "To get the correct chat ID: send a message in the group, then open in your browser:\n" +
+            "https://api.telegram.org/bot" + HOD_BOT_TOKEN + "/getUpdates"
+        );
+    }
+
 }
 
 
@@ -567,87 +495,49 @@ function getTodayDate() {
 
 function calculate(button, type) {
 
-    const cell =
-        button.parentNode;
+    const cell = button.parentNode;
 
+    const inputs = cell.getElementsByTagName("input");
 
-    const inputs =
-        cell.getElementsByTagName(
-            "input"
-        );
+    const firstInput  = inputs[0];
+    const secondInput = inputs[1];
 
+    const addedQuantity = parseInt(secondInput.value || 0);
+    const existingQuantity = parseInt(firstInput.value || 0);
 
-    const firstInput =
-        inputs[0];
+    const sum = existingQuantity + addedQuantity;
 
-    const secondInput =
-        inputs[1];
-
-
-    /*
-       IMPORTANT:
-
-       Capture ONLY the newly entered
-       quantity BEFORE resetting it.
-
-       Example:
-
-       Existing scrap = 5
-       User enters = 3
-
-       Telegram receives = 3
-
-       New total = 8
-    */
-
-    const addedQuantity =
-        parseInt(
-            secondInput.value || 0
-        );
-
-
-    const existingQuantity =
-        parseInt(
-            firstInput.value || 0
-        );
-
-
-    const sum =
-        existingQuantity +
-        addedQuantity;
-
-
-    firstInput.value =
-        sum;
-
-    secondInput.value =
-        0;
-
+    firstInput.value = sum;
+    secondInput.value = 0;
 
     calculateTotal(button);
-
     saveData();
-
 
     /*
        Scrap and Rework are automatically
        sent to Telegram every time Add
-       is clicked.
+       is clicked. Failures now show an
+       on-screen warning.
     */
 
     if (
-        (
-            type === "scrap" ||
-            type === "rework"
-        ) &&
+        (type === "scrap" || type === "rework") &&
         addedQuantity > 0
     ) {
 
-        sendHODNotification(
-            button,
-            type,
-            addedQuantity
-        );
+        sendHODNotification(button, type, addedQuantity)
+            .then(ok => {
+
+                if (!ok) {
+                    alert(
+                        "⚠️ TELEGRAM NOTIFICATION FAILED\n\n" +
+                        "The " + type + " was recorded in the sheet,\n" +
+                        "but the message did NOT reach the channel.\n\n" +
+                        "Click the 'Test Telegram' button to see why."
+                    );
+                }
+
+            });
 
     }
 
@@ -660,45 +550,23 @@ function calculate(button, type) {
 
 function calculateTotal(button) {
 
-    const row =
-        button.closest("tr");
+    const row = button.closest("tr");
 
+    const rework = parseInt(
+        row.querySelector(".rework-cell input").value || 0
+    );
 
-    const rework =
-        parseInt(
-            row.querySelector(
-                ".rework-cell input"
-            ).value || 0
-        );
+    const polished = parseInt(
+        row.querySelector(".polished-cell input").value || 0
+    );
 
+    const scrap = parseInt(
+        row.querySelector(".scrap-cell input").value || 0
+    );
 
-    const polished =
-        parseInt(
-            row.querySelector(
-                ".polished-cell input"
-            ).value || 0
-        );
+    const totalCell = row.querySelector(".total-cell");
 
-
-    const scrap =
-        parseInt(
-            row.querySelector(
-                ".scrap-cell input"
-            ).value || 0
-        );
-
-
-    const totalCell =
-        row.querySelector(
-            ".total-cell"
-        );
-
-
-    totalCell.textContent =
-        rework +
-        polished +
-        scrap;
-
+    totalCell.textContent = rework + polished + scrap;
 
     saveData();
 
@@ -711,23 +579,14 @@ function calculateTotal(button) {
 
 function reset(button) {
 
-    const cell =
-        button.parentNode;
+    const cell = button.parentNode;
 
-
-    const inputs =
-        cell.getElementsByTagName(
-            "input"
-        );
-
+    const inputs = cell.getElementsByTagName("input");
 
     inputs[0].value = 0;
-
     inputs[1].value = 0;
 
-
     calculateTotal(button);
-
     saveData();
 
 }
@@ -739,64 +598,31 @@ function reset(button) {
 
 function addRow() {
 
-    const table =
-        document
-        .getElementById(
-            "loadingSheet"
-        )
-        .getElementsByTagName(
-            "tbody"
-        )[0];
+    const table = document
+        .getElementById("loadingSheet")
+        .getElementsByTagName("tbody")[0];
 
+    const firstRow = table.querySelector("tr");
 
-    const firstRow =
-        table.querySelector(
-            "tr"
-        );
+    const newRow = table.insertRow();
 
+    newRow.innerHTML = firstRow.innerHTML;
 
-    const newRow =
-        table.insertRow();
+    const inputs = newRow.querySelectorAll("input");
 
+    inputs.forEach(input => {
 
-    newRow.innerHTML =
-        firstRow.innerHTML;
-
-
-    const inputs =
-        newRow.querySelectorAll(
-            "input"
-        );
-
-
-    inputs.forEach(
-        input => {
-
-            if (
-                input.type === "number"
-            ) {
-
-                input.value = 0;
-
-            }
-
-
-            if (
-                input.type === "date"
-            ) {
-
-                input.value = "";
-
-            }
-
+        if (input.type === "number") {
+            input.value = 0;
         }
-    );
 
+        if (input.type === "date") {
+            input.value = "";
+        }
 
-    newRow.querySelector(
-        ".total-cell"
-    ).textContent = 0;
+    });
 
+    newRow.querySelector(".total-cell").textContent = 0;
 
     saveData();
 
@@ -809,59 +635,37 @@ function addRow() {
 
 function filterData() {
 
-    const input =
-        document
-        .getElementById(
-            "searchBar"
-        )
+    const input = document
+        .getElementById("searchBar")
         .value
         .toLowerCase();
 
+    const rows = document.querySelectorAll(
+        "#loadingSheet tbody tr"
+    );
 
-    const rows =
-        document.querySelectorAll(
-            "#loadingSheet tbody tr"
-        );
+    rows.forEach(row => {
 
+        const cells = row.getElementsByTagName("td");
 
-    rows.forEach(
-        row => {
+        let found = false;
 
-            const cells =
-                row.getElementsByTagName(
-                    "td"
-                );
+        for (let cell of cells) {
 
-
-            let found = false;
-
-
-            for (
-                let cell of cells
+            if (
+                cell.textContent
+                .toLowerCase()
+                .includes(input)
             ) {
-
-                if (
-                    cell.textContent
-                    .toLowerCase()
-                    .includes(input)
-                ) {
-
-                    found = true;
-
-                    break;
-
-                }
-
+                found = true;
+                break;
             }
 
-
-            row.style.display =
-                found
-                ? ""
-                : "none";
-
         }
-    );
+
+        row.style.display = found ? "" : "none";
+
+    });
 
 }
 
@@ -872,92 +676,39 @@ function filterData() {
 
 function filterByDate() {
 
-    const startValue =
-        document.getElementById(
-            "startDate"
-        ).value;
+    const startValue = document.getElementById("startDate").value;
+    const endValue   = document.getElementById("endDate").value;
 
-
-    const endValue =
-        document.getElementById(
-            "endDate"
-        ).value;
-
-
-    if (
-        !startValue ||
-        !endValue
-    ) {
-
-        alert(
-            "Please select both dates."
-        );
-
+    if (!startValue || !endValue) {
+        alert("Please select both dates.");
         return;
-
     }
 
+    const startDate = new Date(startValue);
+    const endDate   = new Date(endValue);
 
-    const startDate =
-        new Date(
-            startValue
-        );
-
-
-    const endDate =
-        new Date(
-            endValue
-        );
-
-
-    const rows =
-        document.querySelectorAll(
-            "#loadingSheet tbody tr"
-        );
-
-
-    rows.forEach(
-        row => {
-
-            const dateCell =
-                row.querySelector(
-                    ".date-input"
-                ).value;
-
-
-            if (!dateCell) {
-
-                row.style.display =
-                    "none";
-
-                return;
-
-            }
-
-
-            const date =
-                new Date(
-                    dateCell
-                );
-
-
-            if (
-                date >= startDate &&
-                date <= endDate
-            ) {
-
-                row.style.display =
-                    "";
-
-            } else {
-
-                row.style.display =
-                    "none";
-
-            }
-
-        }
+    const rows = document.querySelectorAll(
+        "#loadingSheet tbody tr"
     );
+
+    rows.forEach(row => {
+
+        const dateCell = row.querySelector(".date-input").value;
+
+        if (!dateCell) {
+            row.style.display = "none";
+            return;
+        }
+
+        const date = new Date(dateCell);
+
+        if (date >= startDate && date <= endDate) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+
+    });
 
 }
 
@@ -966,452 +717,173 @@ function filterByDate() {
    TELEGRAM SCRAP / REWORK NOTIFICATION
 ========================================== */
 
-async function sendHODNotification(
-    button,
-    type,
-    quantity
-) {
+async function sendHODNotification(button, type, quantity) {
 
-    const row =
-        button.closest("tr");
+    const row = button.closest("tr");
 
+    if (!row) return false;
 
-    if (!row) return;
-
-
-    const part =
-        row.querySelector(
-            "td:nth-child(1) select"
-        ).value;
-
-
-    const color =
-        row.querySelector(
-            "td:nth-child(2) select"
-        ).value;
-
+    const part = row.querySelector("td:nth-child(1) select").value;
+    const color = row.querySelector("td:nth-child(2) select").value;
 
     const date =
-        row.querySelector(
-            ".date-input"
-        ).value ||
+        row.querySelector(".date-input").value ||
         getTodayDate();
 
-
     const teamLeader =
-        document
-        .getElementById(
-            "teamLeader"
-        )
-        .value
-        .trim() ||
+        document.getElementById("teamLeader").value.trim() ||
         "Not provided";
-
 
     const operator =
-        document
-        .getElementById(
-            "operatorName"
-        )
-        .value
-        .trim() ||
+        document.getElementById("operatorName").value.trim() ||
         "Not provided";
 
+    let defect = "None";
 
-    let defect =
-        "None";
-
-
-    if (
-        type === "scrap"
-    ) {
-
-        defect =
-            row.querySelector(
-                ".scrap-defect"
-            ).value;
-
+    if (type === "scrap") {
+        defect = row.querySelector(".scrap-defect").value;
     }
 
-
-    if (
-        type === "rework"
-    ) {
-
-        defect =
-            row.querySelector(
-                ".rework-defect"
-            ).value;
-
+    if (type === "rework") {
+        defect = row.querySelector(".rework-defect").value;
     }
-
 
     let message = "";
 
-
-    /* ======================================
-       SCRAP
-    ====================================== */
-
-    if (
-        type === "scrap"
-    ) {
+    if (type === "scrap") {
 
         message =
             "🚨 PP2 SCRAP RECORDED\n\n" +
-
-            "🏭 Part: " +
-            part +
-            "\n" +
-
-            "🎨 Colour: " +
-            color +
-            "\n" +
-
-            "🗑️ Scrap Added: " +
-            quantity +
-            "\n" +
-
-            "⚠️ Defect: " +
-            defect +
-            "\n" +
-
-            "📅 Date: " +
-            date +
-            "\n\n" +
-
-            "👷 Team Leader: " +
-            teamLeader +
-            "\n" +
-
-            "👨‍🔧 Operator: " +
-            operator +
-            "\n\n" +
-
-            "⏰ Recorded: " +
-            new Date()
-            .toLocaleString();
+            "🏭 Part: " + part + "\n" +
+            "🎨 Colour: " + color + "\n" +
+            "🗑️ Scrap Added: " + quantity + "\n" +
+            "⚠️ Defect: " + defect + "\n" +
+            "📅 Date: " + date + "\n\n" +
+            "👷 Team Leader: " + teamLeader + "\n" +
+            "👨‍🔧 Operator: " + operator + "\n\n" +
+            "⏰ Recorded: " + new Date().toLocaleString();
 
     }
 
-
-    /* ======================================
-       REWORK
-    ====================================== */
-
-    if (
-        type === "rework"
-    ) {
+    if (type === "rework") {
 
         message =
             "🔧 PP2 REWORK RECORDED\n\n" +
-
-            "🏭 Part: " +
-            part +
-            "\n" +
-
-            "🎨 Colour: " +
-            color +
-            "\n" +
-
-            "♻️ Rework Added: " +
-            quantity +
-            "\n" +
-
-            "⚠️ Defect: " +
-            defect +
-            "\n" +
-
-            "📅 Date: " +
-            date +
-            "\n\n" +
-
-            "👷 Team Leader: " +
-            teamLeader +
-            "\n" +
-
-            "👨‍🔧 Operator: " +
-            operator +
-            "\n\n" +
-
-            "⏰ Recorded: " +
-            new Date()
-            .toLocaleString();
+            "🏭 Part: " + part + "\n" +
+            "🎨 Colour: " + color + "\n" +
+            "♻️ Rework Added: " + quantity + "\n" +
+            "⚠️ Defect: " + defect + "\n" +
+            "📅 Date: " + date + "\n\n" +
+            "👷 Team Leader: " + teamLeader + "\n" +
+            "👨‍🔧 Operator: " + operator + "\n\n" +
+            "⏰ Recorded: " + new Date().toLocaleString();
 
     }
 
+    const result = await sendTelegramMessage(message);
 
-    await sendTelegramMessage(
-        message
-    );
-
-}
-
-
-/* ==========================================
-   SEND TELEGRAM MESSAGE
-========================================== */
-
-async function sendTelegramMessage(
-    message
-) {
-
-    if (
-        !HOD_BOT_TOKEN
-    ) {
-
-        console.error(
-            "Telegram bot token has not been configured."
-        );
-
-        return false;
-
-    }
-
-
-    if (
-        !HOD_CHAT_ID
-    ) {
-
-        console.error(
-            "Telegram chat ID has not been configured."
-        );
-
-        return false;
-
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                `https://api.telegram.org/bot${HOD_BOT_TOKEN}/sendMessage`,
-                {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json"
-
-                    },
-
-                    body: JSON.stringify({
-
-                        chat_id:
-                            HOD_CHAT_ID,
-
-                        text:
-                            message
-
-                    })
-
-                }
-            );
-
-
-        const result =
-            await response.json();
-
-
-        if (!result.ok) {
-
-            console.error(
-                "Telegram error:",
-                result.description
-            );
-
-            return false;
-
-        }
-
-
-        console.log(
-            "Telegram notification sent."
-        );
-
-
-        return true;
-
-
-    } catch (error) {
-
-        console.error(
-            "Telegram connection error:",
-            error
-        );
-
-        return false;
-
-    }
+    return result.ok;
 
 }
 
 
 /* ==========================================
    CALCULATE TODAY'S TOTALS
+   - Counts ALL categories (total, polished,
+     rework, scrap, remarks)
+   - Rows with NO date entered are treated
+     as today's rows (they were previously
+     skipped, which is why totals were wrong)
 ========================================== */
 
 function calculateTodayTotals() {
 
-    const today =
-        getTodayDate();
+    const today = getTodayDate();
 
+    const totals = {
+        total:    0,
+        polished: 0,
+        scrap:    0,
+        rework:   0,
+        remarks:  0,
+        date:     today
+    };
 
-    let totalScrap = 0;
-
-    let totalRework = 0;
-
-
-    const rows =
-        document.querySelectorAll(
-            "#loadingSheet tbody tr"
-        );
-
-
-    rows.forEach(
-        row => {
-
-            const dateInput =
-                row.querySelector(
-                    ".date-input"
-                );
-
-
-            const rowDate =
-                dateInput
-                ? dateInput.value
-                : "";
-
-
-            /*
-               Only count rows whose date
-               is today's date.
-            */
-
-            if (
-                rowDate !== today
-            ) {
-
-                return;
-
-            }
-
-
-            const scrapInput =
-                row.querySelector(
-                    ".scrap-cell input"
-                );
-
-
-            const reworkInput =
-                row.querySelector(
-                    ".rework-cell input"
-                );
-
-
-            if (scrapInput) {
-
-                totalScrap +=
-                    parseInt(
-                        scrapInput.value || 0
-                    );
-
-            }
-
-
-            if (reworkInput) {
-
-                totalRework +=
-                    parseInt(
-                        reworkInput.value || 0
-                    );
-
-            }
-
-        }
+    const rows = document.querySelectorAll(
+        "#loadingSheet tbody tr"
     );
 
+    rows.forEach(row => {
 
-    return {
+        const dateInput = row.querySelector(".date-input");
 
-        scrap:
-            totalScrap,
+        const rowDate = dateInput ? dateInput.value : "";
 
-        rework:
-            totalRework,
+        /*
+           Count the row if its date is today
+           OR if no date was entered at all
+           (assume it is today's production).
+        */
 
-        date:
-            today
+        if (rowDate !== "" && rowDate !== today) {
+            return;
+        }
 
-    };
+        const firstNumber = (selector) => {
+            const el = row.querySelector(selector);
+            return el ? parseInt(el.value || 0) : 0;
+        };
+
+        totals.rework   += firstNumber(".rework-cell input");
+        totals.polished += firstNumber(".polished-cell input");
+        totals.scrap    += firstNumber(".scrap-cell input");
+        totals.remarks  += firstNumber(".remarks-cell input");
+        totals.total    += parseInt(
+            row.querySelector(".total-cell").textContent || 0
+        );
+
+    });
+
+    return totals;
 
 }
 
 
 /* ==========================================
    SEND DAILY TOTAL TO TELEGRAM
+   (now counts EVERYTHING)
 ========================================== */
 
 async function sendDailyTotalsToTelegram() {
 
-    const totals =
-        calculateTodayTotals();
-
+    const totals = calculateTodayTotals();
 
     const teamLeader =
-        document
-        .getElementById(
-            "teamLeader"
-        )
-        .value
-        .trim() ||
+        document.getElementById("teamLeader").value.trim() ||
         "Not provided";
-
 
     const operator =
-        document
-        .getElementById(
-            "operatorName"
-        )
-        .value
-        .trim() ||
+        document.getElementById("operatorName").value.trim() ||
         "Not provided";
-
 
     const message =
         "📊 PP2 DAILY PRODUCTION SUMMARY\n\n" +
 
-        "📅 Date: " +
-        totals.date +
-        "\n\n" +
+        "📅 Date: " + totals.date + "\n\n" +
 
-        "🗑️ Total scrap for the day: " +
-        totals.scrap +
-        "\n" +
+        "📦 Total off-loaded: " + totals.total + "\n" +
+        "✨ Polished: " + totals.polished + "\n" +
+        "🔧 Rework: " + totals.rework + "\n" +
+        "🗑️ Scrap: " + totals.scrap + "\n" +
+        "📝 Remarks: " + totals.remarks + "\n\n" +
 
-        "🔧 Total rework for the day: " +
-        totals.rework +
-        "\n\n" +
+        "👷 Team Leader: " + teamLeader + "\n" +
+        "👨‍🔧 Operator: " + operator + "\n\n" +
+        "⏰ Summary generated: " + new Date().toLocaleString();
 
-        "👷 Team Leader: " +
-        teamLeader +
-        "\n" +
+    const result = await sendTelegramMessage(message);
 
-        "👨‍🔧 Operator: " +
-        operator +
-        "\n\n" +
-
-        "⏰ Summary generated: " +
-        new Date()
-        .toLocaleString();
-
-
-    return await sendTelegramMessage(
-        message
-    );
+    return result.ok;
 
 }
 
@@ -1424,373 +896,160 @@ async function generatePDF() {
 
     /*
        FIRST calculate today's totals
-       and send them to Telegram.
+       (ALL categories) and send to Telegram.
     */
 
-    const telegramSent =
-        await sendDailyTotalsToTelegram();
-
+    const telegramSent = await sendDailyTotalsToTelegram();
 
     if (!telegramSent) {
-
-        console.warn(
-            "Daily totals could not be sent to Telegram."
+        alert(
+            "⚠️ The daily summary could not be sent to Telegram.\n" +
+            "Click 'Test Telegram' to find out why. The PDF will still download."
         );
-
     }
-
 
     /*
        THEN create the PDF.
     */
 
-    const { jsPDF } =
-        window.jspdf;
+    const { jsPDF } = window.jspdf;
 
-
-    const doc =
-        new jsPDF();
-
+    const doc = new jsPDF();
 
     doc.setFontSize(16);
-
-
-    doc.text(
-        "PP2 Off Loading Sheet",
-        10,
-        10
-    );
-
+    doc.text("PP2 Off Loading Sheet", 10, 10);
 
     let y = 20;
 
-
     doc.setFontSize(12);
-
 
     doc.text(
         "Team Leader: " +
         (
-            document
-            .getElementById(
-                "teamLeader"
-            )
-            .value ||
+            document.getElementById("teamLeader").value ||
             "Not provided"
         ),
-        10,
-        y
+        10, y
     );
 
-
     y += 7;
-
 
     doc.text(
         "Operator: " +
         (
-            document
-            .getElementById(
-                "operatorName"
-            )
-            .value ||
+            document.getElementById("operatorName").value ||
             "Not provided"
         ),
-        10,
-        y
+        10, y
     );
 
-
     y += 7;
-
 
     /*
-       Add today's totals to the PDF.
+       Add today's FULL totals to the PDF.
     */
 
-    const dailyTotals =
-        calculateTodayTotals();
+    const dailyTotals = calculateTodayTotals();
 
-
-    doc.text(
-        "Total scrap for the day: " +
-        dailyTotals.scrap,
-        10,
-        y
-    );
-
-
+    doc.text("Date: " + dailyTotals.date, 10, y);
     y += 7;
 
+    doc.text("Total off-loaded for the day: " + dailyTotals.total, 10, y);
+    y += 7;
 
-    doc.text(
-        "Total rework for the day: " +
-        dailyTotals.rework,
-        10,
-        y
-    );
+    doc.text("Total polished for the day: " + dailyTotals.polished, 10, y);
+    y += 7;
 
+    doc.text("Total rework for the day: " + dailyTotals.rework, 10, y);
+    y += 7;
 
+    doc.text("Total scrap for the day: " + dailyTotals.scrap, 10, y);
+    y += 7;
+
+    doc.text("Total remarks for the day: " + dailyTotals.remarks, 10, y);
     y += 12;
 
-
-    doc.text(
-        "Part",
-        10,
-        y
-    );
-
-
-    doc.text(
-        "Color",
-        50,
-        y
-    );
-
-
-    doc.text(
-        "Total",
-        90,
-        y
-    );
-
-
-    doc.text(
-        "Rework",
-        115,
-        y
-    );
-
-
-    doc.text(
-        "Polished",
-        145,
-        y
-    );
-
-
-    doc.text(
-        "Scrap",
-        180,
-        y
-    );
-
-
-    doc.text(
-        "Remarks",
-        210,
-        y
-    );
-
-
-    doc.text(
-        "Date",
-        250,
-        y
-    );
-
+    doc.text("Part",     10,  y);
+    doc.text("Color",    50,  y);
+    doc.text("Total",    90,  y);
+    doc.text("Rework",   115, y);
+    doc.text("Polished", 145, y);
+    doc.text("Scrap",    180, y);
+    doc.text("Remarks",  210, y);
+    doc.text("Date",     250, y);
 
     y += 10;
 
-
-    const rows =
-        document.querySelectorAll(
-            "#loadingSheet tbody tr"
-        );
-
-
-    rows.forEach(
-        row => {
-
-            const cells =
-                row.querySelectorAll(
-                    "td"
-                );
-
-
-            const part =
-                cells[0]
-                .querySelector(
-                    "select"
-                ).value;
-
-
-            const color =
-                cells[1]
-                .querySelector(
-                    "select"
-                ).value;
-
-
-            const total =
-                cells[2]
-                .textContent;
-
-
-            const rework =
-                cells[3]
-                .querySelector(
-                    "input"
-                ).value;
-
-
-            const polished =
-                cells[4]
-                .querySelector(
-                    "input"
-                ).value;
-
-
-            const scrap =
-                cells[5]
-                .querySelector(
-                    "input"
-                ).value;
-
-
-            const remarks =
-                cells[6]
-                .querySelector(
-                    "input"
-                ).value;
-
-
-            const date =
-                cells[7]
-                .querySelector(
-                    "input"
-                ).value;
-
-
-            doc.setFontSize(8);
-
-
-            doc.text(
-                part.substring(0, 20),
-                10,
-                y
-            );
-
-
-            doc.text(
-                color.substring(0, 18),
-                50,
-                y
-            );
-
-
-            doc.text(
-                total,
-                90,
-                y
-            );
-
-
-            doc.text(
-                rework,
-                115,
-                y
-            );
-
-
-            doc.text(
-                polished,
-                145,
-                y
-            );
-
-
-            doc.text(
-                scrap,
-                180,
-                y
-            );
-
-
-            doc.text(
-                remarks,
-                210,
-                y
-            );
-
-
-            doc.text(
-                date,
-                250,
-                y
-            );
-
-
-            y += 8;
-
-
-            if (
-                y > 280
-            ) {
-
-                doc.addPage();
-
-                y = 20;
-
-            }
-
-        }
+    const rows = document.querySelectorAll(
+        "#loadingSheet tbody tr"
     );
 
+    rows.forEach(row => {
+
+        const cells = row.querySelectorAll("td");
+
+        const part     = cells[0].querySelector("select").value;
+        const color    = cells[1].querySelector("select").value;
+        const total    = cells[2].textContent;
+        const rework   = cells[3].querySelector("input").value;
+        const polished = cells[4].querySelector("input").value;
+        const scrap    = cells[5].querySelector("input").value;
+        const remarks  = cells[6].querySelector("input").value;
+        const date     = cells[7].querySelector("input").value;
+
+        doc.setFontSize(8);
+
+        doc.text(part.substring(0, 20),     10,  y);
+        doc.text(color.substring(0, 18),    50,  y);
+        doc.text(total,                     90,  y);
+        doc.text(rework,                    115, y);
+        doc.text(polished,                  145, y);
+        doc.text(scrap,                     180, y);
+        doc.text(remarks,                   210, y);
+        doc.text(date,                      250, y);
+
+        y += 8;
+
+        if (y > 280) {
+            doc.addPage();
+            y = 20;
+        }
+
+    });
 
     /*
-       Final daily summary inside PDF.
+       Final daily summary inside PDF
+       (ALL categories counted).
     */
 
-    if (
-        y > 250
-    ) {
-
+    if (y > 230) {
         doc.addPage();
-
         y = 20;
-
     }
 
-
     y += 10;
-
 
     doc.setFontSize(12);
 
-
-    doc.text(
-        "DAILY TOTAL",
-        10,
-        y
-    );
-
+    doc.text("DAILY TOTAL - " + dailyTotals.date, 10, y);
 
     y += 8;
 
-
-    doc.text(
-        "Total scrap for the day: " +
-        dailyTotals.scrap,
-        10,
-        y
-    );
-
-
+    doc.text("Total off-loaded for the day: " + dailyTotals.total, 10, y);
     y += 8;
 
+    doc.text("Total polished for the day: " + dailyTotals.polished, 10, y);
+    y += 8;
 
-    doc.text(
-        "Total rework for the day: " +
-        dailyTotals.rework,
-        10,
-        y
-    );
+    doc.text("Total rework for the day: " + dailyTotals.rework, 10, y);
+    y += 8;
 
+    doc.text("Total scrap for the day: " + dailyTotals.scrap, 10, y);
+    y += 8;
 
-    doc.save(
-        "PP2_Off_Loading_Sheet.pdf"
-    );
+    doc.text("Total remarks for the day: " + dailyTotals.remarks, 10, y);
+
+    doc.save("PP2_Off_Loading_Sheet.pdf");
 
 }
 
@@ -1803,130 +1062,55 @@ function saveData() {
 
     const tableData = [];
 
-
-    const rows =
-        document.querySelectorAll(
-            "#loadingSheet tbody tr"
-        );
-
-
-    rows.forEach(
-        row => {
-
-            const cells =
-                row.querySelectorAll(
-                    "td"
-                );
-
-
-            const rowData = {
-
-                part:
-                    cells[0]
-                    .querySelector(
-                        "select"
-                    ).value,
-
-
-                color:
-                    cells[1]
-                    .querySelector(
-                        "select"
-                    ).value,
-
-
-                total:
-                    cells[2].textContent,
-
-
-                rework: {
-
-                    value:
-                        cells[3]
-                        .querySelector(
-                            "input"
-                        ).value,
-
-                    defect:
-                        cells[3]
-                        .querySelector(
-                            "select"
-                        ).value
-
-                },
-
-
-                polished:
-                    cells[4]
-                    .querySelector(
-                        "input"
-                    ).value,
-
-
-                scrap: {
-
-                    value:
-                        cells[5]
-                        .querySelector(
-                            "input"
-                        ).value,
-
-                    defect:
-                        cells[5]
-                        .querySelector(
-                            "select"
-                        ).value
-
-                },
-
-
-                remarks:
-                    cells[6]
-                    .querySelector(
-                        "input"
-                    ).value,
-
-
-                date:
-                    cells[7]
-                    .querySelector(
-                        "input"
-                    ).value
-
-            };
-
-
-            tableData.push(
-                rowData
-            );
-
-        }
+    const rows = document.querySelectorAll(
+        "#loadingSheet tbody tr"
     );
 
+    rows.forEach(row => {
+
+        const cells = row.querySelectorAll("td");
+
+        const rowData = {
+
+            part: cells[0].querySelector("select").value,
+            color: cells[1].querySelector("select").value,
+            total: cells[2].textContent,
+
+            rework: {
+                value: cells[3].querySelector("input").value,
+                defect: cells[3].querySelector("select").value
+            },
+
+            polished: cells[4].querySelector("input").value,
+
+            scrap: {
+                value: cells[5].querySelector("input").value,
+                defect: cells[5].querySelector("select").value
+            },
+
+            remarks: cells[6].querySelector("input").value,
+
+            date: cells[7].querySelector("input").value
+
+        };
+
+        tableData.push(rowData);
+
+    });
 
     localStorage.setItem(
         "pp2LoadingSheetData",
-        JSON.stringify(
-            tableData
-        )
+        JSON.stringify(tableData)
     );
-
 
     localStorage.setItem(
         "pp2TeamLeader",
-        document
-        .getElementById(
-            "teamLeader"
-        ).value
+        document.getElementById("teamLeader").value
     );
-
 
     localStorage.setItem(
         "pp2Operator",
-        document
-        .getElementById(
-            "operatorName"
-        ).value
+        document.getElementById("operatorName").value
     );
 
 }
@@ -1938,484 +1122,141 @@ function saveData() {
 
 function loadData() {
 
-    const savedLeader =
-        localStorage.getItem(
-            "pp2TeamLeader"
-        );
+    const savedLeader = localStorage.getItem("pp2TeamLeader");
 
-
-    if (
-        savedLeader
-    ) {
-
-        document
-        .getElementById(
-            "teamLeader"
-        )
-        .value =
-            savedLeader;
-
+    if (savedLeader) {
+        document.getElementById("teamLeader").value = savedLeader;
     }
 
+    const savedOperator = localStorage.getItem("pp2Operator");
 
-    const savedOperator =
-        localStorage.getItem(
-            "pp2Operator"
-        );
-
-
-    if (
-        savedOperator
-    ) {
-
-        document
-        .getElementById(
-            "operatorName"
-        )
-        .value =
-            savedOperator;
-
+    if (savedOperator) {
+        document.getElementById("operatorName").value = savedOperator;
     }
 
+    const storedData = localStorage.getItem("pp2LoadingSheetData");
 
-    const storedData =
-        localStorage.getItem(
-            "pp2LoadingSheetData"
-        );
-
-
-    if (
-        !storedData
-    ) {
-
+    if (!storedData) {
         return;
-
     }
 
+    const tableData = JSON.parse(storedData);
 
-    const tableData =
-        JSON.parse(
-            storedData
-        );
-
-
-    const tableBody =
-        document.querySelector(
-            "#loadingSheet tbody"
-        );
-
+    const tableBody = document.querySelector("#loadingSheet tbody");
 
     tableBody.innerHTML = "";
 
+    tableData.forEach(rowData => {
 
-    tableData.forEach(
-        rowData => {
+        const newRow = tableBody.insertRow();
 
-            const newRow =
-                tableBody.insertRow();
-
-
-            newRow.innerHTML = `
+        newRow.innerHTML = `
 
             <td>
-
                 <select>
-
-                    <option value="${rowData.part}" selected>
-                        ${rowData.part}
-                    </option>
-
-                    <option value="H Bar_WLT">
-                        H Bar_WLT
-                    </option>
-
-                    <option value="H Bar WLT22B">
-                        H Bar WLT22B
-                    </option>
-
-                    <option value="H_Bar LTD">
-                        H_Bar LTD
-                    </option>
-
-                    <option value="H_Bar LTD22B">
-                        H_Bar LTD22B
-                    </option>
-
-                    <option value="WLT">
-                        WLT
-                    </option>
-
-                    <option value="XLT">
-                        XLT
-                    </option>
-
-                    <option value="LTD">
-                        LTD
-                    </option>
-
-                    <option value="MID">
-                        MID
-                    </option>
-
-                    <option value="High Bumper">
-                        High Bumper
-                    </option>
-
-                    <option value="BOX Rails J73RH">
-                        BOX Rails J73RH
-                    </option>
-
-                    <option value="Box Rails J73LH">
-                        Box Rails J73LH
-                    </option>
-
-                    <option value="Box Rails P703RH">
-                        Box Rails P703RH
-                    </option>
-
-                    <option value="Box Rails P703LH">
-                        Box Rails P703LH
-                    </option>
-
-                    <option value="Lower P703">
-                        Lower P703
-                    </option>
-
-                    <option value="Lower J703">
-                        Lower J703
-                    </option>
-
-                    <option value="Sporthoop J703">
-                        Sporthoop J703
-                    </option>
-
-                    <option value="Inner P703RH">
-                        Inner P703RH
-                    </option>
-
-                    <option value="Inner P703LH">
-                        Inner P703LH
-                    </option>
-
-                    <option value="Inner J73RH">
-                        Inner J73RH
-                    </option>
-
-                    <option value="Inner J73LH">
-                        Inner J73LH
-                    </option>
-
-                    <option value="Wheel lip RearRH">
-                        Wheel lip RearRH
-                    </option>
-
-                    <option value="Wheel lip RearLH">
-                        Wheel lip RearLH
-                    </option>
-
-                    <option value="Wheel lip FrontRH">
-                        Wheel lip FrontRH
-                    </option>
-
-                    <option value="Wheel lip FrontLH">
-                        Wheel lip FrontLH
-                    </option>
-
-                    <option value="Wheel lip RearRH22B">
-                        Wheel lip RearRH22B
-                    </option>
-
-                    <option value="Wheel lip RearLH22B">
-                        Wheel lip RearLH22B
-                    </option>
-
-                    <option value="Wheel lip FrontRH22B">
-                        Wheel lip FrontRH22B
-                    </option>
-
-                    <option value="Wheel lip FrontLH22B">
-                        Wheel lip FrontLH22B
-                    </option>
-
+                    <option value="${rowData.part}" selected>${rowData.part}</option>
+                    <option value="H Bar_WLT">H Bar_WLT</option>
+                    <option value="H Bar WLT22B">H Bar WLT22B</option>
+                    <option value="H_Bar LTD">H_Bar LTD</option>
+                    <option value="H_Bar LTD22B">H_Bar LTD22B</option>
+                    <option value="WLT Skid plate">WLT</option>
+                    <option value="WLT SKIDPLATE 22B>WLT 22B">WLT 22B</option>
+                    <option value="LTD SKIDPLATE >LTD">LTD</option>
+                    <option value="LTD SKIDPLATE 22B">LTD 22B</option>
+                    <option value="J73 SKIDPLATE">J73</option>
+                    <option value="BOX Rails J73RH">BOX Rails J73RH</option>
+                    <option value="Box Rails J73LH">Box Rails J73LH</option>
+                    <option value="Box Rails REP RH">Box Rails REP RH</option>
+                    <option value="Box Rails REP LH">Box Rails REP LH</option>
+                    <option value="Lower P703">Lower P703</option>
+                    <option value="CENTER BAR">CENTER BAR</option>
+                    <option value="BATCH HOLDER WITH CAMERA">BATCH HOLDER WITH</option>
+                    <option value="BATCH HOLDER WITHOUTCAMERA">BATCH. HOLDER WITHOUT</option>
+                    <option value="Inner P703LH">Inner P703LH</option>
+                    <option value="Inner p703RH">Inner p703RH</option>
+                    <option value="MID center Rh">MiD center RH</option>
+                    <option value="Wheel lip RearRH">Wheel lip RearRH</option>
+                    <option value="Wheel lip RearLH">Wheel lip RearLH</option>
+                    <option value="Wheel lip FrontRH">Wheel lip FrontRH</option>
+                    <option value="Wheel lip FrontLH">Wheel lip FrontLH</option>
+                    <option value="Wheel lip RearRH22B">Wheel lip RearRH22B</option>
+                    <option value="Wheel lip RearLH22B">Wheel lip RearLH22B</option>
+                    <option value="Wheel lip FrontRH22B">Wheel lip FrontRH22B</option>
+                    <option value="Wheel lip FrontLH22B">Wheel lip FrontLH22B</option>
                 </select>
-
             </td>
-
 
             <td>
-
                 <select>
-
-                    <option value="${rowData.color}" selected>
-                        ${rowData.color}
-                    </option>
-
-                    <option value="Boulder Gray">
-                        Boulder Gray
-                    </option>
-
-                    <option value="E Black">
-                        E Black
-                    </option>
-
-                    <option value="Moroccan Blue">
-                        Moroccan Blue
-                    </option>
-
-                    <option value="Frozen White">
-                        Frozen White
-                    </option>
-
-                    <option value="D. Silver">
-                        D. Silver
-                    </option>
-
-                    <option value="I. Silver">
-                        I. Silver
-                    </option>
-
-                    <option value="A Black">
-                        A Black
-                    </option>
-
-                    <option value="Asphalt">
-                        Asphalt
-                    </option>
-
-                    <option value="Blue Lightning">
-                        Blue Lightning
-                    </option>
-
-                    <option value="Carbonised grey">
-                        Carbonised grey
-                    </option>
-
-                    <option value="Lucid Red">
-                        Lucid Red
-                    </option>
-
-                    <option value="Cyber Orange">
-                        Cyber Orange
-                    </option>
-
+                    <option value="${rowData.color}" selected>${rowData.color}</option>
+                    <option value="Boulder Gray">Boulder Gray</option>
+                    <option value="E Black">E Black</option>
+                    <option value="Moroccan Blue">Moroccan Blue</option>
+                    <option value="Frozen White">Frozen White</option>
+                    <option value="D. Silver">D. Silver</option>
+                    <option value="I. Silver">I. Silver</option>
+                    <option value="A Black">A Black</option>
+                    <option value="Asphalt">Asphalt</option>
+                    <option value="Blue Lightning">Blue Lightning</option>
+                    <option value="Carbonised grey">Carbonised grey</option>
+                    <option value="Lucid Red">Lucid Red</option>
+                    <option value="Cyber Orange">Cyber Orange</option>
                 </select>
-
             </td>
 
-
-            <td class="total-cell">
-                ${rowData.total}
-            </td>
-
+            <td class="total-cell">${rowData.total}</td>
 
             <td class="rework-cell">
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="${rowData.rework.value}"
-                    min="0"
-                >
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <button
-                    class="calc-btn"
-                    onclick="calculate(this, 'rework')"
-                >
-                    Add
-                </button>
-
-                <button
-                    class="calc-btn reset-btn"
-                    onclick="reset(this)"
-                >
-                    Reset
-                </button>
-
+                <input type="number" class="number-input" value="${rowData.rework.value}" min="0">
+                <input type="number" class="number-input" value="0" min="0">
+                <button class="calc-btn" onclick="calculate(this, 'rework')">Add</button>
+                <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
                 <select class="rework-defect">
-
-                    <option
-                        value="${rowData.rework.defect}"
-                        selected
-                    >
-                        ${rowData.rework.defect}
-                    </option>
-
-                    <option value="None">
-                        None
-                    </option>
-
-                    <option value="Run">
-                        Run
-                    </option>
-
-                    <option value="off colour">
-                        off colour
-                    </option>
-
-                    <option value="Dirt">
-                        Dirt
-                    </option>
-
+                    <option value="${rowData.rework.defect}" selected>${rowData.rework.defect}</option>
+                    <option value="None">None</option>
+                    <option value="Run">Run</option>
+                    <option value="off colour">off colour</option>
+                    <option value="Dirt">Dirt</option>
                 </select>
-
             </td>
-
 
             <td class="polished-cell">
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="${rowData.polished}"
-                    min="0"
-                >
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <button
-                    class="calc-btn"
-                    onclick="calculate(this, 'polished')"
-                >
-                    Add
-                </button>
-
-                <button
-                    class="calc-btn reset-btn"
-                    onclick="reset(this)"
-                >
-                    Reset
-                </button>
-
+                <input type="number" class="number-input" value="${rowData.polished}" min="0">
+                <input type="number" class="number-input" value="0" min="0">
+                <button class="calc-btn" onclick="calculate(this, 'polished')">Add</button>
+                <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
             </td>
-
 
             <td class="scrap-cell">
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="${rowData.scrap.value}"
-                    min="0"
-                >
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <button
-                    class="calc-btn"
-                    onclick="calculate(this, 'scrap')"
-                >
-                    Add
-                </button>
-
-                <button
-                    class="calc-btn reset-btn"
-                    onclick="reset(this)"
-                >
-                    Reset
-                </button>
-
+                <input type="number" class="number-input" value="${rowData.scrap.value}" min="0">
+                <input type="number" class="number-input" value="0" min="0">
+                <button class="calc-btn" onclick="calculate(this, 'scrap')">Add</button>
+                <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
                 <select class="scrap-defect">
-
-                    <option
-                        value="${rowData.scrap.defect}"
-                        selected
-                    >
-                        ${rowData.scrap.defect}
-                    </option>
-
-                    <option value="None">
-                        None
-                    </option>
-
-                    <option value="Deep Cut">
-                        Deep Cut
-                    </option>
-
-                    <option value="Scratch">
-                        Scratch
-                    </option>
-
-                    <option value="3×Painted">
-                        3×Painted
-                    </option>
-
-                    <option value="fell in the oven">
-                        fell in the oven
-                    </option>
-
-                    <option value="Dirt">
-                        Dirt
-                    </option>
-
+                    <option value="${rowData.scrap.defect}" selected>${rowData.scrap.defect}</option>
+                    <option value="None">None</option>
+                    <option value="Deep Cut">Deep Cut</option>
+                    <option value="Scratch">Scratch</option>
+                    <option value="3×Painted">3×Painted</option>
+                    <option value="fell in the oven">fell in the oven</option>
+                    <option value="Dirt">Dirt</option>
                 </select>
-
             </td>
-
 
             <td class="remarks-cell">
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="${rowData.remarks}"
-                    min="0"
-                >
-
-                <input
-                    type="number"
-                    class="number-input"
-                    value="0"
-                    min="0"
-                >
-
-                <button
-                    class="calc-btn"
-                    onclick="calculate(this, 'remarks')"
-                >
-                    Add
-                </button>
-
-                <button
-                    class="calc-btn reset-btn"
-                    onclick="reset(this)"
-                >
-                    Reset
-                </button>
-
+                <input type="number" class="number-input" value="${rowData.remarks}" min="0">
+                <input type="number" class="number-input" value="0" min="0">
+                <button class="calc-btn" onclick="calculate(this, 'remarks')">Add</button>
+                <button class="calc-btn reset-btn" onclick="reset(this)">Reset</button>
             </td>
-
 
             <td>
-
-                <input
-                    type="date"
-                    class="date-input"
-                    value="${rowData.date}"
-                >
-
+                <input type="date" class="date-input" value="${rowData.date}">
             </td>
 
-            `;
+        `;
 
-        }
-    );
+    });
 
 }
 
@@ -2424,48 +1265,31 @@ function loadData() {
    AUTO SAVE NAMES
 ========================================== */
 
-document.addEventListener(
-    "input",
-    function(event) {
+document.addEventListener("input", function(event) {
 
-        if (
-            event.target.id ===
-                "teamLeader" ||
-
-            event.target.id ===
-                "operatorName"
-        ) {
-
-            saveData();
-
-        }
-
+    if (
+        event.target.id === "teamLeader" ||
+        event.target.id === "operatorName"
+    ) {
+        saveData();
     }
-);
+
+});
 
 
 /* ==========================================
    AUTO SAVE TABLE CHANGES
 ========================================== */
 
-document.addEventListener(
-    "change",
-    function(event) {
+document.addEventListener("change", function(event) {
 
-        if (
-            event.target.closest(
-                "#loadingSheet"
-            )
-        ) {
-
-            saveData();
-
-        }
-
+    if (event.target.closest("#loadingSheet")) {
+        saveData();
     }
-);
+
+});
 
 </script>
 
 </body>
-      </html>
+</html>
