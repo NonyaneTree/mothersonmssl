@@ -16,8 +16,8 @@ body {
     margin: 0;
     min-height: 100vh;
     font-family: Arial, sans-serif;
-    background: #111;
-    color: white;
+    background: #000;
+    color: #ff0000;
 
     display: flex;
     align-items: center;
@@ -35,10 +35,12 @@ body {
 h1 {
     margin-bottom: 8px;
     font-size: 32px;
+    color: #ff0000;
+    font-weight: bold;
 }
 
 .subtitle {
-    color: #999;
+    color: #ff0000;
     margin-bottom: 35px;
     font-size: 15px;
 }
@@ -52,18 +54,27 @@ h1 {
 button {
     width: 100%;
     padding: 25px 20px;
-    border: none;
+
+    border: 2px solid #ff0000;
     border-radius: 15px;
+
+    background: #000;
+    color: #ff0000;
 
     font-size: 24px;
     font-weight: bold;
 
-    color: white;
     cursor: pointer;
 
     transition:
-        transform 0.15s,
-        opacity 0.15s;
+        background 0.2s,
+        color 0.2s,
+        transform 0.15s;
+}
+
+button:hover {
+    background: #ff0000;
+    color: #000;
 }
 
 button:active {
@@ -71,16 +82,16 @@ button:active {
 }
 
 .pp1 {
-    background: #245c9c;
+    border-color: #ff0000;
 }
 
 .pp2 {
-    background: #168443;
+    border-color: #ff0000;
 }
 
 .footer {
     margin-top: 30px;
-    color: #666;
+    color: #ff0000;
     font-size: 12px;
 }
 
@@ -95,7 +106,7 @@ button:active {
     <h1>PP PRODUCTION</h1>
 
     <div class="subtitle">
-        Select Production Area
+        SELECT PRODUCTION AREA
     </div>
 
     <div class="buttons">
@@ -103,32 +114,22 @@ button:active {
         <button
             class="pp1"
             onclick="window.location.href='layou1.html'">
-
             PP1
-
         </button>
-
 
         <button
             class="pp2"
             onclick="window.location.href='layout.html'">
-
             PP2
-
         </button>
 
     </div>
 
     <div class="footer">
-        Production Loading System
+        PRODUCTION LOADING SYSTEM
     </div>
 
 </div>
 
 </body>
 </html>
-
-Navigation:
-
-- PP1 → "layou1.html"
-- PP2 → "layout.html"
