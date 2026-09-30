@@ -146,11 +146,6 @@ button {
     margin-top: 7px;
 }
 
-
-/* =====================================================
-   1 HOUR 25 MINUTE TIMER
-   ===================================================== */
-
 .timer {
     display: inline-block;
     margin-top: 12px;
@@ -172,11 +167,6 @@ button {
     margin-left: 8px;
 }
 
-
-/* =====================================================
-   EMPTY
-   ===================================================== */
-
 .empty {
     text-align: center;
     color: #777;
@@ -190,7 +180,6 @@ button {
     padding: 10px;
     font-size: 13px;
 }
-
 
 @media(max-width:600px) {
 
@@ -246,7 +235,7 @@ button {
 
 
 <div id="status" class="status">
-    Connecting to ghe system...
+    Connecting to Telegram...
 </div>
 
 
@@ -261,18 +250,38 @@ TELEGRAM SETTINGS
 ========================================================
 */
 
-const TELEGRAM_BOT_TOKEN = "8599005929:AAEV9bOQJ6llU4P6b5QweRtRB1DTjPIheto";
+/*
+IMPORTANT:
 
-const TELEGRAM_CHAT_ID = "-1004393466390";
+Replace YOUR_NEW_BOT_TOKEN with your NEW Telegram
+bot token.
+
+Do NOT publish your real bot token publicly.
+*/
+
+const TELEGRAM_BOT_TOKEN =
+    "8532026427:AAH8rWn9nm5vKgxr-zVV_DVMqplISaI_Sq4";
+
+
+/*
+Your Telegram channel ID
+*/
+
+const TELEGRAM_CHAT_ID =
+    "-1004393466390";
 
 
 /*
 ========================================================
-1 HOUR 25 MINUTE TIMER
+MESSAGE LIFETIME
 ========================================================
 
-1 hour 25 minutes =
-5,100,000 milliseconds
+1 hour 25 minutes
+
+1 hour = 3,600,000 ms
+25 minutes = 1,500,000 ms
+
+Total = 5,100,000 ms
 ========================================================
 */
 
@@ -338,13 +347,32 @@ FETCH TELEGRAM
 
 async function fetchTelegram() {
 
+    /*
+    Check credentials.
+    */
+
     if (
-        TELEGRAM_BOT_TOKEN === "8532026427:AAH8rWn9nm5vKgxr-zVV_DVMqplISaI_Sq4" ||
-        TELEGRAM_CHAT_ID === "-1004393466390"
+        !TELEGRAM_BOT_TOKEN ||
+        TELEGRAM_BOT_TOKEN === "YOUR_NEW_BOT_TOKEN"
     ) {
 
-        document.getElementById("status").innerHTML =
-            "⚠️ system not fetching make sure all Api are correct.";
+        document.getElementById(
+            "status"
+        ).innerHTML =
+            "⚠️ Telegram Bot Token is missing.";
+
+        renderLoads();
+
+        return;
+    }
+
+
+    if (!TELEGRAM_CHAT_ID) {
+
+        document.getElementById(
+            "status"
+        ).innerHTML =
+            "⚠️ Telegram Channel ID is missing.";
 
         renderLoads();
 
@@ -354,6 +382,10 @@ async function fetchTelegram() {
 
     try {
 
+        /*
+        Get previous Telegram update ID.
+        */
+
         const offset =
             Number(
                 localStorage.getItem(
@@ -361,6 +393,10 @@ async function fetchTelegram() {
                 ) || 0
             );
 
+
+        /*
+        Only request channel posts.
+        */
 
         const allowedUpdates =
             encodeURIComponent(
@@ -370,6 +406,10 @@ async function fetchTelegram() {
             );
 
 
+        /*
+        Telegram API URL.
+        */
+
         const url =
             `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates` +
             `?offset=${offset}` +
@@ -377,8 +417,23 @@ async function fetchTelegram() {
             `&allowed_updates=${allowedUpdates}`;
 
 
+        console.log(
+            "Fetching Telegram..."
+        );
+
+
         const response =
             await fetch(url);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP error " +
+                response.status
+            );
+
+        }
 
 
         const data =
@@ -391,6 +446,10 @@ async function fetchTelegram() {
         );
 
 
+        /*
+        Telegram returned an API error.
+        */
+
         if (!data.ok) {
 
             throw new Error(
@@ -401,75 +460,115 @@ async function fetchTelegram() {
         }
 
 
-        if (data.result.length > 0) {
+        /*
+        Keep track of the highest update ID.
+        */
 
-            let highestUpdateId =
-                offset;
-
-
-            data.result.forEach(update => {
-
-                if (
-                    update.update_id >=
-                    highestUpdateId
-                ) {
-
-                    highestUpdateId =
-                        update.update_id + 1;
-
-                }
+        let highestUpdateId =
+            offset;
 
 
-                /*
-                ONLY CHANNEL POSTS
-                */
+        /*
+        Process Telegram updates.
+        */
 
-                const message =
-                    update.channel_post;
+        data.result.forEach(update => {
 
+            /*
+            Update offset.
+            */
 
-                if (!message) {
-
-                    return;
-
-                }
-
-
-                /*
-                CHECK CHANNEL ID
-                */
-
-                if (
-                    String(message.chat.id) !==
-                    String(TELEGRAM_CHAT_ID)
-                ) {
-
-                    return;
-
-                }
-
-
-                /*
-                PROCESS MESSAGE
-                */
-
-                processMessage(message);
-
-            });
-
-
-            localStorage.setItem(
-                OFFSET_KEY,
+            if (
+                update.update_id >=
                 highestUpdateId
+            ) {
+
+                highestUpdateId =
+                    update.update_id + 1;
+
+            }
+
+
+            /*
+            Only channel posts.
+            */
+
+            const message =
+                update.channel_post;
+
+
+            if (!message) {
+
+                console.log(
+                    "Skipping non-channel update:",
+                    update
+                );
+
+                return;
+
+            }
+
+
+            /*
+            Check channel ID.
+            */
+
+            console.log(
+                "Channel ID received:",
+                message.chat.id
             );
 
-        }
 
+            if (
+                String(message.chat.id) !==
+                String(TELEGRAM_CHAT_ID)
+            ) {
+
+                console.log(
+                    "Ignoring message from another channel."
+                );
+
+                return;
+
+            }
+
+
+            /*
+            Process the message.
+            */
+
+            processMessage(message);
+
+        });
+
+
+        /*
+        Save the next Telegram offset.
+        */
+
+        localStorage.setItem(
+            OFFSET_KEY,
+            highestUpdateId
+        );
+
+
+        /*
+        Save messages.
+        */
 
         saveData();
 
+
+        /*
+        Refresh display.
+        */
+
         renderLoads();
 
+
+        /*
+        Connected.
+        */
 
         document.getElementById(
             "status"
@@ -490,7 +589,9 @@ async function fetchTelegram() {
             "status"
         ).innerHTML =
             "🔴 Telegram error: " +
-            escapeHTML(error.message);
+            escapeHTML(
+                error.message
+            );
 
     }
 
@@ -506,9 +607,9 @@ PROCESS TELEGRAM MESSAGE
 function processMessage(message) {
 
     /*
-    Telegram text
+    Telegram normal text
     OR
-    caption from photo/video/document
+    caption from media.
     */
 
     const text =
@@ -518,7 +619,7 @@ function processMessage(message) {
 
 
     /*
-    Ignore completely empty messages
+    Ignore empty messages.
     */
 
     if (!text.trim()) {
@@ -529,7 +630,7 @@ function processMessage(message) {
 
 
     /*
-    Unique Telegram ID
+    Create unique ID.
     */
 
     const messageId =
@@ -537,7 +638,7 @@ function processMessage(message) {
 
 
     /*
-    Don't display duplicate
+    Prevent duplicates.
     */
 
     if (
@@ -553,7 +654,7 @@ function processMessage(message) {
 
 
     /*
-    Don't display messages already DONE
+    Don't show DONE messages again.
     */
 
     if (
@@ -568,12 +669,11 @@ function processMessage(message) {
 
 
     /*
-    IMPORTANT:
+    Use Telegram's original
+    message date.
 
-    Use Telegram's original message time.
-
-    The timer therefore does NOT reset
-    when the page refreshes.
+    This means refreshing the page
+    does NOT restart the timer.
     */
 
     const receivedAt =
@@ -584,6 +684,10 @@ function processMessage(message) {
 
             : new Date().toISOString();
 
+
+    /*
+    Add message.
+    */
 
     activeLoads.push({
 
@@ -604,19 +708,29 @@ function processMessage(message) {
 
     });
 
+
+    console.log(
+        "New PP1 message:",
+        text
+    );
+
 }
 
 
 /*
 ========================================================
-CALCULATE TIMER
+CALCULATE TIME REMAINING
 ========================================================
 */
 
-function getTimeRemaining(receivedAt) {
+function getTimeRemaining(
+    receivedAt
+) {
 
     const receivedTime =
-        new Date(receivedAt).getTime();
+        new Date(
+            receivedAt
+        ).getTime();
 
 
     const expiryTime =
@@ -628,11 +742,10 @@ function getTimeRemaining(receivedAt) {
         Date.now();
 
 
-    const remaining =
-        expiryTime - now;
-
-
-    return remaining;
+    return (
+        expiryTime -
+        now
+    );
 
 }
 
@@ -643,9 +756,13 @@ FORMAT TIMER
 ========================================================
 */
 
-function formatTimer(milliseconds) {
+function formatTimer(
+    milliseconds
+) {
 
-    if (milliseconds <= 0) {
+    if (
+        milliseconds <= 0
+    ) {
 
         return "EXPIRED";
 
@@ -666,7 +783,8 @@ function formatTimer(milliseconds) {
 
     const minutes =
         Math.floor(
-            (totalSeconds % 3600) / 60
+            (totalSeconds % 3600) /
+            60
         );
 
 
@@ -687,7 +805,7 @@ function formatTimer(milliseconds) {
 
 /*
 ========================================================
-DISPLAY ALL MESSAGES
+DISPLAY MESSAGES
 ========================================================
 */
 
@@ -698,6 +816,10 @@ function renderLoads() {
             "loads"
         );
 
+
+    /*
+    Nothing to display.
+    */
 
     if (
         activeLoads.length === 0
@@ -715,7 +837,7 @@ function renderLoads() {
 
 
     /*
-    Oldest first
+    Oldest messages first.
     */
 
     activeLoads.sort(
@@ -727,6 +849,10 @@ function renderLoads() {
 
     container.innerHTML = "";
 
+
+    /*
+    Create each message.
+    */
 
     activeLoads.forEach(item => {
 
@@ -777,35 +903,42 @@ function renderLoads() {
                         ${escapeHTML(item.text)}
                     </div>
 
-
                     <div
-                        class="timer ${expired ? "expired-timer" : ""}"
+                        class="timer ${
+                            expired
+                                ? "expired-timer"
+                                : ""
+                        }"
                         id="timer-${safeId(item.id)}">
 
                         ⏱ ${
                             expired
                                 ? "EXPIRED"
-                                : formatTimer(remaining)
+                                : formatTimer(
+                                    remaining
+                                )
                         }
 
                     </div>
-
 
                     <div class="loaded-time">
 
                         Received:
-                        ${formatDate(item.receivedAt)}
+                        ${formatDate(
+                            item.receivedAt
+                        )}
 
                         ${
                             expired
-                                ? `<span class="expired-label">
+                                ? `
+                                <span class="expired-label">
                                     • 1 HOUR 25 MINUTES PASSED
-                                   </span>`
+                                </span>
+                                `
                                 : ""
                         }
 
                     </div>
-
 
                     <div class="telegram-id">
 
@@ -823,7 +956,9 @@ function renderLoads() {
         `;
 
 
-        container.appendChild(box);
+        container.appendChild(
+            box
+        );
 
     });
 
@@ -833,10 +968,6 @@ function renderLoads() {
 /*
 ========================================================
 UPDATE TIMERS
-
-This runs every second.
-
-It does NOT remove expired messages.
 ========================================================
 */
 
@@ -858,7 +989,10 @@ function updateTimers() {
             );
 
 
-        if (!timer || !box) {
+        if (
+            !timer ||
+            !box
+        ) {
 
             return;
 
@@ -871,11 +1005,13 @@ function updateTimers() {
             );
 
 
-        if (remaining <= 0) {
+        /*
+        EXPIRED
+        */
 
-            /*
-            Message stays visible.
-            */
+        if (
+            remaining <= 0
+        ) {
 
             timer.innerHTML =
                 "⏱ EXPIRED";
@@ -902,7 +1038,7 @@ function updateTimers() {
 
 
         /*
-        Message still has time.
+        STILL ACTIVE
         */
 
         timer.innerHTML =
@@ -930,7 +1066,9 @@ function selectAll() {
         );
 
 
-    if (boxes.length === 0) {
+    if (
+        boxes.length === 0
+    ) {
 
         return;
 
@@ -940,7 +1078,8 @@ function selectAll() {
     const allChecked =
         Array.from(boxes)
             .every(
-                box => box.checked
+                box =>
+                    box.checked
             );
 
 
@@ -1002,12 +1141,6 @@ function markSelectedDone() {
             box.dataset.id;
 
 
-        /*
-        Permanently remember
-        this Telegram message
-        as DONE.
-        */
-
         if (
             !doneLoads.includes(id)
         ) {
@@ -1020,7 +1153,7 @@ function markSelectedDone() {
 
 
     /*
-    Remove from active display.
+    Remove DONE messages.
     */
 
     activeLoads =
@@ -1045,15 +1178,20 @@ FORMAT DATE
 ========================================================
 */
 
-function formatDate(dateString) {
+function formatDate(
+    dateString
+) {
 
     const date =
-        new Date(dateString);
+        new Date(
+            dateString
+        );
 
 
     return date.toLocaleString(
         "en-ZA",
         {
+
             timeZone:
                 "Africa/Johannesburg",
 
@@ -1074,6 +1212,7 @@ function formatDate(dateString) {
 
             second:
                 "2-digit"
+
         }
     );
 
@@ -1086,7 +1225,9 @@ HTML SECURITY
 ========================================================
 */
 
-function escapeHTML(value) {
+function escapeHTML(
+    value
+) {
 
     return String(value)
 
@@ -1124,7 +1265,9 @@ SAFE HTML ID
 ========================================================
 */
 
-function safeId(value) {
+function safeId(
+    value
+) {
 
     return String(value)
         .replace(
@@ -1141,15 +1284,15 @@ START
 ========================================================
 */
 
+/*
+Fetch immediately.
+*/
+
 fetchTelegram();
 
 
 /*
-========================================================
-TELEGRAM CHECK
-
-New messages are checked every 10 seconds.
-========================================================
+Check Telegram every 10 seconds.
 */
 
 setInterval(
@@ -1159,11 +1302,7 @@ setInterval(
 
 
 /*
-========================================================
-TIMER CHECK
-
-Timer updates every 1 second.
-========================================================
+Update timers every second.
 */
 
 setInterval(
@@ -1173,7 +1312,7 @@ setInterval(
 
 
 /*
-Initial timer update
+Initial timer update.
 */
 
 updateTimers();
