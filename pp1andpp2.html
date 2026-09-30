@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Production Area Selection</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 8px;
+    font-size: 32px;
+}
+
+.subtitle {
+    color: #999;
+    margin-bottom: 35px;
+    font-size: 15px;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+button {
+    width: 100%;
+    padding: 25px 20px;
+    border: none;
+    border-radius: 15px;
+
+    font-size: 24px;
+    font-weight: bold;
+
+    color: white;
+    cursor: pointer;
+
+    transition:
+        transform 0.15s,
+        opacity 0.15s;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+.pp1 {
+    background: #245c9c;
+}
+
+.pp2 {
+    background: #168443;
+}
+
+.footer {
+    margin-top: 30px;
+    color: #666;
+    font-size: 12px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>PP PRODUCTION</h1>
+
+    <div class="subtitle">
+        Select Production Area
+    </div>
+
+    <div class="buttons">
+
+        <button
+            class="pp1"
+            onclick="window.location.href='layou1.html'">
+
+            PP1
+
+        </button>
+
+
+        <button
+            class="pp2"
+            onclick="window.location.href='layout.html'">
+
+            PP2
+
+        </button>
+
+    </div>
+
+    <div class="footer">
+        Production Loading System
+    </div>
+
+</div>
+
+</body>
+</html>
+
+Navigation:
+
+- PP1 → "layou1.html"
+- PP2 → "layout.html"
