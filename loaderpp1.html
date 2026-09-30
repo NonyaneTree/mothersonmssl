@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PP2 Parts Loader</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: #1d1d1d;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid #333;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+select,
+input {
+    width: 100%;
+    padding: 13px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background: #292929;
+    color: white;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.add {
+    background: #444;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.send {
+    background: #1f8f4d;
+    color: white;
+}
+
+.remove {
+    background: #8f2525;
+    color: white;
+    margin-top: 5px;
+}
+
+.status {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.row-number {
+    color: #aaa;
+    margin-bottom: 15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>PP2 PARTS LOADER</h1>
+
+    <div class="subtitle">
+        Load parts and send them to Telegram
+    </div>
+
+    <div id="partsContainer"></div>
+
+    <button class="add" onclick="addPart()">
+        + ADD PART
+    </button>
+
+    <button class="send" onclick="sendParts()">
+        SEND LOADED PARTS
+    </button>
+
+    <div id="status" class="status"></div>
+
+</div>
+
+
+<script>
+
+/*
+====================================================
+TELEGRAM SETTINGS
+====================================================
+*/
+
+const TELEGRAM_BOT_TOKEN =
+    "8915888233:AAHesonc3FQT27GbIMZYwxSIhcJkGurMqAI";
+
+const TELEGRAM_CHAT_ID =
+    "-1004385640479";
+
+
+/*
+====================================================
+PP2 PARTS
+====================================================
+*/
+
+const parts = [
+
+    "Hbar WLT",
+
+    "HBAR WLT 22B",
+
+    "LTD HBAR",
+
+    "LTD HBAR 22B",
+
+    "J73",
+
+    "WLT SKID PLATE",
+
+    "WLT SKID PLATE 22B",
+
+    "LTD SKID PLATE 22B",
+
+    "CENTER BAR",
+
+    "BATCH HOLDER WITH CAMERA",
+
+    "BATCH HOLDER WITHOUT CAMERA",
+
+    "PHEV LH&RH",
+
+    "Cover LH&RH",
+
+    "inner p703",
+
+    "Box Rails rep cap",
+
+    "Box rail J73"
+
+];
+
+
+/*
+====================================================
+COLOURS
+====================================================
+*/
+
+const colours = [
+
+    "Primer",
+
+    "E Bony Black",
+
+    "Wizard",
+
+    "Super Alloy",
+
+    "Asphalt",
+
+    "Moon Dust",
+
+    "Iconic Silver"
+
+];
+
+
+/*
+====================================================
+ADD PART
+====================================================
+*/
+
+function addPart() {
+
+    const container =
+        document.getElementById(
+            "partsContainer"
+        );
+
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "card";
+
+
+    /*
+    PART OPTIONS
+    */
+
+    let partOptions =
+        `<option value="">
+            Select Part
+        </option>`;
+
+
+    parts.forEach(part => {
+
+        partOptions +=
+            `<option value="${part}">
+                ${part}
+            </option>`;
+
+    });
+
+
+    /*
+    COLOUR OPTIONS
+    */
+
+    let colourOptions =
+        `<option value="">
+            Select Colour
+        </option>`;
+
+
+    colours.forEach(colour => {
+
+        colourOptions +=
+            `<option value="${colour}">
+                ${colour}
+            </option>`;
+
+    });
+
+
+    /*
+    CARD HTML
+    */
+
+    card.innerHTML = `
+
+        <div class="row-number">
+            PART LOAD
+        </div>
+
+
+        <label>
+            Part
+        </label>
+
+
+        <select class="part">
+
+            ${partOptions}
+
+        </select>
+
+
+        <label>
+            Colour
+        </label>
+
+
+        <select class="colour">
+
+            ${colourOptions}
+
+        </select>
+
+
+        <label>
+            Quantity Loaded
+        </label>
+
+
+        <input
+            type="number"
+            class="quantity"
+            min="1"
+            placeholder="Enter quantity"
+        >
+
+
+        <button
+            class="remove"
+            onclick="this.parentElement.remove()">
+
+            REMOVE
+
+        </button>
+
+    `;
+
+
+    container.appendChild(
+        card
+    );
+
+}
+
+
+/*
+====================================================
+SOUTH AFRICAN TIME
+====================================================
+*/
+
+function getSouthAfricanTime() {
+
+    const now =
+        new Date();
+
+
+    return now.toLocaleString(
+        "en-ZA",
+        {
+
+            timeZone:
+                "Africa/Johannesburg",
+
+            year:
+                "numeric",
+
+            month:
+                "2-digit",
+
+            day:
+                "2-digit",
+
+            hour:
+                "2-digit",
+
+            minute:
+                "2-digit",
+
+            second:
+                "2-digit"
+
+        }
+    );
+
+}
+
+
+/*
+====================================================
+SEND PARTS
+====================================================
+*/
+
+async function sendParts() {
+
+    const cards =
+        document.querySelectorAll(
+            ".card"
+        );
+
+
+    if (
+        cards.length === 0
+    ) {
+
+        alert(
+            "Add at least one part."
+        );
+
+        return;
+
+    }
+
+
+    const loadedParts = [];
+
+
+    /*
+    CHECK EVERY CARD
+    */
+
+    for (
+        const card of cards
+    ) {
+
+        const part =
+            card.querySelector(
+                ".part"
+            ).value;
+
+
+        const colour =
+            card.querySelector(
+                ".colour"
+            ).value;
+
+
+        const quantity =
+            card.querySelector(
+                ".quantity"
+            ).value;
+
+
+        if (
+            !part ||
+            !colour ||
+            !quantity
+        ) {
+
+            alert(
+                "Please complete every part load."
+            );
+
+            return;
+
+        }
+
+
+        loadedParts.push({
+
+            part:
+                part,
+
+            colour:
+                colour,
+
+            quantity:
+                Number(quantity)
+
+        });
+
+    }
+
+
+    /*
+    ORIGINAL LOADED TIME
+    */
+
+    const loadedAt =
+        new Date().toISOString();
+
+
+    /*
+    BUILD TELEGRAM MESSAGE
+    */
+
+    let message =
+        "🚛 PP2 PARTS LOADED\n";
+
+
+    message +=
+        "━━━━━━━━━━━━━━━━━━\n\n";
+
+
+    loadedParts.forEach(
+        (item, index) => {
+
+            message +=
+                `${index + 1}. ${item.part}\n`;
+
+
+            message +=
+                `Colour: ${item.colour}\n`;
+
+
+            message +=
+                `Quantity: ${item.quantity}\n`;
+
+
+            message +=
+                `Loaded: ${getSouthAfricanTime()}\n`;
+
+
+            message +=
+                `Timer: 1 HOUR 25 MINUTES\n\n`;
+
+        }
+    );
+
+
+    message +=
+        "━━━━━━━━━━━━━━━━━━\n";
+
+
+    message +=
+        "PP2 LOADER SYSTEM";
+
+
+    /*
+    ====================================================
+    LOCAL STORAGE BACKUP
+    ====================================================
+    */
+
+    let existing =
+        JSON.parse(
+            localStorage.getItem(
+                "pp2LoadedParts"
+            ) || "[]"
+        );
+
+
+    loadedParts.forEach(
+        item => {
+
+            existing.push({
+
+                id:
+                    Date.now() +
+                    Math.random(),
+
+                part:
+                    item.part,
+
+                colour:
+                    item.colour,
+
+                quantity:
+                    item.quantity,
+
+                loadedAt:
+                    loadedAt
+
+            });
+
+        }
+    );
+
+
+    localStorage.setItem(
+        "pp2LoadedParts",
+        JSON.stringify(
+            existing
+        )
+    );
+
+
+    /*
+    ====================================================
+    TELEGRAM SEND
+    ====================================================
+    */
+
+    if (
+        TELEGRAM_BOT_TOKEN ===
+            "YOUR_BOT_TOKEN"
+        ||
+        TELEGRAM_CHAT_ID ===
+            "YOUR_CHAT_ID"
+    ) {
+
+        document.getElementById(
+            "status"
+        ).innerHTML =
+            "⚠️ Saved locally. Add your Telegram backend to send the message.";
+
+        console.log(
+            message
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const url =
+            `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+
+        const response =
+            await fetch(
+                url,
+                {
+
+                    method:
+                        "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            chat_id:
+                                TELEGRAM_CHAT_ID,
+
+                            text:
+                                message
+
+                        })
+
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !result.ok
+        ) {
+
+            throw new Error(
+                result.description
+            );
+
+        }
+
+
+        /*
+        SUCCESS
+        */
+
+        document.getElementById(
+            "status"
+        ).innerHTML =
+            "✅ PARTS SENT TO TELEGRAM";
+
+
+        /*
+        CLEAR OLD PARTS
+        */
+
+        document.getElementById(
+            "partsContainer"
+        ).innerHTML =
+            "";
+
+
+        /*
+        ADD NEW EMPTY CARD
+        */
+
+        addPart();
+
+
+    } catch (
+        error
+    ) {
+
+        console.error(
+            error
+        );
+
+
+        document.getElementById(
+            "status"
+        ).innerHTML =
+            "❌ Telegram sending failed.";
+
+    }
+
+}
+
+
+/*
+====================================================
+START WITH ONE PART CARD
+====================================================
+*/
+
+addPart();
+
+</script>
+
+</body>
+</html>
+
+Updated parts: 16
+Updated colours: Primer, E Bony Black, Wizard, Super Alloy, Asphalt, Moon Dust, Iconic Silver
+Timer text: 1 HOUR 25 MINUTES.
