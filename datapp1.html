@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PP2 Production Summary</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.info {
+    background: #1e1e1e;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.info p {
+    margin: 8px 0;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.fetch-btn {
+    background: #007bff;
+    color: white;
+}
+
+.pdf-btn {
+    background: #28a745;
+    color: white;
+}
+
+.clear-btn {
+    background: #dc3545;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.totals {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.total-box {
+    background: #1e1e1e;
+    padding: 18px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.total-box h3 {
+    margin: 0 0 8px;
+}
+
+.total-number {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    background: #1e1e1e;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1100px;
+}
+
+th,
+td {
+    padding: 12px;
+    border-bottom: 1px solid #444;
+    text-align: center;
+}
+
+th {
+    background: #292929;
+}
+
+tr:hover {
+    background: #252525;
+}
+
+.rework {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.scrap {
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+.polished {
+    color: #00d4ff;
+    font-weight: bold;
+}
+
+.status {
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 7px;
+    display: none;
+}
+
+.status.success {
+    display: block;
+    background: #155724;
+    color: #d4edda;
+}
+
+.status.error {
+    display: block;
+    background: #721c24;
+    color: #f8d7da;
+}
+
+.status.warning {
+    display: block;
+    background: #856404;
+    color: #fff3cd;
+}
+
+
+/* ==================================================
+   DEFECT SOLVED BUTTONS
+   ================================================== */
+
+.solve-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 3px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.solve-rework {
+    background: #ffc107;
+    color: #000;
+}
+
+.solve-scrap {
+    background: #dc3545;
+    color: white;
+}
+
+.solve-btn.solved {
+    background: #6c757d !important;
+    color: white !important;
+    cursor: default;
+}
+
+
+/* ==================================================
+   SOUND AUTHORIZATION
+   ================================================== */
+
+#soundAuthorization {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+}
+
+.sound-box {
+    width: 90%;
+    max-width: 450px;
+    background: #222;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(255,255,255,0.15);
+}
+
+.sound-box h2 {
+    margin-top: 0;
+}
+
+.sound-box p {
+    line-height: 1.5;
+    color: #ddd;
+}
+
+.allow-sound {
+    background: #28a745;
+    color: white;
+    width: 100%;
+    font-size: 18px;
+    padding: 15px;
+}
+
+.sound-enabled {
+    display: none !important;
+}
+
+
+/* ==================================================
+   MOBILE
+   ================================================== */
+
+@media (max-width: 700px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .totals {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .total-number {
+        font-size: 22px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    .buttons button {
+        width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ==================================================
+     SOUND AUTHORIZATION
+     ================================================== -->
+
+<div id="soundAuthorization">
+
+    <div class="sound-box">
+
+        <h2>🔊 Sound Authorization</h2>
+
+        <p>
+            PP2 Production Monitor uses sound alerts
+            when new <strong>REWORK</strong> or
+            <strong>SCRAP</strong> is detected.
+        </p>
+
+        <p>
+            Allow sound alerts to monitor production
+            defects.
+        </p>
+
+        <button
+            class="allow-sound"
+            onclick="authorizeSounds()"
+        >
+            🔊 ALLOW SOUNDS
+        </button>
+
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <h1>PP2 Production Summary</h1>
+
+
+    <!-- ==================================================
+         INFORMATION
+         ================================================== -->
+
+    <div class="info">
+
+        <p>
+            <strong>Team Leader:</strong>
+            <span id="teamLeader">-</span>
+        </p>
+
+        <p>
+            <strong>Operator:</strong>
+            <span id="operator">-</span>
+        </p>
+
+        <p>
+            <strong>Number of Parts:</strong>
+            <span id="numberOfParts">0</span>
+        </p>
+
+    </div>
+
+
+    <!-- ==================================================
+         STATUS
+         ================================================== -->
+
+    <div
+        id="status"
+        class="status"
+    ></div>
+
+
+    <!-- ==================================================
+         BUTTONS
+         ================================================== -->
+
+    <div class="buttons">
+
+        <button
+            class="fetch-btn"
+            onclick="importFromMSSL()"
+        >
+            Fetch Latest Data From MSSL
+        </button>
+
+        <button
+            class="pdf-btn"
+            onclick="downloadPDF()"
+        >
+            Download PDF
+        </button>
+
+        <button
+            class="clear-btn"
+            onclick="clearSummary()"
+        >
+            Clear Summary
+        </button>
+
+    </div>
+
+
+    <!-- ==================================================
+         TOTALS
+         ================================================== -->
+
+    <div class="totals">
+
+        <div class="total-box">
+
+            <h3>Produced</h3>
+
+            <div
+                class="total-number"
+                id="totalProduced"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="total-box">
+
+            <h3>Rework</h3>
+
+            <div
+                class="total-number rework"
+                id="totalRework"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="total-box">
+
+            <h3>Polished</h3>
+
+            <div
+                class="total-number polished"
+                id="totalPolished"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="total-box">
+
+            <h3>Scrap</h3>
+
+            <div
+                class="total-number scrap"
+                id="totalScrap"
+            >
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         TABLE
+         ================================================== -->
+
+    <div class="table-wrapper">
+
+        <table id="summaryTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Part</th>
+
+                    <th>Color</th>
+
+                    <th>Total</th>
+
+                    <th>Rework</th>
+
+                    <th>Polished</th>
+
+                    <th>Scrap</th>
+
+                    <th>Remarks</th>
+
+                    <th>Date</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="summaryBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ==================================================
+   EXISTING STORAGE
+   ================================================== */
+
+const SOURCE_KEY =
+    "pp2LoadingSheetData";
+
+const SUMMARY_KEY =
+    "pp2SummaryData";
+
+const TEAM_LEADER_KEY =
+    "pp2TeamLeader";
+
+const OPERATOR_KEY =
+    "pp2Operator";
+
+
+/* ==================================================
+   DEFECT SOUND STORAGE
+   ================================================== */
+
+const SOUND_KEY =
+    "pp2DefectSoundAlerts";
+
+
+let soundAlerts =
+    JSON.parse(
+        localStorage.getItem(SOUND_KEY) || "[]"
+    );
+
+
+/* ==================================================
+   AUDIO
+   ================================================== */
+
+const reworkSound =
+    new Audio("sound1.mp3");
+
+const scrapSound =
+    new Audio("sound2.mp3");
+
+
+reworkSound.loop = true;
+scrapSound.loop = true;
+
+reworkSound.preload = "auto";
+scrapSound.preload = "auto";
+
+
+/* ==================================================
+   ACTIVE ALARMS
+   ================================================== */
+
+const activeReworkSounds =
+    new Set();
+
+const activeScrapSounds =
+    new Set();
+
+
+let soundsAuthorized = false;
+
+
+/* ==================================================
+   SOUND AUTHORIZATION
+   ================================================== */
+
+function authorizeSounds() {
+
+    /*
+    User interaction unlocks audio
+    on supported browsers.
+    */
+
+    soundsAuthorized = true;
+
+
+    reworkSound.volume = 0;
+    scrapSound.volume = 0;
+
+
+    const unlockRework =
+        reworkSound.play();
+
+    const unlockScrap =
+        scrapSound.play();
+
+
+    Promise.allSettled([
+        unlockRework,
+        unlockScrap
+    ]).then(() => {
+
+        reworkSound.pause();
+        scrapSound.pause();
+
+        reworkSound.currentTime = 0;
+        scrapSound.currentTime = 0;
+
+        reworkSound.volume = 1;
+        scrapSound.volume = 1;
+
+    });
+
+
+    document
+        .getElementById(
+            "soundAuthorization"
+        )
+        .classList.add(
+            "sound-enabled"
+        );
+
+
+    /*
+    Check existing fetched data
+    after sound has been authorized.
+    */
+
+    const existingData =
+        JSON.parse(
+            localStorage.getItem(
+                SUMMARY_KEY
+            ) || "[]"
+        );
+
+
+    if (
+        Array.isArray(existingData)
+    ) {
+
+        checkForNewDefects(
+            existingData
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   SAFE ID
+   ================================================== */
+
+function safeSoundId(value) {
+
+    return String(value)
+        .replace(
+            /[^a-zA-Z0-9_-]/g,
+            "_"
+        );
+
+}
+
+
+/* ==================================================
+   SHOW STATUS
+   ================================================== */
+
+function updateStatus(
+    message,
+    type
+) {
+
+    const status =
+        document.getElementById(
+            "status"
+        );
+
+    status.textContent =
+        message;
+
+    status.className =
+        "status " +
+        type;
+
+}
+
+
+/* ==================================================
+   PLAY REWORK
+   ================================================== */
+
+function playReworkSound(id) {
+
+    if (
+        activeReworkSounds.has(id)
+    ) {
+
+        return;
+
+    }
+
+
+    activeReworkSounds.add(id);
+
+
+    if (
+        !soundsAuthorized
+    ) {
+
+        return;
+
+    }
+
+
+    reworkSound.currentTime = 0;
+
+
+    reworkSound
+        .play()
+        .catch(() => {
+
+            updateStatus(
+                "🔊 Rework detected. Tap the page to enable sound.",
+                "warning"
+            );
+
+        });
+
+}
+
+
+/* ==================================================
+   PLAY SCRAP
+   ================================================== */
+
+function playScrapSound(id) {
+
+    if (
+        activeScrapSounds.has(id)
+    ) {
+
+        return;
+
+    }
+
+
+    activeScrapSounds.add(id);
+
+
+    if (
+        !soundsAuthorized
+    ) {
+
+        return;
+
+    }
+
+
+    scrapSound.currentTime = 0;
+
+
+    scrapSound
+        .play()
+        .catch(() => {
+
+            updateStatus(
+                "🔊 Scrap detected. Tap the page to enable sound.",
+                "warning"
+            );
+
+        });
+
+}
+
+
+/* ==================================================
+   STOP REWORK
+   ================================================== */
+
+function stopReworkSound(id) {
+
+    activeReworkSounds.delete(id);
+
+
+    if (
+        activeReworkSounds.size === 0
+    ) {
+
+        reworkSound.pause();
+
+        reworkSound.currentTime = 0;
+
+    }
+
+}
+
+
+/* ==================================================
+   STOP SCRAP
+   ================================================== */
+
+function stopScrapSound(id) {
+
+    activeScrapSounds.delete(id);
+
+
+    if (
+        activeScrapSounds.size === 0
+    ) {
+
+        scrapSound.pause();
+
+        scrapSound.currentTime = 0;
+
+    }
+
+}
+
+
+/* ==================================================
+   SOLVE DEFECT
+   ================================================== */
+
+function solveDefect(
+    id,
+    type
+) {
+
+    if (
+        type === "rework"
+    ) {
+
+        stopReworkSound(id);
+
+    }
+
+
+    if (
+        type === "scrap"
+    ) {
+
+        stopScrapSound(id);
+
+    }
+
+
+    if (
+        !soundAlerts.includes(id)
+    ) {
+
+        soundAlerts.push(id);
+
+    }
+
+
+    localStorage.setItem(
+        SOUND_KEY,
+        JSON.stringify(
+            soundAlerts
+        )
+    );
+
+
+    const button =
+        document.getElementById(
+            "solve-" +
+            safeSoundId(id)
+        );
+
+
+    if (button) {
+
+        button.textContent =
+            "✓ SOLVED";
+
+        button.disabled =
+            true;
+
+        button.classList.add(
+            "solved"
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   CREATE UNIQUE DEFECT ID
+   ================================================== */
+
+function createDefectId(
+    row,
+    index,
+    type
+) {
+
+    return safeSoundId(
+
+        type +
+        "_" +
+        (
+            row.date ||
+            "nodate"
+        ) +
+        "_" +
+        (
+            row.part ||
+            "nopart"
+        ) +
+        "_" +
+        index
+
+    );
+
+}
+
+
+/* ==================================================
+   CHECK FOR NEW DEFECTS
+   ================================================== */
+
+function checkForNewDefects(data) {
+
+    if (
+        !Array.isArray(data)
+    ) {
+
+        return;
+
+    }
+
+
+    data.forEach(
+        function(row, index) {
+
+            const rework =
+                Number(
+                    row.rework?.value || 0
+                );
+
+
+            const scrap =
+                Number(
+                    row.scrap?.value || 0
+                );
+
+
+            const reworkId =
+                createDefectId(
+                    row,
+                    index,
+                    "rework"
+                );
+
+
+            const scrapId =
+                createDefectId(
+                    row,
+                    index,
+                    "scrap"
+                );
+
+
+            /*
+            NEW REWORK
+            */
+
+            if (
+                rework > 0 &&
+                !soundAlerts.includes(
+                    reworkId
+                )
+            ) {
+
+                playReworkSound(
+                    reworkId
+                );
+
+            }
+
+
+            /*
+            NEW SCRAP
+            */
+
+            if (
+                scrap > 0 &&
+                !soundAlerts.includes(
+                    scrapId
+                )
+            ) {
+
+                playScrapSound(
+                    scrapId
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   LOAD EXISTING SUMMARY
+   ================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const savedSummary =
+            localStorage.getItem(
+                SUMMARY_KEY
+            );
+
+
+        if (
+            savedSummary
+        ) {
+
+            try {
+
+                const data =
+                    JSON.parse(
+                        savedSummary
+                    );
+
+
+                displayData(data);
+
+
+            } catch (error) {
+
+                console.error(
+                    "Error loading saved summary:",
+                    error
+                );
+
+            }
+
+        } else {
+
+            /*
+            Keep existing behavior:
+            import from MSSL if there is
+            no local PP2 summary.
+            */
+
+            importFromMSSL();
+
+        }
+
+
+        /*
+        Existing team leader.
+        */
+
+        const teamLeader =
+            localStorage.getItem(
+                TEAM_LEADER_KEY
+            );
+
+
+        if (
+            teamLeader
+        ) {
+
+            document
+                .getElementById(
+                    "teamLeader"
+                )
+                .textContent =
+                teamLeader;
+
+        }
+
+
+        /*
+        Existing operator.
+        */
+
+        const operator =
+            localStorage.getItem(
+                OPERATOR_KEY
+            );
+
+
+        if (
+            operator
+        ) {
+
+            document
+                .getElementById(
+                    "operator"
+                )
+                .textContent =
+                operator;
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   IMPORT FROM MSSL
+   ================================================== */
+
+function importFromMSSL() {
+
+    const source =
+        localStorage.getItem(
+            SOURCE_KEY
+        );
+
+
+    if (
+        !source
+    ) {
+
+        updateStatus(
+            "No MSSL loading sheet data found.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const sourceData =
+            JSON.parse(source);
+
+
+        /*
+        IMPORTANT:
+        Copy the entire source data.
+        Nothing is removed.
+        */
+
+        const copiedData =
+            JSON.parse(
+                JSON.stringify(
+                    sourceData
+                )
+            );
+
+
+        /*
+        Keep the entire fetched dataset.
+        */
+
+        localStorage.setItem(
+            SUMMARY_KEY,
+            JSON.stringify(
+                copiedData
+            )
+        );
+
+
+        /*
+        Existing team leader.
+        */
+
+        const teamLeader =
+            localStorage.getItem(
+                TEAM_LEADER_KEY
+            );
+
+
+        if (
+            teamLeader
+        ) {
+
+            document
+                .getElementById(
+                    "teamLeader"
+                )
+                .textContent =
+                teamLeader;
+
+        }
+
+
+        /*
+        Existing operator.
+        */
+
+        const operator =
+            localStorage.getItem(
+                OPERATOR_KEY
+            );
+
+
+        if (
+            operator
+        ) {
+
+            document
+                .getElementById(
+                    "operator"
+                )
+                .textContent =
+                operator;
+
+        }
+
+
+        /*
+        Display everything.
+        */
+
+        displayData(
+            copiedData
+        );
+
+
+        /*
+        Check for new defects.
+        */
+
+        checkForNewDefects(
+            copiedData
+        );
+
+
+        updateStatus(
+            "Latest MSSL data fetched successfully.",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        updateStatus(
+            "Could not read MSSL loading sheet data.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   DISPLAY DATA
+   ================================================== */
+
+function displayData(data) {
+
+    const tbody =
+        document.getElementById(
+            "summaryBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (
+        !Array.isArray(data)
+    ) {
+
+        updateTotals([]);
+
+        return;
+
+    }
+
+
+    data.forEach(
+        function(row, index) {
+
+            const rework =
+                Number(
+                    row.rework?.value || 0
+                );
+
+
+            const polished =
+                Number(
+                    row.polished || 0
+                );
+
+
+            const scrap =
+                Number(
+                    row.scrap?.value || 0
+                );
+
+
+            const total =
+                Number(
+                    row.total ||
+                    (
+                        rework +
+                        polished +
+                        scrap
+                    )
+                );
+
+
+            const remarks =
+                row.remarks || "";
+
+
+            const part =
+                row.part || "";
+
+
+            const color =
+                row.color || "";
+
+
+            const date =
+                row.date || "";
+
+
+            const reworkDefect =
+                row.rework?.defect ||
+                "None";
+
+
+            const scrapDefect =
+                row.scrap?.defect ||
+                "None";
+
+
+            const reworkId =
+                createDefectId(
+                    row,
+                    index,
+                    "rework"
+                );
+
+
+            const scrapId =
+                createDefectId(
+                    row,
+                    index,
+                    "scrap"
+                );
+
+
+            let actionHTML = "";
+
+
+            /*
+            REWORK SOLVED BUTTON
+            */
+
+            if (
+                rework > 0
+            ) {
+
+                const alreadySolved =
+                    soundAlerts.includes(
+                        reworkId
+                    );
+
+
+                actionHTML += `
+
+                    <button
+                        id="solve-${reworkId}"
+                        class="solve-btn solve-rework ${
+                            alreadySolved
+                            ? "solved"
+                            : ""
+                        }"
+                        ${
+                            alreadySolved
+                            ? "disabled"
+                            : ""
+                        }
+                        onclick="solveDefect(
+                            '${reworkId}',
+                            'rework'
+                        )"
+                    >
+
+                        ${
+                            alreadySolved
+                            ? "✓ SOLVED"
+                            : "✓ SOLVED REWORK"
+                        }
+
+                    </button>
+
+                `;
+
+            }
+
+
+            /*
+            SCRAP SOLVED BUTTON
+            */
+
+            if (
+                scrap > 0
+            ) {
+
+                const alreadySolved =
+                    soundAlerts.includes(
+                        scrapId
+                    );
+
+
+                actionHTML += `
+
+                    <button
+                        id="solve-${scrapId}"
+                        class="solve-btn solve-scrap ${
+                            alreadySolved
+                            ? "solved"
+                            : ""
+                        }"
+                        ${
+                            alreadySolved
+                            ? "disabled"
+                            : ""
+                        }
+                        onclick="solveDefect(
+                            '${scrapId}',
+                            'scrap'
+                        )"
+                    >
+
+                        ${
+                            alreadySolved
+                            ? "✓ SOLVED"
+                            : "✓ SOLVED SCRAP"
+                        }
+
+                    </button>
+
+                `;
+
+            }
+
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            tr.innerHTML = `
+
+                <td>
+                    ${index + 1}
+                </td>
+
+                <td>
+                    ${escapeHTML(part)}
+                </td>
+
+                <td>
+                    ${escapeHTML(color)}
+                </td>
+
+                <td>
+                    ${total}
+                </td>
+
+                <td class="rework">
+
+                    ${rework}
+
+                    ${
+                        rework > 0
+                        ? `
+                            <br>
+                            <small>
+                                ${escapeHTML(
+                                    reworkDefect
+                                )}
+                            </small>
+                        `
+                        : ""
+                    }
+
+                </td>
+
+                <td class="polished">
+                    ${polished}
+                </td>
+
+                <td class="scrap">
+
+                    ${scrap}
+
+                    ${
+                        scrap > 0
+                        ? `
+                            <br>
+                            <small>
+                                ${escapeHTML(
+                                    scrapDefect
+                                )}
+                            </small>
+                        `
+                        : ""
+                    }
+
+                </td>
+
+                <td>
+                    ${escapeHTML(remarks)}
+                </td>
+
+                <td>
+                    ${escapeHTML(date)}
+                </td>
+
+                <td>
+                    ${actionHTML}
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                tr
+            );
+
+        }
+    );
+
+
+    updateTotals(data);
+
+
+    /*
+    Number of parts.
+    */
+
+    document
+        .getElementById(
+            "numberOfParts"
+        )
+        .textContent =
+        data.length;
+
+}
+
+
+/* ==================================================
+   UPDATE TOTALS
+   ================================================== */
+
+function updateTotals(data) {
+
+    let produced = 0;
+    let rework = 0;
+    let polished = 0;
+    let scrap = 0;
+
+
+    if (
+        Array.isArray(data)
+    ) {
+
+        data.forEach(
+            function(row) {
+
+                const r =
+                    Number(
+                        row.rework?.value || 0
+                    );
+
+
+                const p =
+                    Number(
+                        row.polished || 0
+                    );
+
+
+                const s =
+                    Number(
+                        row.scrap?.value || 0
+                    );
+
+
+                const t =
+                    Number(
+                        row.total ||
+                        (
+                            r +
+                            p +
+                            s
+                        )
+                    );
+
+
+                produced += t;
+                rework += r;
+                polished += p;
+                scrap += s;
+
+            }
+        );
+
+    }
+
+
+    document
+        .getElementById(
+            "totalProduced"
+        )
+        .textContent =
+        produced;
+
+
+    document
+        .getElementById(
+            "totalRework"
+        )
+        .textContent =
+        rework;
+
+
+    document
+        .getElementById(
+            "totalPolished"
+        )
+        .textContent =
+        polished;
+
+
+    document
+        .getElementById(
+            "totalScrap"
+        )
+        .textContent =
+        scrap;
+
+}
+
+
+/* ==================================================
+   CLEAR SUMMARY
+   ================================================== */
+
+function clearSummary() {
+
+    if (
+        !confirm(
+            "Are you sure you want to clear the PP2 summary?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+    Only clear the PP2 summary.
+    The original MSSL source data remains.
+    */
+
+    localStorage.removeItem(
+        SUMMARY_KEY
+    );
+
+
+    /*
+    Stop active alarms.
+    */
+
+    activeReworkSounds.clear();
+    activeScrapSounds.clear();
+
+
+    reworkSound.pause();
+    scrapSound.pause();
+
+
+    reworkSound.currentTime = 0;
+    scrapSound.currentTime = 0;
+
+
+    /*
+    Keep defect solved history separate.
+    */
+
+    document
+        .getElementById(
+            "summaryBody"
+        )
+        .innerHTML = "";
+
+
+    updateTotals([]);
+
+
+    document
+        .getElementById(
+            "numberOfParts"
+        )
+        .textContent = "0";
+
+
+    updateStatus(
+        "PP2 summary cleared. Original MSSL fetched data was not deleted.",
+        "success"
+    );
+
+}
+
+
+/* ==================================================
+   ESCAPE HTML
+   ================================================== */
+
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* ==================================================
+   SHORTEN TEXT
+   ================================================== */
+
+function shorten(
+    text,
+    max = 30
+) {
+
+    text =
+        String(
+            text ?? ""
+        );
+
+
+    if (
+        text.length <= max
+    ) {
+
+        return text;
+
+    }
+
+
+    return (
+        text.substring(
+            0,
+            max
+        ) +
+        "..."
+    );
+
+}
+
+
+/* ==================================================
+   DOWNLOAD PDF
+   ================================================== */
+
+function downloadPDF() {
+
+    const {
+        jsPDF
+    } = window.jspdf;
+
+
+    const doc =
+        new jsPDF({
+            orientation: "landscape"
+        });
+
+
+    const teamLeader =
+        document
+            .getElementById(
+                "teamLeader"
+            )
+            .textContent;
+
+
+    const operator =
+        document
+            .getElementById(
+                "operator"
+            )
+            .textContent;
+
+
+    const numberOfParts =
+        document
+            .getElementById(
+                "numberOfParts"
+            )
+            .textContent;
+
+
+    const produced =
+        document
+            .getElementById(
+                "totalProduced"
+            )
+            .textContent;
+
+
+    const rework =
+        document
+            .getElementById(
+                "totalRework"
+            )
+            .textContent;
+
+
+    const polished =
+        document
+            .getElementById(
+                "totalPolished"
+            )
+            .textContent;
+
+
+    const scrap =
+        document
+            .getElementById(
+                "totalScrap"
+            )
+            .textContent;
+
+
+    doc.setFontSize(18);
+
+    doc.text(
+        "PP2 Production Summary",
+        14,
+        18
+    );
+
+
+    doc.setFontSize(10);
+
+
+    doc.text(
+        "Team Leader: " +
+        teamLeader,
+        14,
+        28
+    );
+
+
+    doc.text(
+        "Operator: " +
+        operator,
+        14,
+        34
+    );
+
+
+    doc.text(
+        "Number of Parts: " +
+        numberOfParts,
+        14,
+        40
+    );
+
+
+    doc.text(
+        "Produced: " +
+        produced +
+        "    Rework: " +
+        rework +
+        "    Polished: " +
+        polished +
+        "    Scrap: " +
+        scrap,
+        14,
+        47
+    );
+
+
+    /*
+    Read existing table data.
+    */
+
+    const rows =
+        [];
+
+
+    const tableRows =
+        document.querySelectorAll(
+            "#summaryBody tr"
+        );
+
+
+    tableRows.forEach(
+        function(tr) {
+
+            const cells =
+                tr.querySelectorAll(
+                    "td"
+                );
+
+
+            if (
+                cells.length >= 9
+            ) {
+
+                rows.push([
+
+                    cells[0].innerText,
+
+                    cells[1].innerText,
+
+                    cells[2].innerText,
+
+                    cells[3].innerText,
+
+                    cells[4].innerText,
+
+                    cells[5].innerText,
+
+                    cells[6].innerText,
+
+                    cells[7].innerText,
+
+                    cells[8].innerText
+
+                ]);
+
+            }
+
+        }
+    );
+
+
+    /*
+    Use autoTable when available.
+    */
+
+    if (
+        typeof doc.autoTable ===
+        "function"
+    ) {
+
+        doc.autoTable({
+
+            startY: 55,
+
+            head: [[
+                "#",
+                "Part",
+                "Color",
+                "Total",
+                "Rework",
+                "Polished",
+                "Scrap",
+                "Remarks",
+                "Date"
+            ]],
+
+            body: rows,
+
+            styles: {
+                fontSize: 7
+            },
+
+            headStyles: {
+                fontSize: 7
+            }
+
+        });
+
+    } else {
+
+        let y = 60;
+
+
+        rows.forEach(
+            function(row) {
+
+                doc.text(
+                    row.join(" | "),
+                    10,
+                    y
+                );
+
+
+                y += 6;
+
+
+                if (
+                    y > 190
+                ) {
+
+                    doc.addPage();
+
+                    y = 15;
+
+                }
+
+            }
+        );
+
+    }
+
+
+    doc.save(
+        "PP2_Production_Summary.pdf"
+    );
+
+}
+
+</script>
+
+</body>
+</html>
