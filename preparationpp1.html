@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PP2 Loading Monitor</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: #181818;
+    padding: 18px;
+    text-align: center;
+    border-bottom: 2px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 25px;
+}
+
+header p {
+    margin: 6px 0 0;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.controls {
+    max-width: 900px;
+    margin: 15px auto;
+    padding: 0 15px;
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 13px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.select-all {
+    background: #444;
+    color: white;
+    flex: 1;
+}
+
+.done {
+    background: #168443;
+    color: white;
+    flex: 1;
+}
+
+.refresh {
+    background: #245c9c;
+    color: white;
+    flex: 1;
+}
+
+#loads {
+    max-width: 900px;
+    margin: auto;
+    padding: 0 15px 30px;
+}
+
+.load {
+    background: #1d1d1d;
+    border: 1px solid #383838;
+    border-radius: 14px;
+    margin-bottom: 14px;
+    padding: 18px;
+    position: relative;
+}
+
+.load.active {
+    border-left: 5px solid #168443;
+}
+
+.load.expired {
+    border-left: 5px solid #e53935;
+}
+
+.top {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.checkbox {
+    width: 24px;
+    height: 24px;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.part-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.message-title {
+    font-size: 19px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.telegram-message {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 14px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+    font-size: 16px;
+}
+
+.loaded-time {
+    color: #888;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+.telegram-id {
+    color: #555;
+    font-size: 11px;
+    margin-top: 7px;
+}
+
+
+/* =====================================================
+   1 HOUR 25 MINUTE TIMER
+   ===================================================== */
+
+.timer {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #168443;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.timer.expired-timer {
+    background: #e53935;
+}
+
+.expired-label {
+    color: #ff5252;
+    font-weight: bold;
+    margin-left: 8px;
+}
+
+
+/* =====================================================
+   EMPTY
+   ===================================================== */
+
+.empty {
+    text-align: center;
+    color: #777;
+    padding: 60px 20px;
+    font-size: 18px;
+}
+
+.status {
+    text-align: center;
+    color: #999;
+    padding: 10px;
+    font-size: 13px;
+}
+
+
+@media(max-width:600px) {
+
+    .controls {
+        flex-wrap: wrap;
+    }
+
+    .controls button {
+        min-width: 30%;
+    }
+
+    .telegram-message {
+        font-size: 15px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <h1>PP2 LOADING MONITOR</h1>
+
+    <p>Telegram Channel Monitor</p>
+
+</header>
+
+
+<div class="controls">
+
+    <button
+        class="select-all"
+        onclick="selectAll()">
+        ☑ SELECT ALL
+    </button>
+
+    <button
+        class="done"
+        onclick="markSelectedDone()">
+        ✓ DONE
+    </button>
+
+    <button
+        class="refresh"
+        onclick="fetchTelegram()">
+        🔄 REFRESH
+    </button>
+
+</div>
+
+
+<div id="status" class="status">
+    Connecting to Telegram...
+</div>
+
+
+<div id="loads"></div>
+
+
+<script>
+
+/*
+========================================================
+TELEGRAM SETTINGS
+========================================================
+*/
+
+const TELEGRAM_BOT_TOKEN = "8873950020:AAHk-n7MglR5uC9YXuH5I19KqL6C29DwCDU";
+
+const TELEGRAM_CHAT_ID = "-1004385640479";
+
+
+/*
+========================================================
+1 HOUR 25 MINUTE TIMER
+========================================================
+
+1 hour 25 minutes =
+5,100,000 milliseconds
+========================================================
+*/
+
+const MESSAGE_LIFETIME =
+    1 * 60 * 60 * 1000 +
+    25 * 60 * 1000;
+
+
+/*
+========================================================
+LOCAL STORAGE
+========================================================
+*/
+
+const ACTIVE_KEY =
+    "pp2TelegramMessages";
+
+const DONE_KEY =
+    "pp2TelegramDone";
+
+const OFFSET_KEY =
+    "pp2TelegramOffset";
+
+
+let activeLoads =
+    JSON.parse(
+        localStorage.getItem(ACTIVE_KEY) || "[]"
+    );
+
+
+let doneLoads =
+    JSON.parse(
+        localStorage.getItem(DONE_KEY) || "[]"
+    );
+
+
+/*
+========================================================
+SAVE DATA
+========================================================
+*/
+
+function saveData() {
+
+    localStorage.setItem(
+        ACTIVE_KEY,
+        JSON.stringify(activeLoads)
+    );
+
+    localStorage.setItem(
+        DONE_KEY,
+        JSON.stringify(doneLoads)
+    );
+
+}
+
+
+/*
+========================================================
+FETCH TELEGRAM
+========================================================
+*/
+
+async function fetchTelegram() {
+
+    if (
+        TELEGRAM_BOT_TOKEN === "YOUR_BOT_TOKEN" ||
+        TELEGRAM_CHAT_ID === "YOUR_CHAT_ID"
+    ) {
+
+        document.getElementById("status").innerHTML =
+            "⚠️ Add your Telegram bot token and channel ID.";
+
+        renderLoads();
+
+        return;
+    }
+
+
+    try {
+
+        const offset =
+            Number(
+                localStorage.getItem(
+                    OFFSET_KEY
+                ) || 0
+            );
+
+
+        const allowedUpdates =
+            encodeURIComponent(
+                JSON.stringify([
+                    "channel_post"
+                ])
+            );
+
+
+        const url =
+            `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates` +
+            `?offset=${offset}` +
+            `&timeout=5` +
+            `&allowed_updates=${allowedUpdates}`;
+
+
+        const response =
+            await fetch(url);
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Telegram response:",
+            data
+        );
+
+
+        if (!data.ok) {
+
+            throw new Error(
+                data.description ||
+                "Telegram API error"
+            );
+
+        }
+
+
+        if (data.result.length > 0) {
+
+            let highestUpdateId =
+                offset;
+
+
+            data.result.forEach(update => {
+
+                if (
+                    update.update_id >=
+                    highestUpdateId
+                ) {
+
+                    highestUpdateId =
+                        update.update_id + 1;
+
+                }
+
+
+                /*
+                ONLY CHANNEL POSTS
+                */
+
+                const message =
+                    update.channel_post;
+
+
+                if (!message) {
+
+                    return;
+
+                }
+
+
+                /*
+                CHECK CHANNEL ID
+                */
+
+                if (
+                    String(message.chat.id) !==
+                    String(TELEGRAM_CHAT_ID)
+                ) {
+
+                    return;
+
+                }
+
+
+                /*
+                PROCESS MESSAGE
+                */
+
+                processMessage(message);
+
+            });
+
+
+            localStorage.setItem(
+                OFFSET_KEY,
+                highestUpdateId
+            );
+
+        }
+
+
+        saveData();
+
+        renderLoads();
+
+
+        document.getElementById(
+            "status"
+        ).innerHTML =
+            "🟢 Connected • Last checked " +
+            new Date().toLocaleTimeString();
+
+
+    } catch (error) {
+
+        console.error(
+            "Telegram error:",
+            error
+        );
+
+
+        document.getElementById(
+            "status"
+        ).innerHTML =
+            "🔴 Telegram error: " +
+            escapeHTML(error.message);
+
+    }
+
+}
+
+
+/*
+========================================================
+PROCESS TELEGRAM MESSAGE
+========================================================
+*/
+
+function processMessage(message) {
+
+    /*
+    Telegram text
+    OR
+    caption from photo/video/document
+    */
+
+    const text =
+        message.text ||
+        message.caption ||
+        "";
+
+
+    /*
+    Ignore completely empty messages
+    */
+
+    if (!text.trim()) {
+
+        return;
+
+    }
+
+
+    /*
+    Unique Telegram ID
+    */
+
+    const messageId =
+        `${message.chat.id}_${message.message_id}`;
+
+
+    /*
+    Don't display duplicate
+    */
+
+    if (
+        activeLoads.some(
+            item =>
+                item.id === messageId
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+    Don't display messages already DONE
+    */
+
+    if (
+        doneLoads.includes(
+            messageId
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+    IMPORTANT:
+
+    Use Telegram's original message time.
+
+    The timer therefore does NOT reset
+    when the page refreshes.
+    */
+
+    const receivedAt =
+        message.date
+            ? new Date(
+                message.date * 1000
+            ).toISOString()
+
+            : new Date().toISOString();
+
+
+    activeLoads.push({
+
+        id:
+            messageId,
+
+        messageId:
+            messageId,
+
+        text:
+            text,
+
+        receivedAt:
+            receivedAt,
+
+        telegramMessageId:
+            message.message_id
+
+    });
+
+}
+
+
+/*
+========================================================
+CALCULATE TIMER
+========================================================
+*/
+
+function getTimeRemaining(receivedAt) {
+
+    const receivedTime =
+        new Date(receivedAt).getTime();
+
+
+    const expiryTime =
+        receivedTime +
+        MESSAGE_LIFETIME;
+
+
+    const now =
+        Date.now();
+
+
+    const remaining =
+        expiryTime - now;
+
+
+    return remaining;
+
+}
+
+
+/*
+========================================================
+FORMAT TIMER
+========================================================
+*/
+
+function formatTimer(milliseconds) {
+
+    if (milliseconds <= 0) {
+
+        return "EXPIRED";
+
+    }
+
+
+    const totalSeconds =
+        Math.floor(
+            milliseconds / 1000
+        );
+
+
+    const hours =
+        Math.floor(
+            totalSeconds / 3600
+        );
+
+
+    const minutes =
+        Math.floor(
+            (totalSeconds % 3600) / 60
+        );
+
+
+    const seconds =
+        totalSeconds % 60;
+
+
+    return (
+        String(hours).padStart(2, "0") +
+        ":" +
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0")
+    );
+
+}
+
+
+/*
+========================================================
+DISPLAY ALL MESSAGES
+========================================================
+*/
+
+function renderLoads() {
+
+    const container =
+        document.getElementById(
+            "loads"
+        );
+
+
+    if (
+        activeLoads.length === 0
+    ) {
+
+        container.innerHTML = `
+            <div class="empty">
+                No Telegram messages yet.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    /*
+    Oldest first
+    */
+
+    activeLoads.sort(
+        (a, b) =>
+            new Date(a.receivedAt) -
+            new Date(b.receivedAt)
+    );
+
+
+    container.innerHTML = "";
+
+
+    activeLoads.forEach(item => {
+
+        const remaining =
+            getTimeRemaining(
+                item.receivedAt
+            );
+
+
+        const expired =
+            remaining <= 0;
+
+
+        const box =
+            document.createElement(
+                "div"
+            );
+
+
+        box.className =
+            expired
+                ? "load expired"
+                : "load active";
+
+
+        box.id =
+            "load-" +
+            safeId(item.id);
+
+
+        box.innerHTML = `
+
+            <div class="top">
+
+                <input
+                    type="checkbox"
+                    class="checkbox load-checkbox"
+                    data-id="${escapeHTML(item.id)}"
+                >
+
+                <div class="part-info">
+
+                    <div class="message-title">
+                        📩 Telegram Message
+                    </div>
+
+                    <div class="telegram-message">
+                        ${escapeHTML(item.text)}
+                    </div>
+
+
+                    <div
+                        class="timer ${expired ? "expired-timer" : ""}"
+                        id="timer-${safeId(item.id)}">
+
+                        ⏱ ${
+                            expired
+                                ? "EXPIRED"
+                                : formatTimer(remaining)
+                        }
+
+                    </div>
+
+
+                    <div class="loaded-time">
+
+                        Received:
+                        ${formatDate(item.receivedAt)}
+
+                        ${
+                            expired
+                                ? `<span class="expired-label">
+                                    • 1 HOUR 25 MINUTES PASSED
+                                   </span>`
+                                : ""
+                        }
+
+                    </div>
+
+
+                    <div class="telegram-id">
+
+                        Telegram message:
+                        ${escapeHTML(
+                            item.telegramMessageId
+                        )}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        container.appendChild(box);
+
+    });
+
+}
+
+
+/*
+========================================================
+UPDATE TIMERS
+
+This runs every second.
+
+It does NOT remove expired messages.
+========================================================
+*/
+
+function updateTimers() {
+
+    activeLoads.forEach(item => {
+
+        const timer =
+            document.getElementById(
+                "timer-" +
+                safeId(item.id)
+            );
+
+
+        const box =
+            document.getElementById(
+                "load-" +
+                safeId(item.id)
+            );
+
+
+        if (!timer || !box) {
+
+            return;
+
+        }
+
+
+        const remaining =
+            getTimeRemaining(
+                item.receivedAt
+            );
+
+
+        if (remaining <= 0) {
+
+            /*
+            Message stays visible.
+            */
+
+            timer.innerHTML =
+                "⏱ EXPIRED";
+
+
+            timer.classList.add(
+                "expired-timer"
+            );
+
+
+            box.classList.remove(
+                "active"
+            );
+
+
+            box.classList.add(
+                "expired"
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+        Message still has time.
+        */
+
+        timer.innerHTML =
+            "⏱ " +
+            formatTimer(
+                remaining
+            );
+
+    });
+
+}
+
+
+/*
+========================================================
+SELECT ALL
+========================================================
+*/
+
+function selectAll() {
+
+    const boxes =
+        document.querySelectorAll(
+            ".load-checkbox"
+        );
+
+
+    if (boxes.length === 0) {
+
+        return;
+
+    }
+
+
+    const allChecked =
+        Array.from(boxes)
+            .every(
+                box => box.checked
+            );
+
+
+    boxes.forEach(box => {
+
+        box.checked =
+            !allChecked;
+
+    });
+
+}
+
+
+/*
+========================================================
+MARK SELECTED DONE
+========================================================
+*/
+
+function markSelectedDone() {
+
+    const selected =
+        Array.from(
+            document.querySelectorAll(
+                ".load-checkbox:checked"
+            )
+        );
+
+
+    if (
+        selected.length === 0
+    ) {
+
+        alert(
+            "Select at least one message."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            `Mark ${selected.length} message(s) as DONE?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    selected.forEach(box => {
+
+        const id =
+            box.dataset.id;
+
+
+        /*
+        Permanently remember
+        this Telegram message
+        as DONE.
+        */
+
+        if (
+            !doneLoads.includes(id)
+        ) {
+
+            doneLoads.push(id);
+
+        }
+
+    });
+
+
+    /*
+    Remove from active display.
+    */
+
+    activeLoads =
+        activeLoads.filter(
+            item =>
+                !doneLoads.includes(
+                    item.id
+                )
+        );
+
+
+    saveData();
+
+    renderLoads();
+
+}
+
+
+/*
+========================================================
+FORMAT DATE
+========================================================
+*/
+
+function formatDate(dateString) {
+
+    const date =
+        new Date(dateString);
+
+
+    return date.toLocaleString(
+        "en-ZA",
+        {
+            timeZone:
+                "Africa/Johannesburg",
+
+            year:
+                "numeric",
+
+            month:
+                "2-digit",
+
+            day:
+                "2-digit",
+
+            hour:
+                "2-digit",
+
+            minute:
+                "2-digit",
+
+            second:
+                "2-digit"
+        }
+    );
+
+}
+
+
+/*
+========================================================
+HTML SECURITY
+========================================================
+*/
+
+function escapeHTML(value) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/*
+========================================================
+SAFE HTML ID
+========================================================
+*/
+
+function safeId(value) {
+
+    return String(value)
+        .replace(
+            /[^a-zA-Z0-9_-]/g,
+            "_"
+        );
+
+}
+
+
+/*
+========================================================
+START
+========================================================
+*/
+
+fetchTelegram();
+
+
+/*
+========================================================
+TELEGRAM CHECK
+
+New messages are checked every 10 seconds.
+========================================================
+*/
+
+setInterval(
+    fetchTelegram,
+    10000
+);
+
+
+/*
+========================================================
+TIMER CHECK
+
+Timer updates every 1 second.
+========================================================
+*/
+
+setInterval(
+    updateTimers,
+    1000
+);
+
+
+/*
+Initial timer update
+*/
+
+updateTimers();
+
+</script>
+
+</body>
+</html>
+
+Timer: "01:25:00"
+Expiry: 1 hour 25 minutes after the original Telegram message timestamp.
